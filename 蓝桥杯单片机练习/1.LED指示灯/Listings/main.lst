@@ -1,0 +1,83 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              02/17/2024 23:50:11 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          #include <INTRINS.H>
+   3          typedef unsigned char u8;
+   4          typedef unsigned int u16;
+   5          sbit HC138_A=P2^5;
+   6          sbit HC138_B=P2^6;
+   7          sbit HC138_C=P2^7;
+   8          
+   9          //74HC138译码器工作原理为按CBA顺序输入0或1表示7个位置，111是Y7，本次用的Y4是110
+  10          void Delay(u16 xms)             //@11.0592MHz
+  11          {
+  12   1      
+  13   1              while(xms--)
+  14   1              {
+  15   2                      unsigned char i, j;
+  16   2      
+  17   2                      _nop_();
+  18   2                      i = 2;
+  19   2                      j = 199;
+  20   2                      do
+  21   2                      {
+  22   3                              while (--j);
+  23   3                      } while (--i);
+  24   2              }
+  25   1      }
+  26          
+  27          void LEDRunning()
+  28          {
+  29   1              u8 i;
+  30   1              HC138_C=1;
+  31   1              HC138_B=0;
+  32   1              HC138_A=0;
+  33   1              for(i=1;i<=3;i++)
+  34   1              {
+  35   2                      P0=0x00;
+  36   2                      Delay(1000);
+  37   2                      P0=0xFF;
+  38   2                      Delay(1000);
+  39   2              }
+  40   1              for(i=1;i<=8;i++)
+  41   1              {
+  42   2                      P0=(0xFF<<i);//最低位是第一个灯
+  43   2                      Delay(1000);
+  44   2              }
+  45   1              for(i=1;i<=8;i++)
+  46   1              {
+  47   2                      P0=~(0xFF>>i);//最低位是第一个灯
+  48   2                      Delay(1000);
+  49   2              }
+  50   1      }
+  51          void main()
+  52          {
+  53   1              while(1)
+  54   1              {
+C51 COMPILER V9.60.7.0   MAIN                                                              02/17/2024 23:50:11 PAGE 2   
+
+  55   2                      LEDRunning();
+  56   2              }
+  57   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    101    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
