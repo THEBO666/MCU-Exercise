@@ -1,0 +1,75 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:12:51 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000                   2     LEDTABLE:
+0000                   3             DB
+0000                   4     INIT:
+0000 12000F            5             LCALL TIMER0_INIT
+0003                   6     MAIN:
+0003 12000E            7             LCALL KEY_PRO
+0006 12000E            8             LCALL SEG_PRO
+0009 12000E            9             LCALL LED_PRO
+000C 80F5             10             SJMP MAIN
+                      11     
+000E                  12     KEY_PRO:
+                      13     
+                      14     
+                      15     
+000E                  16     LED_PRO:
+                      17     
+                      18     
+000E                  19     SEG_PRO:
+                      20             
+000E                  21     TIMER0_ISR:
+                      22     
+000E 32               23             RETI
+                      24     
+000F                  25     TIMER0_INIT:                            ;1毫秒@11.0592MHz
+                      26             
+000F 5389F0           27             ANL             TMOD,#0F0H              ;设置定时器模式
+0012 758ACD           28             MOV             TL0,#0CDH               ;设置定时初始值
+0015 758CD4           29             MOV             TH0,#0D4H               ;设置定时初始值
+0018 C28D             30             CLR             TF0                             ;清除TF0标志
+001A D28C             31             SETB    TR0                             ;定时器0开始计时
+001C D2A9             32             SETB    ET0                             ;使能定时器0中断
+001E D2AF             33             SETB    EA
+0020 22               34             RET
+                      35     
+                      36     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:12:51 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+INIT . . . . . . .  C ADDR   0000H   A   
+KEY_PRO. . . . . .  C ADDR   000EH   A   
+LEDTABLE . . . . .  C ADDR   0000H   A   
+LED_PRO. . . . . .  C ADDR   000EH   A   
+MAIN . . . . . . .  C ADDR   0003H   A   
+SEG_PRO. . . . . .  C ADDR   000EH   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMER0_INIT. . . .  C ADDR   000FH   A   
+TIMER0_ISR . . . .  C ADDR   000EH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

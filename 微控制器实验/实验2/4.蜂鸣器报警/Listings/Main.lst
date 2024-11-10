@@ -1,0 +1,56 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 20:41:32 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000 0102              2     AJMP MAIN
+0002                   3     MAIN:
+0002 79FF              4          MOV R1,#0FFH
+0004 B2A3              5          CPL P2.3
+0006 B290              6              CPL P1.0
+0008 12000D            7          LCALL DELAY500MS
+000B 0102              8          AJMP MAIN
+                       9     
+000D                  10     DELAY500MS:                     ;@12.000MHz
+000D C030             11             PUSH    30H
+000F C031             12             PUSH    31H
+0011 C032             13             PUSH    32H
+0013 753004           14             MOV             30H,#4
+0016 7531CD           15             MOV             31H,#205
+0019 7532B4           16             MOV             32H,#180
+001C                  17     NEXT:
+001C D532FD           18             DJNZ    32H,NEXT
+001F D531FA           19             DJNZ    31H,NEXT
+0022 D530F7           20             DJNZ    30H,NEXT
+0025 D032             21             POP             32H
+0027 D031             22             POP             31H
+0029 D030             23             POP             30H
+002B 22               24             RET
+                      25     
+                      26     
+                      27     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 20:41:32 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY500MS . . . .  C ADDR   000DH   A   
+MAIN . . . . . . .  C ADDR   0002H   A   
+NEXT . . . . . . .  C ADDR   001CH   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

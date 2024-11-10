@@ -1,0 +1,104 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 21:25:37 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0000H
+0000                   2     MAIN:
+0000 7590FF            3             MOV P1, #11111111B
+0003                   4     Loop:
+0003 30B017            5             JNB P3.0, key1 ;等待按键1按下，若键按下则跳转
+0006 30B11B            6             JNB P3.1, key2 ;同理，等待其他按键
+0009 30B21F            7             JNB P3.2, key3
+000C 30B323            8             JNB P3.3, key4
+000F 30B427            9             JNB P3.4, key5
+0012 30B52B           10             JNB P3.5, key6
+0015 30B62F           11             JNB P3.6, key7
+0018 30B733           12             JNB P3.7, key8
+001B 8038             13             JMP continue
+                      14     
+001D                  15     key1:
+001D C290             16             CLR P1.0
+001F 120058           17             LCALL DELAY10MS
+0022 80DF             18             JMP LOOP
+                      19     
+0024                  20     key2:
+0024 C291             21             CLR P1.1
+0026 120058           22             LCALL DELAY10MS
+0029 80D8             23             JMP LOOP
+002B                  24     key3:
+002B C292             25             CLR P1.2
+002D 120058           26             LCALL DELAY10MS
+0030 80D1             27             JMP LOOP
+0032                  28     key4:
+0032 C293             29             CLR P1.3
+0034 120058           30             LCALL DELAY10MS
+0037 80CA             31             JMP LOOP
+0039                  32     key5:
+0039 C294             33             CLR P1.4
+003B 120058           34             LCALL DELAY10MS
+003E 80C3             35             JMP LOOP
+0040                  36     key6:
+0040 C295             37             CLR P1.5
+0042 120058           38             LCALL DELAY10MS
+0045 80BC             39             JMP LOOP
+0047                  40     key7:
+0047 C296             41             CLR P1.6
+0049 120058           42             LCALL DELAY10MS
+004C 80B5             43             JMP LOOP
+004E                  44     key8:
+004E C297             45             CLR P1.7
+0050 120058           46             LCALL DELAY10MS
+0053 80AE             47             JMP LOOP
+0055                  48     continue:
+0055 D8AC             49             DJNZ R0, Loop
+0057 22               50             RET
+0058                  51     DELAY10MS:                      ;@12.000MHz
+0058 C030             52             PUSH    30H
+005A C031             53             PUSH    31H
+005C 753014           54             MOV             30H,#20
+005F 75316C           55             MOV             31H,#108
+0062                  56     NEXT:
+0062 D531FD           57             DJNZ    31H,NEXT
+A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 21:25:37 PAGE     2
+
+0065 D530FA           58             DJNZ    30H,NEXT
+0068 D031             59             POP             31H
+006A D030             60             POP             30H
+006C 22               61             RET
+                      62     
+                      63     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 21:25:37 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+CONTINUE . . . . .  C ADDR   0055H   A   
+DELAY10MS. . . . .  C ADDR   0058H   A   
+KEY1 . . . . . . .  C ADDR   001DH   A   
+KEY2 . . . . . . .  C ADDR   0024H   A   
+KEY3 . . . . . . .  C ADDR   002BH   A   
+KEY4 . . . . . . .  C ADDR   0032H   A   
+KEY5 . . . . . . .  C ADDR   0039H   A   
+KEY6 . . . . . . .  C ADDR   0040H   A   
+KEY7 . . . . . . .  C ADDR   0047H   A   
+KEY8 . . . . . . .  C ADDR   004EH   A   
+LOOP . . . . . . .  C ADDR   0003H   A   
+MAIN . . . . . . .  C ADDR   0000H   A   
+NEXT . . . . . . .  C ADDR   0062H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

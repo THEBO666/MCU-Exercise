@@ -1,0 +1,85 @@
+A51 MACRO ASSEMBLER  TEST1                                                                11/06/2024 17:54:29 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Test1.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Test1.a51 SET(SMALL) DEBUG PRINT(.\Listings\Test1.lst) OBJECT(.\Objects\T
+                      est1.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1       ORG 0000H       
+                       2     
+                       3     ; 初始化片内 RAM 30H-3FH 为 80H-8FH
+0000 7830              4             MOV R0, #30H    ; R0 指向片内 RAM 起始地址 30H
+0002 7480              5             MOV A, #80H     ; A 初始化为 80H
+                       6     
+0004                   7     INIT_LOOP:
+0004 F6                8             MOV @R0, A      ; 将 A 的值写入片内 RAM [R0]
+0005 08                9             INC R0          ; R0 = R0 + 1
+0006 04               10             INC A           ; A = A + 1
+0007 B490FA           11             CJNE A, #90H, INIT_LOOP ; 如果 A 不等于 90H，继续循环
+                      12     
+                      13     ; 将片内 RAM 30H-3FH 的内容传送到外部 RAM 1000H-100FH
+000A 7830             14             MOV R0, #30H    ; R0 重新指向片内 RAM 起始地址 30H
+000C 901000           15             MOV DPTR, #1000H ; DPTR 指向外部 RAM 起始地址 1000H
+                      16     
+000F                  17     TRANSFER_LOOP1:
+000F E6               18             MOV A, @R0      ; 从片内 RAM [R0] 读取数据到 A
+0010 F0               19             MOVX @DPTR, A   ; 将 A 的值写入外部 RAM [DPTR]
+0011 08               20             INC R0          ; R0 = R0 + 1
+0012 A3               21             INC DPTR        ; DPTR = DPTR + 1
+0013 B840F9           22             CJNE R0, #40H, TRANSFER_LOOP1 ; 如果 R0 不等于 40H，继续循环
+                      23     
+                      24     ; 将外部 RAM 1000H-100FH 的内容传送到 1040H-104FH
+0016 901000           25             MOV DPTR, #1000H ; DPTR 指向外部 RAM 源地址 1000H
+0019 7840             26             MOV R0, #40H     ; R0 保存目的地址低字节（1040H 的低字节）
+001B 7910             27             MOV R1, #10H     ; R1 保存目的地址高字节（1040H 的高字节）
+001D 7F10             28             MOV R7, #16      ; 循环计数器，传输 16 字节
+                      29     
+001F                  30     TRANSFER_LOOP2:
+001F E0               31             MOVX A, @DPTR    ; 从源地址 [DPTR] 读取数据到 A
+0020 A3               32             INC DPTR         ; 源地址递增
+                      33     
+                      34             ; 保存当前的 DPTR（源地址）
+0021 AA82             35             MOV R2, DPL      ; R2 = DPL（源地址低字节）
+0023 AB83             36             MOV R3, DPH      ; R3 = DPH（源地址高字节）
+                      37     
+                      38             ; 设置 DPTR 为目的地址（1040H 开始）
+0025 8882             39             MOV DPL, R0      ; DPL = R0（目的地址低字节）
+0027 8983             40             MOV DPH, R1      ; DPH = R1（目的地址高字节）
+                      41     
+0029 F0               42             MOVX @DPTR, A    ; 将 A 的值写入目的地址 [DPTR]
+                      43     
+                      44     
+002A 8A82             45             MOV DPL, R2      ; DPL = R2（恢复源地址低字节）
+002C 8B83             46             MOV DPH, R3      ; DPH = R3（恢复源地址高字节）
+                      47     
+002E 08               48             INC R0           ; 目的地址低字节加 1
+002F B80001           49             CJNE R0, #00H, NO_CARRY_DST ; 如果 R0 不为 0，跳过进位
+0032 09               50             INC R1          
+0033                  51     NO_CARRY_DST:
+                      52     
+0033 DFEA             53             DJNZ R7, TRANSFER_LOOP2 
+                      54     
+                      55             END
+A51 MACRO ASSEMBLER  TEST1                                                                11/06/2024 17:54:29 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DPH. . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . .  D ADDR   0082H   A   
+INIT_LOOP. . . . .  C ADDR   0004H   A   
+NO_CARRY_DST . . .  C ADDR   0033H   A   
+TRANSFER_LOOP1 . .  C ADDR   000FH   A   
+TRANSFER_LOOP2 . .  C ADDR   001FH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

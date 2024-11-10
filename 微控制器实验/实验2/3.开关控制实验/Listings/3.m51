@@ -1,0 +1,98 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    11/06/2024  21:25:37  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+D:\KEIL5\C51\BIN\BL51.EXE .\Objects\Main.obj TO .\Objects\3.开关控制 PRINT (.\Listings\3.m51) RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\Main.obj (MAIN)
+
+
+LINK MAP OF MODULE:  .\Objects\3.开关控制 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     006DH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\3.开关控制 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0055H         SYMBOL        CONTINUE
+  C:0058H         SYMBOL        DELAY10MS
+  C:001DH         SYMBOL        KEY1
+  C:0024H         SYMBOL        KEY2
+  C:002BH         SYMBOL        KEY3
+  C:0032H         SYMBOL        KEY4
+  C:0039H         SYMBOL        KEY5
+  C:0040H         SYMBOL        KEY6
+  C:0047H         SYMBOL        KEY7
+  C:004EH         SYMBOL        KEY8
+  C:0003H         SYMBOL        LOOP
+  C:0000H         SYMBOL        MAIN
+  C:0062H         SYMBOL        NEXT
+  D:0090H         SYMBOL        P1
+  D:00B0H         SYMBOL        P3
+  C:0000H         LINE#         3
+  C:0003H         LINE#         5
+  C:0006H         LINE#         6
+  C:0009H         LINE#         7
+  C:000CH         LINE#         8
+  C:000FH         LINE#         9
+  C:0012H         LINE#         10
+  C:0015H         LINE#         11
+  C:0018H         LINE#         12
+  C:001BH         LINE#         13
+  C:001DH         LINE#         16
+  C:001FH         LINE#         17
+  C:0022H         LINE#         18
+  C:0024H         LINE#         21
+  C:0026H         LINE#         22
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/06/2024  21:25:37  PAGE 2
+
+
+  C:0029H         LINE#         23
+  C:002BH         LINE#         25
+  C:002DH         LINE#         26
+  C:0030H         LINE#         27
+  C:0032H         LINE#         29
+  C:0034H         LINE#         30
+  C:0037H         LINE#         31
+  C:0039H         LINE#         33
+  C:003BH         LINE#         34
+  C:003EH         LINE#         35
+  C:0040H         LINE#         37
+  C:0042H         LINE#         38
+  C:0045H         LINE#         39
+  C:0047H         LINE#         41
+  C:0049H         LINE#         42
+  C:004CH         LINE#         43
+  C:004EH         LINE#         45
+  C:0050H         LINE#         46
+  C:0053H         LINE#         47
+  C:0055H         LINE#         49
+  C:0057H         LINE#         50
+  C:0058H         LINE#         52
+  C:005AH         LINE#         53
+  C:005CH         LINE#         54
+  C:005FH         LINE#         55
+  C:0062H         LINE#         57
+  C:0065H         LINE#         58
+  C:0068H         LINE#         59
+  C:006AH         LINE#         60
+  C:006CH         LINE#         61
+  -------         ENDMOD        MAIN
+
+Program Size: data=8.0 xdata=0 code=109
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

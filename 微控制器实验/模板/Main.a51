@@ -1,0 +1,36 @@
+	ORG 0000H
+LEDTABLE:
+	DB 
+INIT:
+	LCALL TIMER0_INIT
+MAIN:
+	LCALL KEY_PRO
+	LCALL SEG_PRO
+	LCALL LED_PRO
+	SJMP MAIN
+
+KEY_PRO:
+	
+
+
+LED_PRO:
+
+
+SEG_PRO:
+	
+TIMER0_ISR:
+
+	RETI
+
+TIMER0_INIT:				;1毫秒@11.0592MHz
+	// ORL		AUXR,#07FH		;定时器时钟1T模式
+	ANL		TMOD,#0F0H		;设置定时器模式
+	MOV		TL0,#0CDH		;设置定时初始值
+	MOV		TH0,#0D4H		;设置定时初始值
+	CLR		TF0				;清除TF0标志
+	SETB	TR0				;定时器0开始计时
+	SETB	ET0				;使能定时器0中断
+	SETB    EA
+	RET
+
+END

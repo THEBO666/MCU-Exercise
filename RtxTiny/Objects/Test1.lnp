@@ -1,0 +1,5 @@
+".\Objects\main.obj",
+".\Objects\Conf_tny.obj",
+".\RTOS\RTX51TNY.LIB" 
+TO ".\Objects\Test1" Rtx51Tiny 
+PRINT(".\Listings\Test1.m51") RAMSIZE(256) 

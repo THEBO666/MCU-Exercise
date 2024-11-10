@@ -1,0 +1,78 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              11/09/2024 22:54:54 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "RTX51TNY.h"
+   2          #include "reg52.h"
+   3          sbit led0=P1^0;
+   4          sbit led1=P2^0;
+   5          /*******************************************************************************
+   6          * 函 数 名       : task_create
+   7          * 函数功能                   : 任务0
+   8          * 输    入       : 无
+   9          * 输    出             : 无
+  10          *******************************************************************************/
+  11          void task_create(void) _task_ 0
+  12          {
+  13   1              os_create_task(1);
+  14   1              os_create_task(2);
+  15   1              os_delete_task(0);
+  16   1              while(1)
+  17   1              {
+  18   2                      ;
+  19   2              }               
+  20   1      }
+  21          /*******************************************************************************
+  22          * 函 数 名       : task_1
+  23          * 函数功能                   : 任务1
+  24          * 输    入       : 无
+  25          * 输    出             : 无
+  26          *******************************************************************************/
+  27          void task_1(void) _task_ 1
+  28          {
+  29   1              while(1)
+  30   1              {
+  31   2                      led0=!led0;
+  32   2                      os_wait2(K_IVL,50);
+  33   2              }               
+  34   1      }
+  35          
+  36          /*******************************************************************************
+  37          * 函 数 名       : task_2
+  38          * 函数功能                   : 任务2
+  39          * 输    入       : 无
+  40          * 输    出             : 无
+  41          *******************************************************************************/
+  42          void task_2(void) _task_ 2
+  43          {
+  44   1              while(1)
+  45   1              {
+  46   2                      led1=!led1;
+  47   2                      os_wait2(K_IVL,400);
+  48   2              }               
+  49   1      }
+  50          
+  51          
+  52                  
+
+
+C51 COMPILER V9.60.7.0   MAIN                                                              11/09/2024 22:54:54 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     39    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,66 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:58:06 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1         ORG 0000H
+                       2     
+0000                   3     MAIN:
+0000 7590FE            4             MOV P1, #11111110B
+0003 120033            5             LCALL DELAY500MS ;延时
+0006 7590FD            6             MOV P1, #11111101B
+0009 120033            7             LCALL DELAY500MS
+000C 7590FB            8             MOV P1, #11111011B
+000F 120033            9             LCALL DELAY500MS
+0012 7590F7           10             MOV P1, #11110111B
+0015 120033           11             LCALL DELAY500MS
+0018 7590EF           12             MOV P1, #11101111B
+001B 120033           13             LCALL DELAY500MS
+001E 7590DF           14             MOV P1, #11011111B
+0021 120033           15             LCALL DELAY500MS
+0024 7590BF           16             MOV P1, #10111111B
+0027 120033           17             LCALL DELAY500MS
+002A 75907F           18             MOV P1, #01111111B
+002D 120033           19             LCALL DELAY500MS
+0030 020000           20     LJMP MAIN
+                      21     ;延时函数
+0033                  22     DELAY500MS:                     ;@11.0592MHz
+0033 C030             23             PUSH    30H
+0035 C031             24             PUSH    31H
+0037 C032             25             PUSH    32H
+0039 753004           26             MOV             30H,#4
+003C 753181           27             MOV             31H,#129
+003F 753270           28             MOV             32H,#112
+0042                  29     NEXT:
+0042 D532FD           30             DJNZ    32H,NEXT
+0045 D531FA           31             DJNZ    31H,NEXT
+0048 D530F7           32             DJNZ    30H,NEXT
+004B D032             33             POP             32H
+004D D031             34             POP             31H
+004F D030             35             POP             30H
+0051 22               36             RET
+                      37     
+                      38     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:58:06 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY500MS . . . .  C ADDR   0033H   A   
+MAIN . . . . . . .  C ADDR   0000H   A   
+NEXT . . . . . . .  C ADDR   0042H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
