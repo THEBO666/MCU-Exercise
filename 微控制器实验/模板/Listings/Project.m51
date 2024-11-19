@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    11/10/2024  14:12:53  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    11/10/2024  23:08:55  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
@@ -19,7 +19,7 @@ LINK MAP OF MODULE:  .\Objects\Project (MAIN)
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
-            CODE    0000H     0021H     ABSOLUTE     
+            CODE    0000H     0056H     ABSOLUTE     
 
 
 
@@ -32,36 +32,44 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project (MAIN)
   B:00A8H.7       SYMBOL        EA
   B:00A8H.1       SYMBOL        ET0
   C:0000H         SYMBOL        INIT
-  C:000EH         SYMBOL        KEY_PRO
-  C:0000H         SYMBOL        LEDTABLE
-  C:000EH         SYMBOL        LED_PRO
-  C:0003H         SYMBOL        MAIN
-  C:000EH         SYMBOL        SEG_PRO
+  C:003BH         SYMBOL        KEY_PRO
+  C:003BH         SYMBOL        LED_DISPLAY
+  C:003BH         SYMBOL        LED_PRO
+  C:0030H         SYMBOL        MAIN
+  D:0090H         SYMBOL        P1
+  C:003BH         SYMBOL        SEG_PRO
+  C:0043H         SYMBOL        SS
   B:0088H.5       SYMBOL        TF0
   D:008CH         SYMBOL        TH0
-  C:000FH         SYMBOL        TIMER0_INIT
-  C:000EH         SYMBOL        TIMER0_ISR
+  C:0044H         SYMBOL        TIMER0_INIT
+  C:003BH         SYMBOL        TIMER0_ISR
   D:008AH         SYMBOL        TL0
   D:0089H         SYMBOL        TMOD
   B:0088H.4       SYMBOL        TR0
-  C:0000H         LINE#         5
-  C:0003H         LINE#         7
-  C:0006H         LINE#         8
-  C:0009H         LINE#         9
-  C:000CH         LINE#         10
-  C:000EH         LINE#         23
-  C:000FH         LINE#         27
-  C:0012H         LINE#         28
-  C:0015H         LINE#         29
-  C:0018H         LINE#         30
-  C:001AH         LINE#         31
-  C:001CH         LINE#         32
-  C:001EH         LINE#         33
-  C:0020H         LINE#         34
+  C:0000H         LINE#         3
+  C:0003H         LINE#         4
+  C:000BH         LINE#         6
+  C:0030H         LINE#         9
+  C:0033H         LINE#         10
+  C:0036H         LINE#         11
+  C:0039H         LINE#         12
+  C:003BH         LINE#         26
+  C:003CH         LINE#         27
+  C:003FH         LINE#         28
+  C:0041H         LINE#         29
+  C:0043H         LINE#         31
+  C:0044H         LINE#         35
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/10/2024  23:08:55  PAGE 2
+
+
+  C:0047H         LINE#         36
+  C:004AH         LINE#         37
+  C:004DH         LINE#         38
+  C:004FH         LINE#         39
+  C:0051H         LINE#         40
+  C:0053H         LINE#         41
+  C:0055H         LINE#         42
   -------         ENDMOD        MAIN
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/10/2024  14:12:53  PAGE 2
 
-
-
-Program Size: data=8.0 xdata=0 code=33
+Program Size: data=8.0 xdata=0 code=86
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,77 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:26:35 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000 020030            2             LJMP MAIN
+001B                   3             ORG 001BH
+001B 020045            4             LJMP TIME
+0030                   5             ORG 0030H
+                       6     
+0030                   7     MAIN:
+0030 C290              8             CLR P1.0
+0032 758160            9             MOV SP,#60H
+0035 758960           10             MOV TMOD ,#60H ;0110 0000
+0038 758DFD           11             MOV TH1, #0FDH
+003B 758BFD           12             MOV TL1, #0FDH
+003E 75A888           13             MOV IE ,#88H
+0041 D28E             14             SETB TR1
+0043                  15     LOOP:
+0043 0143             16               AJMP  LOOP                    ;等待循环
+0045                  17     TIME:
+0045 74FE             18             MOV A, #0FEH
+0047 7908             19             MOV R1,#08H
+0049 120050           20             LCALL LED
+004C 7590FF           21             MOV P1,#0FFH
+004F 32               22             RETI
+0050                  23     LED:
+0050 F590             24             MOV P1,A
+0052 23               25             RL A
+0053 120059           26             LCALL DELAY100MS
+0056 D9F8             27             DJNZ R1,LED
+0058 22               28             RET
+0059                  29     DELAY100MS:                     ;@12.000MHz
+0059 C030             30             PUSH    30H
+005B C031             31             PUSH    31H
+005D 7530C3           32             MOV             30H,#195
+0060 753185           33             MOV             31H,#133
+0063                  34     NEXT:
+0063 D531FD           35             DJNZ    31H,NEXT
+0066 D530FA           36             DJNZ    30H,NEXT
+0069 D031             37             POP             31H
+006B D030             38             POP             30H
+006D 22               39             RET
+                      40     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:26:35 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY100MS . . . .  C ADDR   0059H   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+LED. . . . . . . .  C ADDR   0050H   A   
+LOOP . . . . . . .  C ADDR   0043H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+NEXT . . . . . . .  C ADDR   0063H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TIME . . . . . . .  C ADDR   0045H   A   
+TL1. . . . . . . .  D ADDR   008BH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

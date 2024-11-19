@@ -1,0 +1,45 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:13:04 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000 020006            2             LJMP MAIN
+0003                   3             ORG 0003H
+0003 020010            4             LJMP LINT0
+0006                   5     MAIN:
+0006 758801            6             MOV TCON,#01H;硬件复位
+0009 74FE              7             MOV A,#0FEH
+000B 75A881            8             MOV IE,#81H;1000 0001
+000E                   9     LOOP:
+000E 010E             10             AJMP LOOP
+0010                  11     LINT0:
+0010 F590             12             MOV P1,A
+0012 23               13             RL A
+0013 32               14             RETI
+                      15     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:13:04 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+IE . . . . . . . .  D ADDR   00A8H   A   
+LINT0. . . . . . .  C ADDR   0010H   A   
+LOOP . . . . . . .  C ADDR   000EH   A   
+MAIN . . . . . . .  C ADDR   0006H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,63 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:20:09 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1                     ORG     0000H                   ;程序入口地址
+0000 74FE              2                     MOV A ,#0FEH ;1111 1110
+0002 F590              3                     MOV P1,A
+0004 020030            4                     LJMP    START                   ;跳转到START程序
+000B                   5                 ORG 000BH                   ;中断服务程序入口
+000B 020043            6                 LJMP        TIME                    ;中断服务程序TIME
+0030                   7                 ORG 0030H                   ;START程序起始地址
+0030                   8     START:  
+0030 758901            9                 MOV TMOD,#01H               ;设置T0方式1定时模式
+0033 758AB0           10                 MOV TL0,#0B0H               ;TL0赋初值
+0036 758C3C           11                 MOV TH0,#03CH               ;TH0赋初值，总定时50ms
+0039 D2A9             12                 SETB        ET0                             ;允许T0中断
+003B D28C             13                 SETB        TR0                       ;启动T0计数
+003D D2AF             14                 SETB        EA                              ;允许总中断
+003F 7A14             15                 MOV R2,#20                  ;计数器1
+0041                  16     LOOP:   
+0041 0141             17                 AJMP        LOOP                    ;等待循环
+0043                  18     TIME:   
+0043 758AB0           19                 MOV TL0,#0B0H               ;恢复定时器初值
+0046 758C3C           20                 MOV TH0,#3CH                
+0049 DA05             21                 DJNZ        R2,SS                   ;当R1不为0时，跳出中断，又开始
+                             计时，为0时，将R1的循环次数恢复，为下一次循环做准备
+004B 7A14             22                 MOV R2,#20
+004D 23               23                 RL  A                       ;计时到0.5s，P0.0取反
+004E F590             24                     MOV P1,A
+0050                  25     SS:                 
+0050 32               26                 RETI            
+                      27                 END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:20:09 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+LOOP . . . . . . .  C ADDR   0041H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+SS . . . . . . . .  C ADDR   0050H   A   
+START. . . . . . .  C ADDR   0030H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIME . . . . . . .  C ADDR   0043H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

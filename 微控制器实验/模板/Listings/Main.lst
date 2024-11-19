@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:12:51 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 23:08:55 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -9,42 +9,50 @@ ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.
 LOC  OBJ            LINE     SOURCE
 
 0000                   1             ORG 0000H
-0000                   2     LEDTABLE:
-0000                   3             DB
-0000                   4     INIT:
-0000 12000F            5             LCALL TIMER0_INIT
-0003                   6     MAIN:
-0003 12000E            7             LCALL KEY_PRO
-0006 12000E            8             LCALL SEG_PRO
-0009 12000E            9             LCALL LED_PRO
-000C 80F5             10             SJMP MAIN
-                      11     
-000E                  12     KEY_PRO:
+0000                   2     INIT:
+0000 120044            3             LCALL TIMER0_INIT
+0003 020030            4             LJMP MAIN
+000B                   5             ORG 000BH
+000B 02003B            6             LJMP TIMER0_ISR
+0030                   7             ORG 0030H
+0030                   8     MAIN:
+0030 12003B            9             LCALL KEY_PRO
+0033 12003B           10             LCALL SEG_PRO
+0036 12003B           11             LCALL LED_PRO
+0039 80FE             12             SJMP $
                       13     
-                      14     
+003B                  14     LED_DISPLAY:
                       15     
-000E                  16     LED_PRO:
-                      17     
+003B                  16     KEY_PRO:
+                      17             
                       18     
-000E                  19     SEG_PRO:
-                      20             
-000E                  21     TIMER0_ISR:
+                      19     
+003B                  20     LED_PRO:
+                      21             
                       22     
-000E 32               23             RETI
-                      24     
-000F                  25     TIMER0_INIT:                            ;1毫秒@11.0592MHz
-                      26             
-000F 5389F0           27             ANL             TMOD,#0F0H              ;设置定时器模式
-0012 758ACD           28             MOV             TL0,#0CDH               ;设置定时初始值
-0015 758CD4           29             MOV             TH0,#0D4H               ;设置定时初始值
-0018 C28D             30             CLR             TF0                             ;清除TF0标志
-001A D28C             31             SETB    TR0                             ;定时器0开始计时
-001C D2A9             32             SETB    ET0                             ;使能定时器0中断
-001E D2AF             33             SETB    EA
-0020 22               34             RET
-                      35     
-                      36     END
-A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:12:51 PAGE     2
+003B                  23     SEG_PRO:
+                      24             
+003B                  25     TIMER0_ISR:
+003B 08               26             INC R0
+003C B8C804           27             CJNE R0, #200,SS
+003F 7800             28             MOV R0,#00H
+0041 B290             29             CPL P1.0
+0043                  30     SS:
+0043 32               31             RETI
+                      32     
+0044                  33     TIMER0_INIT:                            ;1毫秒@11.0592MHz
+                      34             
+0044 5389F0           35             ANL             TMOD,#0F0H              ;设置定时器模式
+0047 758ACD           36             MOV             TL0,#0CDH               ;设置定时初始值
+004A 758CD4           37             MOV             TH0,#0D4H               ;设置定时初始值
+004D C28D             38             CLR             TF0                             ;清除TF0标志
+004F D28C             39             SETB    TR0                             ;定时器0开始计时
+0051 D2A9             40             SETB    ET0                             ;使能定时器0中断
+0053 D2AF             41             SETB    EA
+0055 22               42             RET
+                      43     
+                      44     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 23:08:55 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -55,15 +63,17 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 EA . . . . . . . .  B ADDR   00A8H.7 A   
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 INIT . . . . . . .  C ADDR   0000H   A   
-KEY_PRO. . . . . .  C ADDR   000EH   A   
-LEDTABLE . . . . .  C ADDR   0000H   A   
-LED_PRO. . . . . .  C ADDR   000EH   A   
-MAIN . . . . . . .  C ADDR   0003H   A   
-SEG_PRO. . . . . .  C ADDR   000EH   A   
+KEY_PRO. . . . . .  C ADDR   003BH   A   
+LED_DISPLAY. . . .  C ADDR   003BH   A   
+LED_PRO. . . . . .  C ADDR   003BH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+SEG_PRO. . . . . .  C ADDR   003BH   A   
+SS . . . . . . . .  C ADDR   0043H   A   
 TF0. . . . . . . .  B ADDR   0088H.5 A   
 TH0. . . . . . . .  D ADDR   008CH   A   
-TIMER0_INIT. . . .  C ADDR   000FH   A   
-TIMER0_ISR . . . .  C ADDR   000EH   A   
+TIMER0_INIT. . . .  C ADDR   0044H   A   
+TIMER0_ISR . . . .  C ADDR   003BH   A   
 TL0. . . . . . . .  D ADDR   008AH   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
 TR0. . . . . . . .  B ADDR   0088H.4 A   

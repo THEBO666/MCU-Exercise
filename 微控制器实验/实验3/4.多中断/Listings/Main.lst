@@ -1,0 +1,93 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/14/2024 12:53:44 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000 020030            2             LJMP MAIN
+0003                   3             ORG 0003H
+0003 02003B            4             LJMP LINT0
+000B                   5             ORG 000BH
+000B 02005A            6             LJMP TIME0
+0030                   7             ORG 0030H
+0030                   8     MAIN:
+0030 75907F            9             MOV P1,#07FH
+0033 D288             10             SETB IT0
+0035 D2A8             11             SETB EX0
+0037 D2AF             12             SETB EA
+                      13             
+0039                  14     LOOP:
+0039 0139             15             AJMP LOOP
+003B                  16     LINT0:
+003B 7590FF           17             MOV P1,#0FFH
+003E 780A             18             MOV R0, #10;设置循环次数
+0040 7908             19             MOV R1, #8;偏移量
+0042 900073           20             MOV DPTR, #LEDTABLE
+0045 758901           21             MOV     TMOD,#01H               ;设置T0方式1定时模式
+0048 758AB0           22             MOV     TL0,#0B0H               ;TL0赋初值
+004B 758C3C           23             MOV TH0,#03CH           ;TH0赋初值，总定时50ms
+004E D2A9             24             SETB    ET0                             ;允许T0中断
+0050 D28C             25             SETB    TR0                       ;启动T0计数
+0052 D2AF             26             SETB    EA
+0054 7A14             27             MOV     R2,#20                  ;计数器1
+                      28             ;MOV   A, R1;将偏移量赋值给A
+                      29             ;MOVC A, @A + DPTR
+0056 759090           30             MOV P1, #90H;把A赋值给P1
+0059 32               31             RETI
+005A                  32     TIME0:   
+005A 758AB0           33             MOV     TL0,#0B0H               ;恢复定时器初值
+005D 758C3C           34             MOV     TH0,#3CH                
+0060 DA10             35             DJNZ R2,SS                      ;当R1不为0时，跳出中断，又开始计时�
+                             �为0时，将R1的循环次数恢复，为下一次循环做准备
+0062 7A14             36             MOV     R2,#20
+0064 E9               37             MOV   A, R1;将偏移量赋值给A
+0065 93               38             MOVC A, @A + DPTR
+0066 F590             39             MOV P1,A
+0068 19               40             DEC R1
+0069 D807             41             DJNZ R0,SS
+006B C2A9             42             CLR ET0
+006D C28C             43             CLR TR0
+006F 75907F           44             MOV P1,#07FH
+0072                  45     SS:                 
+0072 32               46                 RETI            
+                      47             
+0073                  48     LEDTABLE:
+0073 C0F9A4B0         49             DB 0C0H,0F9H,0A4H,0B0H,99H,92H,82H,0F8H,80H,90H
+0077 999282F8                
+007B 8090                    
+                      50             
+                      51     END     
+A51 MACRO ASSEMBLER  MAIN                                                                 11/14/2024 12:53:44 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+EX0. . . . . . . .  B ADDR   00A8H.0 A   
+IT0. . . . . . . .  B ADDR   0088H.0 A   
+LEDTABLE . . . . .  C ADDR   0073H   A   
+LINT0. . . . . . .  C ADDR   003BH   A   
+LOOP . . . . . . .  C ADDR   0039H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+SS . . . . . . . .  C ADDR   0072H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIME0. . . . . . .  C ADDR   005AH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
