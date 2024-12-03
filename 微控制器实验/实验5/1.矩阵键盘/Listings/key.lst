@@ -1,0 +1,54 @@
+C51 COMPILER V9.60.7.0   KEY                                                               11/27/2024 15:27:12 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\Objects\key.obj
+COMPILER INVOKED BY: D:\Keil5\C51\BIN\C51.EXE key.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\key.lst
+                    -) OBJECT(.\Objects\key.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          
+   3          unsigned char Key_Read()
+   4          {
+   5   1              unsigned char temp=0;
+   6   1              P30=0,P31=1,P32=1,P33=1;
+   7   1              if(P34==0) temp=0;
+   8   1              if(P35==0) temp=1;
+   9   1              if(P36==0) temp=2;
+  10   1              if(P37==0) temp=3;
+  11   1              
+  12   1              P30=1,P31=0,P32=1,P33=1;
+  13   1              if(P34==0) temp=4;
+  14   1              if(P35==0) temp=5;
+  15   1              if(P36==0) temp=6;
+  16   1              if(P37==0) temp=7;
+  17   1              
+  18   1              P30=1,P31=1,P32=0,P33=1;
+  19   1              if(P34==0) temp=8;
+  20   1              if(P35==0) temp=9;
+  21   1              if(P36==0) temp=10;
+  22   1              if(P37==0) temp=11;
+  23   1              
+  24   1              P30=1,P31=1,P32=1,P33=0;
+  25   1              if(P34==0) temp=12;
+  26   1              if(P35==0) temp=13;
+  27   1              if(P36==0) temp=14;
+  28   1              if(P37==0) temp=15;
+  29   1              return temp;
+  30   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    110    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

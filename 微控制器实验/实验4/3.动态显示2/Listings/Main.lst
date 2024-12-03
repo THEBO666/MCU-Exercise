@@ -1,0 +1,136 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/26/2024 21:53:19 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+0000 020030            2             LJMP START
+0003                   3             ORG 0003H
+0003 02007A            4             LJMP LINT0
+000B                   5             ORG 000BH
+000B 020083            6             LJMP TIME
+0030                   7             ORG 0030H
+0030                   8     START:
+0030 758901            9             MOV TMOD, #01H
+0033 758AB0           10             MOV TL0, #0B0H
+0036 758C3C           11             MOV TH0, #03CH ;50MS定时器
+0039 900099           12             MOV DPTR,#SMG
+003C D2A9             13             SETB ET0
+003E D28C             14             SETB TR0
+0040 D288             15             SETB IT0
+0042 D2A8             16             SETB EX0
+0044 D2AF             17             SETB EA
+0046 7802             18             MOV R0,#2H;100MS刷新
+0048 7900             19             MOV R1,#00H;100MS刷新
+004A                  20     MAIN:
+004A 120050           21             LCALL DISPLAY
+004D 02004A           22             LJMP MAIN
+0050                  23     DISPLAY:
+                      24     
+0050 D2A1             25             SETB P2.1
+0052 7580BF           26             MOV P0, #10111111B
+0055 C2A1             27             CLR P2.1
+0057 D2A0             28             SETB P2.0
+0059 EA               29             MOV A,R2
+005A 75F00A           30             MOV B,#10
+005D 84               31             DIV AB
+005E 93               32             MOVC A,@A+DPTR
+005F F580             33             MOV P0,A
+0061 E5F0             34             MOV A,B
+0063 C2A0             35             CLR P2.0
+                      36             ;MOV P0,#00H
+0065 120090           37             LCALL DELAY
+0068 D2A1             38             SETB P2.1
+006A 75807F           39             MOV P0, #01111111B
+006D C2A1             40             CLR P2.1
+006F D2A0             41             SETB P2.0
+0071 93               42             MOVC A,@A+DPTR
+0072 F580             43             MOV P0,A
+0074 C2A0             44             CLR P2.0
+0076 120090           45             LCALL DELAY
+                      46     
+0079 22               47     RET
+                      48             
+007A                  49     LINT0:
+007A 09               50             INC R1
+007B E9               51             MOV A,R1
+007C B46403           52             CJNE A,#100,RE
+007F 7900             53             MOV R1,#00H
+0081 C3               54             CLR C
+0082                  55     RE:
+0082 32               56             RETI
+0083                  57     TIME:
+A51 MACRO ASSEMBLER  MAIN                                                                 11/26/2024 21:53:19 PAGE     2
+
+0083 758AB0           58             MOV TL0, #0B0H
+0086 758C3C           59             MOV TH0, #03CH
+0089 D804             60             DJNZ R0,SS
+008B 7802             61             MOV R0,#2H
+008D E9               62             MOV A,R1
+008E FA               63             MOV R2,A
+                      64             
+008F                  65     SS:
+008F 32               66             RETI
+0090                  67     DELAY:
+0090 7B0A             68             MOV R3,#10
+0092 7C0A             69             MOV R4,#10
+0094 DCFE             70             DJNZ R4,$
+0096 DBFA             71             DJNZ R3,$-4
+0098 22               72             RET
+0099                  73     SMG:
+0099 3F               74         DB 03FH  ; "0"
+009A 06               75         DB 006H  ; "1"
+009B 5B               76         DB 05BH  ; "2"
+009C 4F               77         DB 04FH  ; "3"
+009D 66               78         DB 066H  ; "4"
+009E 6D               79         DB 06DH  ; "5"
+009F 7D               80         DB 07DH  ; "6"
+00A0 07               81         DB 007H  ; "7"
+00A1 7F               82         DB 07FH  ; "8"
+00A2 6F               83         DB 06FH  ; "9"
+00A3 77               84         DB 077H  ; "A"
+00A4 7C               85         DB 07CH  ; "B"
+00A5 39               86         DB 039H  ; "C"
+00A6 5E               87         DB 05EH  ; "D"
+00A7 79               88         DB 079H  ; "E"
+00A8 71               89         DB 071H  ; "F"
+                      90     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/26/2024 21:53:19 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+B. . . . . . . . .  D ADDR   00F0H   A   
+DELAY. . . . . . .  C ADDR   0090H   A   
+DISPLAY. . . . . .  C ADDR   0050H   A   
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+EX0. . . . . . . .  B ADDR   00A8H.0 A   
+IT0. . . . . . . .  B ADDR   0088H.0 A   
+LINT0. . . . . . .  C ADDR   007AH   A   
+MAIN . . . . . . .  C ADDR   004AH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RE . . . . . . . .  C ADDR   0082H   A   
+SMG. . . . . . . .  C ADDR   0099H   A   
+SS . . . . . . . .  C ADDR   008FH   A   
+START. . . . . . .  C ADDR   0030H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIME . . . . . . .  C ADDR   0083H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

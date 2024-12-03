@@ -1,0 +1,41 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/20/2024 08:45:39 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1             ORG 0000H
+  00A0                 2             DU      EQU     P2.0
+  00A1                 3             WE      EQU     P2.1
+0000                   4     MAIN:
+0000 758000            5             MOV P0,#00H
+0003 D2A1              6             SETB WE
+0005 C2A1              7             CLR WE
+0007 758071            8             MOV P0,#071H
+000A D2A0              9             SETB P2.0
+000C C2A0             10             CLR P2.0
+000E 80FE             11             SJMP $
+                      12     END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/20/2024 08:45:39 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DU . . . . . . . .  B ADDR   00A0H.0 A   
+MAIN . . . . . . .  C ADDR   0000H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+WE . . . . . . . .  B ADDR   00A0H.1 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

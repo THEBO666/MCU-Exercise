@@ -1,0 +1,114 @@
+A51 MACRO ASSEMBLER  PROJECT                                                              11/27/2024 00:05:59 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN Project.OBJ
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Project.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;/*------------------------------------------------------------------*/
+                       2     ;/* --- STC MCU Limited ---------------------------------------------*/
+                       3     ;/* --- STC89-90xx Series 16-bit Timer Demo -------------------------*/
+                       4     ;/* --- Mobile: (86)13922805190 -------------------------------------*/
+                       5     ;/* --- Fax: 86-0513-55012956,55012947,55012969 ---------------------*/
+                       6     ;/* --- Tel: 86-0513-55012928,55012929,55012966----------------------*/
+                       7     ;/* --- Web: www.STCMCU.com -----------------------------------------*/
+                       8     ;/* --- Web: www.GXWMCU.com -----------------------------------------*/
+                       9     ;/* If you want to use the program or the program referenced in the  */
+                      10     ;/* article, please specify in which data and procedures from STC    */
+                      11     ;/*------------------------------------------------------------------*/
+                      12     
+                      13     ;/* define constants */
+  FA00                14     T1MS        EQU 0FA00H                  ;1ms timer calculation method in 12T mode is (65536
+                             -18432000/12/1000)
+                      15     
+                      16     ;/* define SFR */
+  0090                17     TEST_LED    BIT  P1.0                   ;work LED, flash once per second
+                      18     
+                      19     ;/* define variables */
+  0020                20     COUNT DATA 20H                          ;1000 times counter (2 bytes)
+                      21     
+                      22     ;-----------------------------------------------
+                      23     
+0000                  24         ORG     0000H
+0000 02000E           25         LJMP    MAIN
+000B                  26         ORG     000BH
+000B 020024           27         LJMP    TM0_ISR
+                      28     
+                      29     ;-----------------------------------------------
+                      30     
+                      31     ;/* main program */
+000E                  32     MAIN:
+000E 758901           33         MOV     TMOD,#01H                   ;set timer0 as mode1 (16-bit)
+0011 758A00           34         MOV     TL0,#LOW T1MS               ;initial timer0 low byte
+0014 758CFA           35         MOV     TH0,#HIGH T1MS              ;initial timer0 high byte
+0017 D28C             36         SETB    TR0                         ;timer0 start running
+0019 D2A9             37         SETB    ET0                         ;enable timer0 interrupt
+001B D2AF             38         SETB    EA                          ;open global interrupt switch
+001D E4               39         CLR     A
+001E F520             40         MOV     COUNT,A
+0020 F521             41         MOV     COUNT+1,A                   ;initial counter
+0022 80FE             42         SJMP    $
+                      43     
+                      44     ;-----------------------------------------------
+                      45     
+                      46     ;/* Timer0 interrupt routine */
+0024                  47     TM0_ISR:
+0024 C0E0             48         PUSH    ACC
+0026 C0D0             49         PUSH    PSW
+0028 758A00           50         MOV     TL0,#LOW T1MS               ;reload timer0 low byte
+002B 758CFA           51         MOV     TH0,#HIGH T1MS              ;reload timer0 high byte
+002E E520             52         MOV     A,COUNT
+0030 4521             53         ORL     A,COUNT+1                   ;check whether count(2byte) is equal to 0
+0032 7008             54         JNZ     SKIP
+0034 7520E8           55         MOV     COUNT,#LOW 1000             ;1ms * 1000 -> 1s
+0037 752103           56         MOV     COUNT+1,#HIGH 1000
+003A B290             57         CPL     TEST_LED                    ;work LED flash
+A51 MACRO ASSEMBLER  PROJECT                                                              11/27/2024 00:05:59 PAGE     2
+
+003C                  58     SKIP:
+003C C3               59         CLR     C
+003D E520             60         MOV     A,COUNT                     ;count--
+003F 9401             61         SUBB    A,#1
+0041 F520             62         MOV     COUNT,A
+0043 E521             63         MOV     A,COUNT+1
+0045 9400             64         SUBB    A,#0
+0047 F521             65         MOV     COUNT+1,A
+0049 D0D0             66         POP     PSW
+004B D0E0             67         POP     ACC
+004D 32               68         RETI
+                      69     
+                      70     ;-----------------------------------------------
+                      71     
+                      72         END
+                             
+A51 MACRO ASSEMBLER  PROJECT                                                              11/27/2024 00:05:59 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+COUNT. . . . . . .  D ADDR   0020H   A   
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+MAIN . . . . . . .  C ADDR   000EH   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PSW. . . . . . . .  D ADDR   00D0H   A   
+SKIP . . . . . . .  C ADDR   003CH   A   
+T1MS . . . . . . .  N NUMB   FA00H   A   
+TEST_LED . . . . .  B ADDR   0090H.0 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TM0_ISR. . . . . .  C ADDR   0024H   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

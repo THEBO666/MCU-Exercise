@@ -1,0 +1,85 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    11/27/2024  00:05:59  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+D:\KEIL5\C51\BIN\BL51.EXE Project.obj TO Project RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  Project.obj (PROJECT)
+
+
+LINK MAP OF MODULE:  Project (PROJECT)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     004EH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  Project (PROJECT)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        PROJECT
+  D:00E0H         SYMBOL        ACC
+  D:0020H         SYMBOL        COUNT
+  B:00A8H.7       SYMBOL        EA
+  B:00A8H.1       SYMBOL        ET0
+  C:000EH         SYMBOL        MAIN
+  D:0090H         SYMBOL        P1
+  D:00D0H         SYMBOL        PSW
+  C:003CH         SYMBOL        SKIP
+  N:FA00H         SYMBOL        T1MS
+  B:0090H.0       SYMBOL        TEST_LED
+  D:008CH         SYMBOL        TH0
+  D:008AH         SYMBOL        TL0
+  C:0024H         SYMBOL        TM0_ISR
+  D:0089H         SYMBOL        TMOD
+  B:0088H.4       SYMBOL        TR0
+  C:0000H         LINE#         25
+  C:000BH         LINE#         27
+  C:000EH         LINE#         33
+  C:0011H         LINE#         34
+  C:0014H         LINE#         35
+  C:0017H         LINE#         36
+  C:0019H         LINE#         37
+  C:001BH         LINE#         38
+  C:001DH         LINE#         39
+  C:001EH         LINE#         40
+  C:0020H         LINE#         41
+  C:0022H         LINE#         42
+  C:0024H         LINE#         48
+  C:0026H         LINE#         49
+  C:0028H         LINE#         50
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  11/27/2024  00:05:59  PAGE 2
+
+
+  C:002BH         LINE#         51
+  C:002EH         LINE#         52
+  C:0030H         LINE#         53
+  C:0032H         LINE#         54
+  C:0034H         LINE#         55
+  C:0037H         LINE#         56
+  C:003AH         LINE#         57
+  C:003CH         LINE#         59
+  C:003DH         LINE#         60
+  C:003FH         LINE#         61
+  C:0041H         LINE#         62
+  C:0043H         LINE#         63
+  C:0045H         LINE#         64
+  C:0047H         LINE#         65
+  C:0049H         LINE#         66
+  C:004BH         LINE#         67
+  C:004DH         LINE#         68
+  -------         ENDMOD        PROJECT
+
+Program Size: data=8.0 xdata=0 code=78
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,9 +1,11 @@
 {
     "files.associations": {
+        "*.cpp": "cpp",
         "STDIO.H": "cpp",
         "INTRINS.H": "cpp",
         "stc15f2k60s2.h": "c",
-        "STC15F2K60S2.H": "cpp"
+        "STC15F2K60S2.H": "cpp",
+        "main.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

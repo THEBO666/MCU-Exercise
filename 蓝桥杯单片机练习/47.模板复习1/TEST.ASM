@@ -1,0 +1,71 @@
+			ORG 0000H
+	LJMP START
+	ORG 000BH
+	LJMP TIME
+	;ORG 0030H
+START:
+	MOV R0,00H
+	MOV DPTR,#SMG
+	MOV R2,#20
+	MOV R1,00H ;位置
+	MOV R3,00H
+	MOV TMOD, #01H
+	MOV TL0, #0B0H
+	MOV TH0, #03CH ;50MS定时器
+	SETB ET0
+	SETB TR0
+	SETB EA
+LOOP:
+	SJMP $
+TIME:
+	MOV TL0, #0B0H
+	MOV TH0, #03CH
+	DJNZ R2,SS
+	MOV R2,#20
+	;MOV A,R1
+	SETB P2.1
+	MOV P0, #00H
+	;RL A
+	;MOV R1,A
+	CLR P2.1
+	SETB P2.0
+	MOV A,R3
+	MOVC A,@A+DPTR
+	MOV P0,A
+	INC R3
+	;MOV P0,#071H
+	CLR P2.0
+	CJNE A,16,SS
+	MOV R3,00H
+SS:
+	RETI
+SMG:
+    DB 03FH  ; "0"
+    DB 006H  ; "1"
+    DB 05BH  ; "2"
+    DB 04FH  ; "3"
+    DB 066H  ; "4"
+    DB 06DH  ; "5"
+    DB 07DH  ; "6"
+    DB 007H  ; "7"
+    DB 07FH  ; "8"
+    DB 06FH  ; "9"
+    DB 077H  ; "A"
+    DB 07CH  ; "B"
+    DB 039H  ; "C"
+    DB 05EH  ; "D"
+    DB 079H  ; "E"
+    DB 071H  ; "F"
+END
+			ORG 0000H
+	MOV P2 ,#00H
+	MOV P0 ,#00H
+MAIN:
+	SETB P2.1
+	MOV P0,#00001111B
+	CLR P2.1
+	SETB P2.0
+	MOV P0,#040H
+	CLR P2.0
+	SJMP $
+END

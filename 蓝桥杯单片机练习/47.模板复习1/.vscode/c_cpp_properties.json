@@ -4,7 +4,7 @@
             "name": "Target 1",
             "includePath": [
                 "D:\\Keil5\\C51\\INC",
-                "d:\\MCU-exercises\\蓝桥杯单片机练习\\47.模板复习1"
+                "d:\\MCU-Exercise\\蓝桥杯单片机练习\\47.模板复习1"
             ],
             "defines": [
                 "__C51__",

@@ -1,0 +1,305 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 11/27/2024 10:41:06 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Mai
+                      n.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  0090                 1             RS      EQU     P1.0   
+  0091                 2             RW      EQU     P1.1    
+  00A5                 3             E       EQU     P2.5   
+  0080                 4             LCDDATA EQU     P0   
+  0030                 5             KEYBUF EQU 30H
+0000                   6             ORG     0000H
+0000 0133              7             AJMP    START 
+0033                   8             ORG     0033H
+0033                   9     START:  
+0033 758160           10             MOV     SP,#60H
+0036 753000           11             MOV KEYBUF,#00H
+0039                  12     WAIT:
+0039 75B0FF           13                 MOV P3,#0FFH
+003C C2B4             14                 CLR P3.4
+003E E5B0             15                 MOV A,P3
+0040 540F             16                 ANL A,#0FH
+0042 640F             17                 XRL A,#0FH
+0044 603F             18                 JZ NOKEY1
+0046 1201D2           19                 LCALL DELY10MS
+0049 E5B0             20                 MOV A,P3
+004B 540F             21                 ANL A,#0FH
+004D 640F             22                 XRL A,#0FH
+004F 6034             23                 JZ NOKEY1
+0051 E5B0             24                 MOV A,P3
+0053 540F             25                 ANL A,#0FH
+0055 B40E06           26                 CJNE A,#0EH,NK1
+0058 753000           27                 MOV KEYBUF,#0
+                      28                 
+005B 02007A           29                 LJMP DK1
+005E B40D06           30     NK1:        CJNE A,#0DH,NK2
+0061 753004           31                 MOV KEYBUF,#4
+                      32                 
+0064 02007A           33                 LJMP DK1
+0067 B40B06           34     NK2:        CJNE A,#0BH,NK3
+006A 753008           35                 MOV KEYBUF,#8
+                      36                 
+006D 02007A           37                 LJMP DK1
+0070 B40706           38     NK3:        CJNE A,#07H,NK4
+0073 75300C           39                 MOV KEYBUF,#12
+                      40                 
+0076 02007A           41                 LJMP DK1
+0079 00               42     NK4:        NOP
+007A                  43     DK1:
+007A 12016F           44                 LCALL display
+                      45                 
+007D E5B0             46     DK1A:       MOV A,P3      ;等待释放
+007F 540F             47                 ANL A,#0FH
+0081 640F             48                 XRL A,#0FH
+0083 70F8             49                 JNZ DK1A
+0085                  50     NOKEY1:
+0085 75B0FF           51                 MOV P3,#0FFH
+0088 C2B5             52                 CLR P3.5
+008A E5B0             53                 MOV A,P3
+008C 540F             54                 ANL A,#0FH
+008E 640F             55                 XRL A,#0FH
+0090 6042             56                 JZ NOKEY2
+0092 1201D2           57                 LCALL DELY10MS
+A51 MACRO ASSEMBLER  MAIN                                                                 11/27/2024 10:41:06 PAGE     2
+
+0095 E5B0             58                 MOV A,P3
+0097 540F             59                 ANL A,#0FH
+0099 640F             60                 XRL A,#0FH
+009B 6037             61                 JZ NOKEY2
+009D E5B0             62                 MOV A,P3
+009F 540F             63                 ANL A,#0FH
+00A1 B40E06           64                 CJNE A,#0EH,NK5
+00A4 753001           65                 MOV KEYBUF,#1
+                      66                 
+00A7 0200C9           67                 LJMP DK2
+00AA B40D09           68     NK5:        CJNE A,#0DH,NK6
+00AD 753005           69                 MOV KEYBUF,#5
+00B0 7590FC           70                 mov p1,#11111100b
+00B3 0200C9           71                 LJMP DK2
+00B6 B40B06           72     NK6:        CJNE A,#0BH,NK7
+00B9 753009           73                 MOV KEYBUF,#9
+                      74                 
+00BC 0200C9           75                 LJMP DK2
+00BF B40706           76     NK7:        CJNE A,#07H,NK8
+00C2 75300D           77                 MOV KEYBUF,#13
+                      78                 
+00C5 0200C9           79                 LJMP DK2
+00C8 00               80     NK8:        NOP
+00C9                  81     DK2:
+00C9 12016F           82                 LCALL display
+00CC E5B0             83     DK2A:       MOV A,P3           ;释放
+00CE 540F             84                 ANL A,#0FH
+00D0 640F             85                 XRL A,#0FH
+00D2 70F8             86                 JNZ DK2A
+00D4                  87     NOKEY2:
+00D4 75B0FF           88                 MOV P3,#0FFH
+00D7 C2B6             89                 CLR P3.6
+00D9 E5B0             90                 MOV A,P3
+00DB 540F             91                 ANL A,#0FH
+00DD 640F             92                 XRL A,#0FH
+00DF 603F             93                 JZ NOKEY3
+00E1 1201D2           94                 LCALL DELY10MS
+00E4 E5B0             95                 MOV A,P3
+00E6 540F             96                 ANL A,#0FH
+00E8 640F             97                 XRL A,#0FH
+00EA 6034             98                 JZ NOKEY3
+00EC E5B0             99                 MOV A,P3
+00EE 540F            100                 ANL A,#0FH
+00F0 B40E06          101                 CJNE A,#0EH,NK9
+00F3 753002          102                 MOV KEYBUF,#2
+                     103                 
+00F6 020115          104                 LJMP DK3
+00F9 B40D06          105     NK9:        CJNE A,#0DH,NK10
+00FC 753006          106                 MOV KEYBUF,#6
+                     107                
+00FF 020115          108                 LJMP DK3
+0102 B40B06          109     NK10:       CJNE A,#0BH,NK11
+0105 75300A          110                 MOV KEYBUF,#10
+                     111                 
+0108 020115          112                 LJMP DK3
+010B B40706          113     NK11:       CJNE A,#07H,NK12
+010E 75300E          114                 MOV KEYBUF,#14
+                     115                 
+0111 020115          116                 LJMP DK3
+0114 00              117     NK12:       NOP
+0115                 118     DK3:
+0115 12016F          119                 LCALL display
+0118 E5B0            120     DK3A:       MOV A,P3
+011A 540F            121                 ANL A,#0FH
+011C 640F            122                 XRL A,#0FH
+011E 70F8            123                 JNZ DK3A
+A51 MACRO ASSEMBLER  MAIN                                                                 11/27/2024 10:41:06 PAGE     3
+
+0120                 124     NOKEY3:
+0120 75B0FF          125                 MOV P3,#0FFH
+0123 C2B7            126                 CLR P3.7
+0125 E5B0            127                 MOV A,P3
+0127 540F            128                 ANL A,#0FH
+0129 640F            129                 XRL A,#0FH
+012B 603F            130                 JZ NOKEY4
+012D 1201D2          131                 LCALL DELY10MS
+0130 E5B0            132                 MOV A,P3
+0132 540F            133                 ANL A,#0FH
+0134 640F            134                 XRL A,#0FH
+0136 6034            135                 JZ NOKEY4
+0138 E5B0            136                 MOV A,P3
+013A 540F            137                 ANL A,#0FH
+013C B40E06          138                 CJNE A,#0EH,NK13
+013F 753003          139                 MOV KEYBUF,#3
+                     140                 
+0142 020161          141                 LJMP DK4
+0145 B40D06          142     NK13:       CJNE A,#0DH,NK14
+0148 753007          143                 MOV KEYBUF,#7
+                     144                  
+014B 020161          145                 LJMP DK4
+014E B40B06          146     NK14:       CJNE A,#0BH,NK15
+0151 75300B          147                 MOV KEYBUF,#11
+                     148                  
+0154 020161          149                 LJMP DK4
+0157 B40706          150     NK15:       CJNE A,#07H,NK16
+                     151                 
+015A 75300F          152                 MOV KEYBUF,#15
+015D 020161          153                 LJMP DK4
+0160 00              154     NK16:       NOP
+0161                 155     DK4:
+0161 12016F          156                 LCALL display
+0164 E5B0            157     DK4A:       MOV A,P3
+0166 540F            158                 ANL A,#0FH
+0168 640F            159                 XRL A,#0FH
+016A 70F8            160                 JNZ DK4A
+016C                 161     NOKEY4:
+016C 020039          162                 LJMP WAIT   
+016F                 163     display:
+016F 1201BD          164             LCALL DELAY
+0172 758001          165             MOV LCDDATA,#01H
+0175 120199          166             LCALL ENABLE
+0178 758038          167             MOV     LCDDATA,#38H            ;写指令38H,设定LCD为16*2显示，5*7 点阵�
+                             �8位数据接口
+017B 120199          168             LCALL   ENABLE
+017E 75800F          169             MOV     LCDDATA,#0FH            ;写指令0FH,显示ON,光标ON,闪烁ON
+0181 120199          170             LCALL   ENABLE
+0184 758006          171             MOV     LCDDATA,#06H            ;写指令06H,光标输入方式增量移位
+0187 120199          172             LCALL   ENABLE
+018A 7901            173             MOV     R1,#1
+018C 758080          174             MOV     LCDDATA,#80H            ;第一行起始字符地址
+018F 120199          175             LCALL   ENABLE
+0192 9001DB          176             MOV DPTR,#TABLE
+0195 1201A5          177             LCALL DISP
+0198 22              178             RET
+0199                 179     ENABLE:
+0199 C290            180             CLR RS
+019B C291            181             CLR RW
+019D C2A5            182             CLR E
+019F 1201BD          183             LCALL DELAY
+01A2 D2A5            184             SETB E
+01A4 22              185             RET
+01A5 E530            186     DISP:   MOV     A,KEYBUF                ;将ACC清零
+01A7 93              187             MOVC    A,@A+DPTR       ;查表取得要显示的数据
+01A8 1201AF          188             LCALL   DISP1           ;写入一个数据
+A51 MACRO ASSEMBLER  MAIN                                                                 11/27/2024 10:41:06 PAGE     4
+
+01AB A3              189             INC     DPTR            ;数据表指针加1,准备取下一个数据
+01AC D9F7            190             DJNZ    R1,DISP         ;一行没有显示完就继续
+01AE 22              191             RET
+                     192     ;----------------- 
+01AF                 193     DISP1:  
+01AF F580            194             MOV     LCDDATA,A               ;写1字节数据到显示端口 
+01B1 D290            195             SETB    RS      ;写数据时序(请参照1602LCD使用说明 书)
+01B3 C291            196             CLR     RW 
+01B5 C2A5            197             CLR     E
+01B7 1201BD          198             LCALL   DELAY
+01BA D2A5            199             SETB    E
+01BC 22              200             RET
+01BD                 201     DELAY:                  ;@12.000MHz
+01BD C030            202             PUSH    30H
+01BF C031            203             PUSH    31H
+01C1 75301E          204             MOV             30H,#30
+01C4 753126          205             MOV             31H,#38
+01C7                 206     NEXT:
+01C7 D531FD          207             DJNZ    31H,NEXT
+01CA D530FA          208             DJNZ    30H,NEXT
+01CD D031            209             POP             31H
+01CF D030            210             POP             30H
+01D1 22              211             RET
+01D2                 212     DELY10MS:
+01D2 7E0A            213                 MOV R6,#10
+01D4 7FF8            214     D1:         MOV R7,#248
+01D6 DFFE            215                 DJNZ R7,$
+01D8 DEFA            216                 DJNZ R6,D1
+01DA 22              217                 RET
+                     218     
+01DB                 219     TABLE:
+01DB 30313233        220             DB "0","1","2","3","4","5"
+01DF 3435                    
+01E1 36373839        221             DB "6","7","8","9","A","B"
+01E5 4142                    
+01E7 43444546        222             DB "C","D","E","F"
+                     223             END
+A51 MACRO ASSEMBLER  MAIN                                                                 11/27/2024 10:41:06 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+D1 . . . . . . . .  C ADDR   01D4H   A   
+DELAY. . . . . . .  C ADDR   01BDH   A   
+DELY10MS . . . . .  C ADDR   01D2H   A   
+DISP . . . . . . .  C ADDR   01A5H   A   
+DISP1. . . . . . .  C ADDR   01AFH   A   
+DISPLAY. . . . . .  C ADDR   016FH   A   
+DK1. . . . . . . .  C ADDR   007AH   A   
+DK1A . . . . . . .  C ADDR   007DH   A   
+DK2. . . . . . . .  C ADDR   00C9H   A   
+DK2A . . . . . . .  C ADDR   00CCH   A   
+DK3. . . . . . . .  C ADDR   0115H   A   
+DK3A . . . . . . .  C ADDR   0118H   A   
+DK4. . . . . . . .  C ADDR   0161H   A   
+DK4A . . . . . . .  C ADDR   0164H   A   
+E. . . . . . . . .  B ADDR   00A0H.5 A   
+ENABLE . . . . . .  C ADDR   0199H   A   
+KEYBUF . . . . . .  N NUMB   0030H   A   
+LCDDATA. . . . . .  D ADDR   0080H   A   
+NEXT . . . . . . .  C ADDR   01C7H   A   
+NK1. . . . . . . .  C ADDR   005EH   A   
+NK10 . . . . . . .  C ADDR   0102H   A   
+NK11 . . . . . . .  C ADDR   010BH   A   
+NK12 . . . . . . .  C ADDR   0114H   A   
+NK13 . . . . . . .  C ADDR   0145H   A   
+NK14 . . . . . . .  C ADDR   014EH   A   
+NK15 . . . . . . .  C ADDR   0157H   A   
+NK16 . . . . . . .  C ADDR   0160H   A   
+NK2. . . . . . . .  C ADDR   0067H   A   
+NK3. . . . . . . .  C ADDR   0070H   A   
+NK4. . . . . . . .  C ADDR   0079H   A   
+NK5. . . . . . . .  C ADDR   00AAH   A   
+NK6. . . . . . . .  C ADDR   00B6H   A   
+NK7. . . . . . . .  C ADDR   00BFH   A   
+NK8. . . . . . . .  C ADDR   00C8H   A   
+NK9. . . . . . . .  C ADDR   00F9H   A   
+NOKEY1 . . . . . .  C ADDR   0085H   A   
+NOKEY2 . . . . . .  C ADDR   00D4H   A   
+NOKEY3 . . . . . .  C ADDR   0120H   A   
+NOKEY4 . . . . . .  C ADDR   016CH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+RS . . . . . . . .  B ADDR   0090H.0 A   
+RW . . . . . . . .  B ADDR   0090H.1 A   
+SP . . . . . . . .  D ADDR   0081H   A   
+START. . . . . . .  C ADDR   0033H   A   
+TABLE. . . . . . .  C ADDR   01DBH   A   
+WAIT . . . . . . .  C ADDR   0039H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

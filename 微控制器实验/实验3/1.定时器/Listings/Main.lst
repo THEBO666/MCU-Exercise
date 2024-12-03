@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:20:09 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 11/19/2024 21:33:42 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -36,7 +36,7 @@ LOC  OBJ            LINE     SOURCE
 0050                  25     SS:                 
 0050 32               26                 RETI            
                       27                 END
-A51 MACRO ASSEMBLER  MAIN                                                                 11/13/2024 20:20:09 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 11/19/2024 21:33:42 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------
