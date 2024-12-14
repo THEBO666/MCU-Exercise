@@ -1,0 +1,179 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/11/2024 09:50:28 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC89C5xRC.H>
+   2          
+   3          #include <intrins.h>
+   4          #include "lcd1602.h"
+   5          #include "key.h"
+   6          //#include "stdio.h"
+   7          
+   8          void clearData(char* Data)
+   9          {
+  10   1              unsigned int i = 0;
+  11   1              for(i=0;i<32;i++)
+  12   1              {
+  13   2                      Data[i] = 0;
+  14   2              }
+  15   1      }
+  16          
+  17          void handleData(char *Data)
+  18          {
+  19   1              int i = 0,numData = 0,numOp = 0,fix = 0,firstCount = 0;
+  20   1              long tempData[8]={0};
+  21   1              long sum = 0;
+  22   1              char op[8]={0};
+  23   1              while(Data[i] != Sum)
+  24   1              {
+  25   2                      if((Data[i] >= '0') && (Data[i] <= '9'))
+  26   2                      {
+  27   3                              tempData[numData] = (tempData[numData] * 10) + (Data[i] - '0');
+  28   3                      }
+  29   2                      else
+  30   2                      {
+  31   3                              op[numOp] = Data[i];
+  32   3                              numData++;
+  33   3                              numOp++;
+  34   3                      }
+  35   2                      i++;
+  36   2              }
+  37   1              
+  38   1              i = 0;
+  39   1              while(op[i] != 0)
+  40   1              {
+  41   2                      if((op[i] == Mul) && ((op[i+1] == Add) || (op[i+1] == Sub)))
+  42   2                      {
+  43   3                              tempData[i] = tempData[i] * tempData[i+1];
+  44   3                      }
+  45   2                      else if((op[i] == Div) && ((op[i+1] == Add) || (op[i+1] == Sub)))
+  46   2                      {
+  47   3                              tempData[i] = tempData[i] / tempData[i+1];
+  48   3                      }
+  49   2                      else if((op[i] == Mul)||(op[i] == Div))
+  50   2                      {
+  51   3                              if(firstCount == 0){
+  52   4                                      fix = i;        
+  53   4                                      firstCount = 1;
+  54   4                              }
+C51 COMPILER V9.60.7.0   MAIN                                                              12/11/2024 09:50:28 PAGE 2   
+
+  55   3                              if(op[i] == Div)
+  56   3                              {
+  57   4                                      tempData[fix] = tempData[fix] / tempData[i+1];
+  58   4                              }
+  59   3                              if(op[i] == Mul)
+  60   3                              {
+  61   4                                      tempData[fix] = tempData[fix] * tempData[i+1];
+  62   4                              }
+  63   3                      }
+  64   2                      i++;
+  65   2              }
+  66   1              
+  67   1              i = 0;
+  68   1              sum = tempData[0];
+  69   1              while(op[i] != 0)
+  70   1              {
+  71   2                      if(op[i] == Add)
+  72   2                      {
+  73   3                              if(i == 0){
+  74   4                                      sum = tempData[i] + tempData[i+1];
+  75   4                              }
+  76   3                              else
+  77   3                              {
+  78   4                                      sum = sum + tempData[i+1];
+  79   4                              }
+  80   3                      }
+  81   2                      
+  82   2                      if(op[i] == Sub)
+  83   2                      {
+  84   3                              if(i == 0){
+  85   4                                      sum = tempData[i] - tempData[i+1];
+  86   4                              }
+  87   3                              else
+  88   3                              {
+  89   4                                      sum = sum - tempData[i+1];
+  90   4                              }
+  91   3                      }
+  92   2                      
+  93   2                      i++;
+  94   2              }
+  95   1              Lcd_ShowChar(2,1,'=');
+  96   1              Lcd_ShowSignedNum(2,2,sum,5);
+  97   1              //Lcd_ShowNum(2,10,tempData[0],5);
+  98   1      }
+  99          
+ 100          void main()
+ 101          {
+ 102   1              char keyValue = 0;      
+ 103   1              char Data[32]={0};
+ 104   1              unsigned int num = 0;
+ 105   1              Lcd_Init();             
+ 106   1              //Lcd_ShowString(1,1,"6");
+ 107   1              while(1)
+ 108   1              {
+ 109   2                      keyValue = MatrixKey();                                         //扫描按键
+ 110   2                      //操作数
+ 111   2                      if((keyValue != Sum) && (keyValue != No_Press) && (keyValue != BackSpace) && (keyValue != Clear) && (key
+             -Value != SigClear))
+ 112   2                      {
+ 113   3                              Data[num] = keyValue;
+ 114   3                              Lcd_ShowString(1,1,Data);
+ 115   3                              num++;
+C51 COMPILER V9.60.7.0   MAIN                                                              12/11/2024 09:50:28 PAGE 3   
+
+ 116   3                      }
+ 117   2                      //清空
+ 118   2                      else if(keyValue == Clear)
+ 119   2                      {
+ 120   3                              Lcd_Clear(1);
+ 121   3                              Lcd_Clear(2);
+ 122   3                              clearData(Data);
+ 123   3                              num = 0;
+ 124   3                      }
+ 125   2                      //单个清除
+ 126   2                      else if(keyValue == SigClear)
+ 127   2                      {
+ 128   3                              Lcd_Clear(1);
+ 129   3                              Lcd_Clear(2);
+ 130   3                              clearData(Data);
+ 131   3                              num = 0;
+ 132   3                      }
+ 133   2                      //退格
+ 134   2                      else if(keyValue == BackSpace)
+ 135   2                      {
+ 136   3                              Lcd_Clear(1);
+ 137   3                              if(num>=1){
+ 138   4                                      Data[num-1]=0;
+ 139   4                                      num = num - 1;
+ 140   4                              }
+ 141   3                              Lcd_ShowString(1,1,Data);
+ 142   3                      }
+ 143   2                      //求和
+ 144   2                      else if(keyValue == Sum)
+ 145   2                      {
+ 146   3                              Data[num] = Sum;
+ 147   3                              handleData(Data);
+ 148   3                      }
+ 149   2              }
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    964    ----
+   CONSTANT SIZE    =     72    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      95
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

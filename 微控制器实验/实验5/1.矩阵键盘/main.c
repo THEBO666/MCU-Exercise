@@ -7,12 +7,14 @@ typedef unsigned char u8;
 typedef unsigned int u16;
 
 u8 kval,kslow,kdown,kold;
-u8 segslow,pos;
+u8 pos;
+u16 segslow;
 u8 seg[8]={10,10,10,10,10,10,10,10};
 u8 led[8]={0,0,0,0,0,0,0,0};
 u8 pot[8]={0,0,0,0,0,0,0,0};
 u8 kdis;
 u16 delay;
+bit flag=0;
 void Key_Pro()
 {
 	if(kslow) return ;
@@ -20,22 +22,20 @@ void Key_Pro()
 	kval=Key_Read();
 	kdown=kval&(kold^kval);
 	kold=kval;
-	kdis=kval;
+	kdis=kold;
 }
 
 void Seg_Pro()
 {
 	if(segslow) return ;
 	segslow=1;
-	seg[0]=kdis;
+	seg[7]=kdis%10;
+	seg[6]=kdis/10;
 }
 
 void Led_Pro()
 {
-	if(delay==0)
-		led[0]=1;
-	else
-		led[0]=0;
+	led[0]=(flag==1);
 }
 void Timer0_Init(void)		//1毫秒@12.000MHz
 {
@@ -52,9 +52,13 @@ void Timer0_Init(void)		//1毫秒@12.000MHz
 void Timer0_Service() interrupt 1
 {
 	if(++kslow==10) kslow=0;
-	if(++segslow==200) segslow=0;
+	if(++segslow==500) segslow=0;
 	if(++pos==8) pos=0;
-	if(++delay>=100)delay=0;
+	if(++delay==1000)
+	{
+		delay=0;
+		flag=~flag;
+	}
 	Seg_Display(pos,seg[pos],pot[pos]);
 	Led_Display(pos,led[pos]);
 

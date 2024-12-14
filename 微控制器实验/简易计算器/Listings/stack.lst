@@ -1,0 +1,63 @@
+C51 COMPILER V9.56.0.0   STACK                                                             11/07/2024 15:39:06 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE STACK
+OBJECT MODULE PLACED IN .\Objects\stack.obj
+COMPILER INVOKED BY: D:\Keil_51\C51\BIN\C51.EXE stack.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\stack.lst) TABS(2) OBJECT(.\Objects\stack.obj)
+
+line level    source
+
+   1          #include "stack.h"
+   2          
+   3          void Init(stack *L)
+   4          {
+   5   1        L = (stack *)malloc(sizeof(struct node));
+   6   1        L->next = NULL;
+   7   1      }
+   8          
+   9          unsigned char IsEmpty(stack *L)
+  10          {
+  11   1        if(L->next == NULL){
+  12   2          return 1;
+  13   2        }
+  14   1        else{
+  15   2          return 0;
+  16   2        }
+  17   1      }
+  18          
+  19          void Push(char x, stack *L)
+  20          {
+  21   1        stack *p = (stack *)malloc(sizeof(struct node));
+  22   1        p->Data = x;
+  23   1        p->next = L->next;
+  24   1        L->next = p;
+  25   1      }
+  26          
+  27          char Pop(stack *L)
+  28          {
+  29   1        stack *p = NULL;
+  30   1        char temp = 0;
+  31   1        if (IsEmpty(L))
+  32   1          return ERROR;
+  33   1        temp = L->next->Data;
+  34   1        p = L->next;
+  35   1        L->next = p->next;
+  36   1        free(p);
+  37   1        return temp;
+  38   1      }
+  39          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    342    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----      17
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

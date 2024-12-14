@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <WORKSPACE>
- <FRAME activewindow="1">
+ <FRAME activewindow="0">
   <PLACEMENT>2c0000000200000003000000fffffffffffffffffffffffffffffffff2000000110000000f09000048050000</PLACEMENT>
   <WINDOW type="default" module="ISIS">
    <editor metric="0" gridmajor="2540000" mode="00000000" zoom="0" scale="162" flipped="0" gridminor="254000" gridmode="32" snapidx="2" snap="254000" xcursor="0" orgmode="0" snaprange="127000">
@@ -16,7 +16,7 @@
     <PROGRAMMER NAME="" INTERFACE=""/>
    </PROJECT>
    <EDITOR>
-    <FILE LINE="20" ACTIVE="1" NAME="AT89C51_1/main.asm" INDEX="13"/>
+    <FILE LINE="16" ACTIVE="1" NAME="AT89C51_1/main.asm" INDEX="11"/>
    </EDITOR>
   </WINDOW>
  </FRAME>

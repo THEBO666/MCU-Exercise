@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 21:02:29 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 12/06/2024 20:40:22 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -21,7 +21,7 @@ LOC  OBJ            LINE     SOURCE
 0009 F590             11             MOV P1, A;把A赋值给P1
 000B 120013           12             LCALL DELAY500MS
 000E 09               13             INC R1;R2加1
-000F D8F6             14             DJNZ R0, MAIN
+000F D8F6             14             DJNZ R0, MAIN;减1至0
 0011 80ED             15             SJMP INIT
                       16             
 0013                  17     DELAY500MS:                     ;@12.000MHz
@@ -46,7 +46,7 @@ LOC  OBJ            LINE     SOURCE
 003A 8090                    
                       35     
                       36     END
-A51 MACRO ASSEMBLER  MAIN                                                                 11/06/2024 21:02:29 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 12/06/2024 20:40:22 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------

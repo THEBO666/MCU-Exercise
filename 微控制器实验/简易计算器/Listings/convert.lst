@@ -1,0 +1,180 @@
+C51 COMPILER V9.56.0.0   CONVERT                                                           11/07/2024 15:44:25 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE CONVERT
+OBJECT MODULE PLACED IN .\Objects\convert.obj
+COMPILER INVOKED BY: D:\Keil_51\C51\BIN\C51.EXE convert.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\convert.lst) TABS(2) OBJECT(.\Objects\convert.obj)
+
+line level    source
+
+   1          #include <stdio.h>
+   2          #include <stdlib.h>
+   3          #include "stack.h"
+   4          
+   5          unsigned char convert(char*Infix, char*Suffix)
+   6          {
+   7   1        char *inf = NULL;
+   8   1        char *suf = NULL;
+   9   1        int temp = 0;
+  10   1        stack *Op;
+  11   1        Init(Op);
+  12   1        inf = Infix;
+  13   1        suf = Suffix;
+  14   1        while (*inf != '\0')
+  15   1        {
+  16   2          if (*inf >= '0'&&*inf <= '9')
+  17   2          {
+  18   3            while (*inf >= '0'&&*inf <= '9') {
+  19   4              *suf++ = *inf++;
+  20   4            }
+  21   3            *suf++ = '#';
+  22   3          }
+  23   2          else if (*inf == '+' || *inf == '-')
+  24   2          {
+  25   3            int temp = Pop(Op);
+  26   3            while (temp != ERROR) {
+  27   4              if (temp == '(') {
+  28   5                Push(temp, Op);
+  29   5                break;
+  30   5              }
+  31   4              else if (temp == '*' || temp == '/' || temp == '+' || temp == '-') {
+  32   5                *suf++ = temp;
+  33   5              }
+  34   4              temp = Pop(Op);
+  35   4            }
+  36   3            Push(*inf++, Op);
+  37   3          }
+  38   2          else if (*inf == '/' || *inf == '*')
+  39   2          {
+  40   3            int temp = Pop(Op);
+  41   3            while (temp != ERROR) {
+  42   4              if (temp == '(' || temp == '+' || temp == '-') {
+  43   5                Push(temp, Op);
+  44   5                break;
+  45   5              }
+  46   4              else if (temp == '*' || temp == '/') {
+  47   5                *suf++ = temp;
+  48   5              }
+  49   4              temp = Pop(Op);
+  50   4            }
+  51   3            Push(*inf++, Op);
+  52   3          }
+  53   2          else if (*inf == '(') {
+  54   3            Push(*inf++, Op);
+C51 COMPILER V9.56.0.0   CONVERT                                                           11/07/2024 15:44:25 PAGE 2   
+
+  55   3          }
+  56   2          else if (*inf == ')') {
+  57   3            int temp = Pop(Op);
+  58   3            while (temp != '('&&temp != '\0') {
+  59   4              *suf++ = temp;
+  60   4              temp = Pop(Op);
+  61   4            }
+  62   3            if (temp == '\0')
+  63   3              return 0;
+  64   3            else
+  65   3              *inf++;
+*** WARNING C275 IN LINE 65 OF convert.c: expression with possibly no effect
+  66   3          }
+  67   2          else
+  68   2            return 0;
+  69   2        }
+  70   1        temp = Pop(Op);
+  71   1        while (temp != ERROR) {
+  72   2          *suf++ = temp;
+  73   2          temp = Pop(Op);
+  74   2        }
+  75   1        *suf = '\0';
+  76   1        return 1;
+  77   1      }
+  78          
+  79          int operation(char*Suffix)
+  80          {
+  81   1        char *suf = NULL;
+  82   1        stack *Num;
+  83   1        Init(Num);
+  84   1        suf = Suffix;
+  85   1        while (*suf != '\0')
+  86   1        {
+  87   2          if (*suf >= '0'&&*suf <= '9')
+  88   2          {
+  89   3            int d = 0;
+  90   3            while (*suf >= '0'&&*suf <= '9') {
+  91   4              d = 10 * d + *suf - '0';
+  92   4              *suf++;
+*** WARNING C275 IN LINE 92 OF convert.c: expression with possibly no effect
+  93   4            }
+  94   3            Push(d, Num);
+  95   3            *suf++;
+*** WARNING C275 IN LINE 95 OF convert.c: expression with possibly no effect
+  96   3          }
+  97   2          if (*suf == '+')
+  98   2          {
+  99   3            int a, b, c;
+ 100   3            b = Pop(Num);
+ 101   3            a = Pop(Num);
+ 102   3            c = a + b;
+ 103   3            Push(c, Num);
+ 104   3            *suf++;
+*** WARNING C275 IN LINE 104 OF convert.c: expression with possibly no effect
+ 105   3          }
+ 106   2          if (*suf == '+')
+ 107   2          {
+ 108   3            int a, b, c;
+ 109   3            b = Pop(Num);
+ 110   3            a = Pop(Num);
+ 111   3            c = a + b;
+ 112   3            Push(c, Num);
+C51 COMPILER V9.56.0.0   CONVERT                                                           11/07/2024 15:44:25 PAGE 3   
+
+ 113   3            *suf++;
+*** WARNING C275 IN LINE 113 OF convert.c: expression with possibly no effect
+ 114   3          }
+ 115   2          if (*suf == '-')
+ 116   2          {
+ 117   3            int a, b, c;
+ 118   3            b = Pop(Num);
+ 119   3            a = Pop(Num);
+ 120   3            c = a - b;
+ 121   3            Push(c, Num);
+ 122   3            *suf++;
+*** WARNING C275 IN LINE 122 OF convert.c: expression with possibly no effect
+ 123   3          }
+ 124   2          if (*suf == '*')
+ 125   2          {
+ 126   3            int a, b, c;
+ 127   3            b = Pop(Num);
+ 128   3            a = Pop(Num);
+ 129   3            c = a * b;
+ 130   3            Push(c, Num);
+ 131   3            *suf++;
+*** WARNING C275 IN LINE 131 OF convert.c: expression with possibly no effect
+ 132   3          }
+ 133   2          if (*suf == '/')
+ 134   2          {
+ 135   3            int a, b, c;
+ 136   3            b = Pop(Num);
+ 137   3            a = Pop(Num);
+ 138   3            c = a / b;
+ 139   3            Push(c, Num);
+ 140   3            *suf++;
+*** WARNING C275 IN LINE 140 OF convert.c: expression with possibly no effect
+ 141   3          }
+ 142   2        }
+ 143   1        return Pop(Num);
+ 144   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1550    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----      34
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  8 WARNING(S),  0 ERROR(S)
