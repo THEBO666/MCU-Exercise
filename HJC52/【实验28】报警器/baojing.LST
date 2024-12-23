@@ -1,0 +1,78 @@
+C51 COMPILER V8.06   BAOJING                                                               02/15/2007 16:14:48 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE BAOJING
+OBJECT MODULE PLACED IN baojing.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE baojing.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：按下HJ-3G 实验板上的S2按键时（一直按着），会发出频率为1000HZ和2000HZ交替
+   4                                  的信号，通过蜂鸣器发出类似于救护车发出的报警声。
+   5          *  公司：慧净电子科技有限公司
+   6          *  淘宝：http://shop37031453.taobao.com       
+   7          *  网站：www.hlmcu.com
+   8          *  编写：
+   9          *  日期：2008-8-08
+  10          *   QQ : 121350852  398115088
+  11          *  晶振:11.0592MHZ
+  12          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  13          *  论坛：http://hjdz.5d6d.com
+  14          ******************************************************************/
+  15          
+  16          #include <reg51.h>
+  17          #include <intrins.h>
+  18          
+  19          #define uchar unsigned char 
+  20          #define uint unsigned int
+  21          
+  22          sbit beep=P2^3;
+  23          sbit kaiguan=P3^4;
+  24          
+  25          void delay()               //大概0.5ms左右的延时
+  26          {
+  27   1              uchar a;
+  28   1              for(a=450;a>0;a--)
+  29   1              {
+  30   2                      _nop_();
+  31   2              }
+  32   1      }
+  33          void main()
+  34          {
+  35   1              while(1)
+  36   1              {
+  37   2                      if(!kaiguan)
+  38   2                      {
+  39   3                              uint m;
+  40   3                              for(m=800;m>0;m--)        //持续时间0.5ms*800
+  41   3                              {
+  42   4                                      beep=~beep;             
+  43   4                                      delay();                 //2000HZ的信号。
+  44   4                              }
+  45   3                              for(m=500;m>0;m--)       //持续时间0.5ms*2*500
+  46   3                              {
+  47   4                                      beep=~beep;
+  48   4                                      delay();
+  49   4                                      delay();                //1000HZ的信号。
+  50   4                              }
+  51   3                      }
+  52   2              }
+  53   1      }
+
+
+C51 COMPILER V8.06   BAOJING                                                               02/15/2007 16:14:48 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     74    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

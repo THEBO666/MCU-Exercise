@@ -1,0 +1,238 @@
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 19:36:21 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V6.2 + Keil U3 + STC89C52RD
+   3          *  公司：慧净电子科技有限公司
+   4          *  淘宝：http://shop37031453.taobao.com       
+   5          *  网站：www.hlmcu.com
+   6          *  编写：慧净
+   7          *  日期：2008-8-08
+   8          *   QQ : 121350852 398115088
+   9          *  晶振:11.0592MHZ
+  10          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  11          *  论坛：http://hjdz.5d6d.com
+  12          ******************************************************************/
+  13          //接上18B20温度传感器（另购）数码管显示出当前温度
+  14          #include <reg52.h>
+  15          #define uchar unsigned char
+  16          #define uint unsigned int
+  17          sbit DS=P2^2;           //define interface
+  18          uint temp;             // variable of temperature
+  19          uchar flag1;            // sign of the result positive or negative
+  20          sbit dula=P2^6;
+  21          sbit wela=P2^7;
+  22          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  23                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  24          unsigned char code table1[]={0xbf,0x86,0xdb,0xcf,0xe6,0xed,0xfd,
+  25                                  0x87,0xff,0xef};
+  26          
+  27          void delay(uint count)      //delay
+  28          {
+  29   1        uint i;
+  30   1        while(count)
+  31   1        {
+  32   2          i=200;
+  33   2          while(i>0)
+  34   2          i--;
+  35   2          count--;
+  36   2        }
+  37   1      }
+  38          ///////功能:串口初始化,波特率9600，方式1///////
+  39          void Init_Com(void)
+  40          {
+  41   1           TMOD = 0x20;
+  42   1           PCON = 0x00;
+  43   1           SCON = 0x50;
+  44   1           TH1 = 0xFd;
+  45   1           TL1 = 0xFd;
+  46   1           TR1 = 1;
+  47   1      }
+  48          
+  49          void dsreset(void)       //send reset and initialization command
+  50          {
+  51   1        uint i;
+  52   1        DS=0;
+  53   1        i=103;
+  54   1        while(i>0)i--;
+  55   1        DS=1;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 19:36:21 PAGE 2   
+
+  56   1        i=4;
+  57   1        while(i>0)i--;
+  58   1      }
+  59          
+  60          bit tmpreadbit(void)       //read a bit
+  61          {
+  62   1         uint i;
+  63   1         bit dat;
+  64   1         DS=0;i++;          //i++ for delay
+  65   1         DS=1;i++;i++;
+  66   1         dat=DS;
+  67   1         i=8;while(i>0)i--;
+  68   1         return (dat);
+  69   1      }
+  70          
+  71          uchar tmpread(void)   //read a byte date
+  72          {
+  73   1        uchar i,j,dat;
+  74   1        dat=0;
+  75   1        for(i=1;i<=8;i++)
+  76   1        {
+  77   2          j=tmpreadbit();
+  78   2          dat=(j<<7)|(dat>>1);   //读出的数据最低位在最前面，这样刚好一个字节在DAT里
+  79   2        }
+  80   1        return(dat);
+  81   1      }
+  82          
+  83          void tmpwritebyte(uchar dat)   //write a byte to ds18b20
+  84          {
+  85   1        uint i;
+  86   1        uchar j;
+  87   1        bit testb;
+  88   1        for(j=1;j<=8;j++)
+  89   1        {
+  90   2          testb=dat&0x01;
+  91   2          dat=dat>>1;
+  92   2          if(testb)     //write 1
+  93   2          {
+  94   3            DS=0;
+  95   3            i++;i++;
+  96   3            DS=1;
+  97   3            i=8;while(i>0)i--;
+  98   3          }
+  99   2          else
+ 100   2          {
+ 101   3            DS=0;       //write 0
+ 102   3            i=8;while(i>0)i--;
+ 103   3            DS=1;
+ 104   3            i++;i++;
+ 105   3          }
+ 106   2      
+ 107   2        }
+ 108   1      }
+ 109          
+ 110          void tmpchange(void)  //DS18B20 begin change
+ 111          {
+ 112   1        dsreset();
+ 113   1        delay(1);
+ 114   1        tmpwritebyte(0xcc);  // address all drivers on bus
+ 115   1        tmpwritebyte(0x44);  //  initiates a single temperature conversion
+ 116   1      }
+ 117          
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 19:36:21 PAGE 3   
+
+ 118          uint tmp()               //get the temperature
+ 119          {
+ 120   1        float tt;
+ 121   1        uchar a,b;
+ 122   1        dsreset();
+ 123   1        delay(1);
+ 124   1        tmpwritebyte(0xcc);
+ 125   1        tmpwritebyte(0xbe);
+ 126   1        a=tmpread();
+ 127   1        b=tmpread();
+ 128   1        temp=b;
+ 129   1        temp<<=8;             //two byte  compose a int variable
+ 130   1        temp=temp|a;
+ 131   1        tt=temp*0.0625;
+ 132   1        temp=tt*10+0.5;
+ 133   1        return temp;
+ 134   1      }
+ 135          
+ 136          void readrom()          //read the serial
+ 137          {
+ 138   1        uchar sn1,sn2;
+ 139   1        dsreset();
+ 140   1        delay(1);
+ 141   1        tmpwritebyte(0x33);
+ 142   1        sn1=tmpread();
+ 143   1        sn2=tmpread();
+ 144   1      }
+ 145          
+ 146          
+ 147          void delay10ms()            //delay
+ 148            {
+ 149   1          uchar a,b;
+ 150   1          for(a=10;a>0;a--)
+ 151   1            for(b=60;b>0;b--);
+ 152   1         }
+ 153          
+ 154          void display(uint temp)                 //显示程序
+ 155          {
+ 156   1         uchar A1,A2,A2t,A3,ser;
+ 157   1         ser=temp/10;
+ 158   1         SBUF=ser;
+ 159   1         A1=temp/100;
+ 160   1         A2t=temp%100;
+ 161   1         A2=A2t/10;
+ 162   1         A3=A2t%10;
+ 163   1         dula=0;
+ 164   1         P0=table[A1];                //显示百位
+ 165   1         dula=1;
+ 166   1         dula=0;
+ 167   1      
+ 168   1         wela=0;
+ 169   1         P0=0x7e;
+ 170   1         wela=1;
+ 171   1         wela=0;
+ 172   1         delay(1);
+ 173   1      
+ 174   1         dula=0;
+ 175   1         P0=table1[A2];               //显示十位
+ 176   1         dula=1;
+ 177   1         dula=0;
+ 178   1      
+ 179   1         wela=0;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 19:36:21 PAGE 4   
+
+ 180   1         P0=0x7d;
+ 181   1         wela=1;
+ 182   1         wela=0;
+ 183   1         delay(1);
+ 184   1      
+ 185   1         P0=table[A3];                //显示个位
+ 186   1         dula=1;
+ 187   1         dula=0;
+ 188   1      
+ 189   1         P0=0x7b;
+ 190   1         wela=1;
+ 191   1         wela=0;
+ 192   1         delay(1);
+ 193   1      }
+ 194          
+ 195          
+ 196          void main()
+ 197          {
+ 198   1       uchar a;
+ 199   1       Init_Com();
+ 200   1        do
+ 201   1        {
+ 202   2          tmpchange();
+ 203   2         // delay(200);
+ 204   2      for(a=10;a>0;a--)
+ 205   2        {   display(tmp());
+ 206   3        }
+ 207   2        }                while(1);
+ 208   1      }
+ 209          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    516    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

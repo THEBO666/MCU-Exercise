@@ -1,0 +1,86 @@
+C51 COMPILER V8.06   0                                                                     02/15/2012 21:34:47 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：      演示指针作为函数的参数。
+  15          ****************************************************************************/
+  16          #include <reg52.h>
+  17          
+  18          void delay(void)  //此延时函数无参数，无返回值。在其后面作了一个有参数的延时函数作为对比
+  19          {
+  20   1        unsigned char m,n;
+  21   1        for(m=0;m<200;m++)
+  22   1              for(n=0;n<200;n++);
+  23   1      }
+  24          /***************************************************************
+  25          //带参数的延时函数
+  26          void delay(unsigned int m)
+  27          {
+  28                  unsigned int n;
+  29                  unsigned char p;
+  30                  for(n=m;n>0;n--)
+  31                  for(p=0;p<200;p++);
+  32          }
+  33          //调用时，可这样调用：delay(200);括弧中的值可自设，但不可大于
+  34          //定义时所定的unsigned int的范围。
+  35          *****************************************************************/
+  36          void led(unsigned char *p) //形参为无符号字符型指针
+  37          {
+  38   1        unsigned char i;
+  39   1        while(1)
+  40   1         {
+  41   2                i=0;   //将i置为0，指向数组第一个元素
+  42   2                while(i!=16) 
+  43   2                 {
+  44   3              P1=*(p+i);// 取的指针所指变量（数组元素）的值，送P1口
+  45   3                   delay();   //调用延时函数
+  46   3                        i++;    //指向下一个数组元素
+  47   3                 }
+  48   2              }
+  49   1      }
+  50          
+  51          
+  52          void main(void)
+  53          {  
+  54   1        unsigned  char code table[16]={0xFE,0xFD,0xFB,0xF7,0xEF,0xDF,0xBF,0x7F, 
+  55   1                                    0x7F,0xBF,0xDF,0xEF,0xF7,0xFB,0xFD,0xFE};
+C51 COMPILER V8.06   0                                                                     02/15/2012 21:34:47 PAGE 2   
+
+  56   1                                                                                      //流水灯控制码 
+  57   1        unsigned char *p;
+  58   1        p=table;
+  59   1        led(p);
+  60   1        
+  61   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     55    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,58 @@
+C51 COMPILER V8.06   SMG                                                                   06/24/2012 19:07:24 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE SMG
+OBJECT MODULE PLACED IN smg.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE smg.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：让HL-1 实验板的第一个数码管静态的显示数字3
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hjmcu.com
+   7          *  编写：慧净
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852    398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.net
+  13          ******************************************************************/
+  14          
+  15          #include <reg51.h>
+  16          
+  17          sbit dula=P2^6;         //段选信号的锁存器控制
+  18          sbit wela=P2^7;         //位选信号的锁存器控制
+  19          
+  20          void main()
+  21          {
+  22   1              dula=0;
+  23   1              wela=0;
+  24   1      
+  25   1              P0=0x4f;           //数字“3”的代码
+  26   1              dula=1;
+  27   1              dula=0;
+  28   1      
+  29   1              P0=0xfe;           //选中第一个数码管
+  30   1              wela=1;
+  31   1              wela=0;
+  32   1      
+  33   1              while(1);
+  34   1      }
+  35          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     20    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,70 @@
+C51 COMPILER V8.02   0                                                                     07/02/2010 14:44:30 PAGE 1   
+
+
+C51 COMPILER V8.02, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: D:\处理软件\keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /****************************************************************************
+   2                                                  “天祥电子”    倾情奉献
+   3                                                                  www.txmcu.cn
+   4                                                                  www.txmcu.com
+   5          *****************************************************************************
+   6          程序功能：       通过P1口的展示，对比说明逻辑与或非和按位与或非之间的差别。
+   7                                   当TX-1C学习板上的s2被按下时，执行的为按位与；
+   8                                   当TX-1C学习板上的s3被按下时，执行的为逻辑与；
+   9                                   当TX-1C学习板上的s4被按下时，执行的为按位或；
+  10                                   当TX-1C学习板上的s5被按下时，执行的为逻辑或。
+  11          ****************************************************************************/
+  12          #include <reg51.h>
+  13          
+  14          sbit s2=P3^4;
+  15          sbit s3=P3^5;
+  16          sbit s4=P3^6;
+  17          sbit s5=P3^7;
+  18          
+  19          void main()
+  20          {
+  21   1              char i=1,j=2;
+  22   1              while(1)
+  23   1              {
+  24   2                      if(s2==0)
+  25   2                              P1=i&j;   //按位与，程序会将1与2均转换为二进制，对于每个位进行与运算，如果结果不为0，则为True
+  26   2                                        //故此时，即为0000 0001&0000 0010=0000 0000，结果为0，TX-1C学习板第一个led会亮        
+  27   2                      else
+  28   2                              P1=0xff;
+  29   2      
+  30   2                      if(s3==0)
+  31   2                              P1=i&&j; //逻辑与，只要i和j均不为0，则结果为真（1），第一个led会灭。
+  32   2                      else
+  33   2                              P1=0xff;
+  34   2      
+  35   2                      if(s4==0)
+  36   2                              P1=i|j;  //按位或与逻辑或的差别与上面类似。
+  37   2                      else
+  38   2                              P1=0xff;
+  39   2      
+  40   2                      if(s5==0)
+  41   2                              P1=i||j;
+  42   2                      else
+  43   2                              P1=0xff;
+  44   2              }
+  45   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     74    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V8.02   0                                                                     07/02/2010 14:44:30 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

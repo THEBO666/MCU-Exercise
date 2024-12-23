@@ -1,0 +1,60 @@
+C51 COMPILER V8.06   STDLIB                                                                02/15/2012 21:26:51 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE STDLIB
+OBJECT MODULE PLACED IN stdlib.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE stdlib.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：      介绍一种产生随机数的方法，通过调用stdlib.h头文件，运用函数rand（）。
+  15                                  本例子为产生1到10之间的随机数，并将其送往P1口，通过led亮灭表示的二进制码来验证。
+  16          ****************************************************************************/
+  17          #include <reg52.h>
+  18          #include <stdlib.h>     //包含产生随机数用到的rand()函数。
+  19          
+  20          delay()
+  21          {
+  22   1              unsigned char m,n;
+  23   1              for(m=250;m>0;m--)
+  24   1                      for(n=250;n>0;n--);
+  25   1      }
+  26          
+  27          main()
+  28          {       
+  29   1              unsigned long RAND_MAX=32767;
+  30   1              while(1)
+  31   1              {
+  32   2                      P1=1+(unsigned char)(10.0*rand()/(RAND_MAX)+1.0);
+  33   2                      // rand()返回一个0到32767之间的伪随机数。此语句将其
+  34   2                      //产生的伪随机数缩至1到10之间的范围内。
+  35   2                      delay();
+  36   2              }
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    102    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

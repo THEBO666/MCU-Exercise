@@ -1,0 +1,470 @@
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V6.2 + Keil U3 + STC89C52RD
+   3          *  公司：慧净电子科技有限公司
+   4          *  淘宝：http://shop37031453.taobao.com       
+   5          *  网站：www.hlmcu.com
+   6          *  编写：慧净
+   7          *  日期：2008-8-08
+   8          *   QQ : 121350852 398115088
+   9          *  晶振:11.0592MHZ
+  10          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  11          *  论坛：http://hjdz.5d6d.com
+  12          ******************************************************************/
+  13          #include<reg52.h>
+  14          #include<define.h>
+  15          void delay(uint z)//延时函数
+  16          {
+  17   1              uint x,y;
+  18   1              for(x=z;x>0;x--)
+  19   1                      for(y=110;y>0;y--);
+  20   1      }
+  21          void di() //蜂鸣器报警声音
+  22          {
+  23   1              beep=0;
+  24   1              delay(100);
+  25   1              beep=1;
+  26   1      }
+  27          void write_com(uchar com)
+  28          {//写液晶命令函数
+  29   1              rs=0;
+  30   1              lcden=0;
+  31   1              P0=com;
+  32   1              delay(3);
+  33   1              lcden=1;
+  34   1              delay(3);
+  35   1              lcden=0;        
+  36   1      }
+  37          void write_date(uchar date)
+  38          {//写液晶数据函数
+  39   1              rs=1;
+  40   1              lcden=0;
+  41   1              P0=date;
+  42   1              delay(3);
+  43   1              lcden=1;
+  44   1              delay(3);
+  45   1              lcden=0;        
+  46   1      }
+  47          void init()
+  48          {//初始化函数
+  49   1              uchar num;
+  50   1              EA=1;//打开总中断
+  51   1              EX1=1;//开外部中断1
+  52   1              IT1=1;//设置负跳变沿触发中断
+  53   1              flag1=0;//变量初始化
+  54   1              t0_num=0;
+  55   1              s1num=0;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 2   
+
+  56   1              week=1;
+  57   1              dula=0;//关闭数码管显示
+  58   1              wela=0;
+  59   1              lcden=0;
+  60   1              rd=0;
+  61   1      //以下几行在首次设置DS12C887时使用，以后不必再写入
+  62   1              write_ds(0x0A,0x20);//打开振荡器
+  63   1              write_ds(0x0B,0x26);//设置24小时模式，数据二进制格式
+  64   1                                                      //开启闹铃中断
+  65   1              set_time();//设置上电默认时间
+  66   1      //-----------------------------------------------------*/
+  67   1              write_com(0x38);//1602液晶初始化
+  68   1              write_com(0x0c);
+  69   1              write_com(0x06);
+  70   1              write_com(0x01);
+  71   1              write_com(0x80);
+  72   1              for(num=0;num<15;num++)//写入液晶固定部分显示
+  73   1                      {
+  74   2                              write_date(table[num]);
+  75   2                              delay(1);
+  76   2                      }
+  77   1              write_com(0x80+0x40);
+  78   1              for(num=0;num<11;num++)
+  79   1                      {
+  80   2                              write_date(table1[num]);
+  81   2                              delay(1);
+  82   2                      }
+  83   1      }
+  84          void write_sfm(uchar add,char date)
+  85          {//1602液晶刷新时分秒函数4为时，7为分，10为秒
+  86   1              char shi,ge;
+  87   1              shi=date/10;
+  88   1              ge=date%10;
+  89   1              write_com(0x80+0x40+add);
+  90   1              write_date(0x30+shi);
+  91   1              write_date(0x30+ge);
+  92   1      }
+  93          void write_nyr(uchar add,char date)
+  94          {//1602液晶刷新年月日函数3为年，6为分，9为秒
+  95   1              char shi,ge;
+  96   1              shi=date/10;
+  97   1              ge=date%10;
+  98   1              write_com(0x80+add);
+  99   1              write_date(0x30+shi);
+ 100   1              write_date(0x30+ge);
+ 101   1      }
+ 102          void write_week(char we)
+ 103          {//写液晶星期显示函数
+ 104   1              write_com(0x80+12);
+ 105   1              switch(we)
+ 106   1              {
+ 107   2                      case 1: write_date('M');delay(5);
+ 108   2                                      write_date('O');delay(5);
+ 109   2                                      write_date('N');
+ 110   2                                      break;
+ 111   2                      case 2: write_date('T');delay(5);
+ 112   2                                      write_date('U');delay(5);
+ 113   2                                      write_date('E');
+ 114   2                                      break;
+ 115   2                      case 3: write_date('W');delay(5);
+ 116   2                                      write_date('E');delay(5);
+ 117   2                                      write_date('D');
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 3   
+
+ 118   2                                      break;
+ 119   2                      case 4: write_date('T');delay(5);
+ 120   2                                      write_date('H');delay(5);
+ 121   2                                      write_date('U');
+ 122   2                                      break;
+ 123   2                      case 5: write_date('F');delay(5);
+ 124   2                                      write_date('R');delay(5);
+ 125   2                                      write_date('I');
+ 126   2                                      break;
+ 127   2                      case 6: write_date('S');delay(5);
+ 128   2                                      write_date('A');delay(5);
+ 129   2                                      write_date('T');
+ 130   2                                      break;
+ 131   2                      case 7: write_date('S');delay(5);
+ 132   2                                      write_date('U');delay(5);
+ 133   2                                      write_date('N');
+ 134   2                                      break;
+ 135   2              }
+ 136   1      }
+ 137          void keyscan()
+ 138          {
+ 139   1              if(flag_ri==1)
+ 140   1              {//这里用来取消闹钟报警，任一键取消报警
+ 141   2                      if((s1==0)||(s2==0)||(s3==0)||(s4==0))
+ 142   2                      {       
+ 143   3                              delay(5);
+ 144   3                              if((s1==0)||(s2==0)||(s3==0)||(s4==0))
+ 145   3                              {
+ 146   4                                      while(!(s1&&s2&&s3&&s4));
+ 147   4                      di();
+ 148   4                                      flag_ri=0;//清除报警标志
+ 149   4                              }               
+ 150   3                      }
+ 151   2              }       
+ 152   1              if(s1==0)//检测S1
+ 153   1              {
+ 154   2                      delay(5);
+ 155   2                      if(s1==0)
+ 156   2                      {       
+ 157   3                              s1num++;//记录按下次数
+ 158   3                              if(flag1==1)
+ 159   3                                      if(s1num==4)
+ 160   3                                              s1num=1;
+ 161   3                              flag=1;
+ 162   3                              while(!s1);di();
+ 163   3                              switch(s1num)
+ 164   3                              {//光标闪烁点定位
+ 165   4                                      case 1: write_com(0x80+0x40+10);
+ 166   4                                                  write_com(0x0f);
+ 167   4                                                      break;
+ 168   4                                      case 2: write_com(0x80+0x40+7);
+ 169   4                                                      break;
+ 170   4                                      case 3: write_com(0x80+0x40+4);
+ 171   4                                                      break;
+ 172   4                                      case 4: write_com(0x80+12);
+ 173   4                                                      break;
+ 174   4                                      case 5: write_com(0x80+9);
+ 175   4                                                      break;
+ 176   4                                      case 6: write_com(0x80+6);
+ 177   4                                                      break;
+ 178   4                                      case 7: write_com(0x80+3);
+ 179   4                                                      break;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 4   
+
+ 180   4                                      case 8: s1num=0;
+ 181   4                                                      write_com(0x0c);
+ 182   4                                                      flag=0;
+ 183   4                                                      write_ds(0,miao);
+ 184   4                                                      write_ds(2,fen);
+ 185   4                                                      write_ds(4,shi);
+ 186   4                                                      write_ds(6,week);
+ 187   4                                                      write_ds(7,day);
+ 188   4                                                      write_ds(8,month);
+ 189   4                                                      write_ds(9,year);
+ 190   4                                                      break;
+ 191   4                              }       
+ 192   3                      }
+ 193   2              }
+ 194   1              if(s1num!=0)//只有当S1按下后，才检测S2和S3
+ 195   1              {
+ 196   2                      if(s2==0)
+ 197   2                      {
+ 198   3                              delay(1);
+ 199   3                              if(s2==0)
+ 200   3                              {
+ 201   4                                      while(!s2);di();
+ 202   4                                      switch(s1num)
+ 203   4                                      {//根据功能键次数调节相应数值
+ 204   5                                              case 1: miao++;
+ 205   5                                                              if(miao==60)
+ 206   5                                                                      miao=0;
+ 207   5                                                              write_sfm(10,miao);
+ 208   5                                                              write_com(0x80+0x40+10); 
+ 209   5                                                              break;
+ 210   5                                              case 2: fen++;
+ 211   5                                                              if(fen==60)
+ 212   5                                                                      fen=0;
+ 213   5                                                              write_sfm(7,fen);
+ 214   5                                                              write_com(0x80+0x40+7); 
+ 215   5                                                              break;
+ 216   5                                              case 3: shi++;
+ 217   5                                                              if(shi==24)
+ 218   5                                                                      shi=0;
+ 219   5                                                              write_sfm(4,shi);
+ 220   5                                                              write_com(0x80+0x40+4); 
+ 221   5                                                              break;
+ 222   5                                              case 4: week++;
+ 223   5                                                              if(week==8)
+ 224   5                                                                      week=1;
+ 225   5                                                              write_week(week);
+ 226   5                                                              write_com(0x80+12);
+ 227   5                                                              break;
+ 228   5                                              case 5: day++;
+ 229   5                                                              if(day==32)
+ 230   5                                                                      day=1;
+ 231   5                                                              write_nyr(9,day);
+ 232   5                                                              write_com(0x80+9);
+ 233   5                                                              break;
+ 234   5                                              case 6: month++;
+ 235   5                                                              if(month==13)
+ 236   5                                                                      month=1;
+ 237   5                                                              write_nyr(6,month);
+ 238   5                                                              write_com(0x80+6);
+ 239   5                                                              break;
+ 240   5                                              case 7: year++;
+ 241   5                                                              if(year==100)
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 5   
+
+ 242   5                                                                      year=0;
+ 243   5                                                              write_nyr(3,year);
+ 244   5                                                              write_com(0x80+3);
+ 245   5                                                              break;
+ 246   5                                      }
+ 247   4                              }
+ 248   3                      }
+ 249   2                      if(s3==0)
+ 250   2                      {
+ 251   3                              delay(1);
+ 252   3                              if(s3==0)
+ 253   3                              {
+ 254   4                                      while(!s3);di();
+ 255   4                                      switch(s1num)
+ 256   4                                      {//根据功能键次数调节相应数值
+ 257   5                                              case 1: miao--;
+ 258   5                                                              if(miao==-1)
+ 259   5                                                                      miao=59;
+ 260   5                                                              write_sfm(10,miao);
+ 261   5                                                              write_com(0x80+0x40+10);
+ 262   5                                                              break; 
+ 263   5                                              case 2: fen--;
+ 264   5                                                              if(fen==-1)
+ 265   5                                                                      fen=59;
+ 266   5                                                              write_sfm(7,fen);
+ 267   5                                                              write_com(0x80+0x40+7);
+ 268   5                                                              break;
+ 269   5                                              case 3: shi--;
+ 270   5                                                              if(shi==-1)
+ 271   5                                                                      shi=23;
+ 272   5                                                              write_sfm(4,shi);
+ 273   5                                                              write_com(0x80+0x40+4);
+ 274   5                                                              break;
+ 275   5                                              case 4: week--;
+ 276   5                                                              if(week==0)
+ 277   5                                                                      week=7;
+ 278   5                                                              write_week(week);
+ 279   5                                                              write_com(0x80+12);
+ 280   5                                                              break;
+ 281   5                                              case 5: day--;
+ 282   5                                                              if(day==0)
+ 283   5                                                                      day=31;
+ 284   5                                                              write_nyr(9,day);
+ 285   5                                                              write_com(0x80+9);
+ 286   5                                                              break;
+ 287   5                                              case 6: month--;
+ 288   5                                                              if(month==0)
+ 289   5                                                                      month=12;
+ 290   5                                                              write_nyr(6,month);
+ 291   5                                                              write_com(0x80+6);
+ 292   5                                                              break;
+ 293   5                                              case 7: year--;
+ 294   5                                                              if(year==-1)
+ 295   5                                                                      year=99;
+ 296   5                                                              write_nyr(3,year);
+ 297   5                                                              write_com(0x80+3);
+ 298   5                                                              break;
+ 299   5                                      }
+ 300   4                              }
+ 301   3                      }
+ 302   2              }
+ 303   1              if(s4==0)//检测S4
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 6   
+
+ 304   1              {
+ 305   2                      delay(5);
+ 306   2                      if(s4==0)
+ 307   2                      {       
+ 308   3                              flag1=~flag1;
+ 309   3                              while(!s4);di();
+ 310   3                              if(flag1==0)
+ 311   3                              {//退出闹钟设置时保存数值
+ 312   4                                      flag=0;
+ 313   4                                      write_com(0x80+0x40);
+ 314   4                                      write_date(' ');
+ 315   4                                      write_date(' ');
+ 316   4                                      write_com(0x0c);
+ 317   4                                      write_ds(1,miao);
+ 318   4                                      write_ds(3,fen);
+ 319   4                                      write_ds(5,shi);                                
+ 320   4                              }
+ 321   3                              else
+ 322   3                              {//进入闹钟设置
+ 323   4                                      read_alarm();//读取原始数据
+ 324   4                                      miao=amiao;//重新赋值用以按键调节
+ 325   4                                      fen=afen;
+ 326   4                                      shi=ashi;
+ 327   4                                      write_com(0x80+0x40);
+ 328   4                                      write_date('R');//显示标志
+ 329   4                                      write_date('i');
+ 330   4                                      write_com(0x80+0x40+3);
+ 331   4                                      write_sfm(4,ashi);//送液晶显示闹钟时间
+ 332   4                                      write_sfm(7,afen);
+ 333   4                                      write_sfm(10,amiao);
+ 334   4                              }                       
+ 335   3                      }
+ 336   2              }
+ 337   1      }
+ 338          
+ 339          void write_ds(uchar add,uchar date)
+ 340          {//写12C887函数
+ 341   1              dscs=0;
+ 342   1              dsas=1;
+ 343   1              dsds=1;
+ 344   1              dsrw=1;
+ 345   1              P0=add;//先写地址
+ 346   1              dsas=0;
+ 347   1              dsrw=0;
+ 348   1              P0=date;//再写数据
+ 349   1              dsrw=1;
+ 350   1              dsas=1;
+ 351   1              dscs=1;                         
+ 352   1      }
+ 353          
+ 354          uchar read_ds(uchar add)
+ 355          {//读12C887函数
+ 356   1              uchar ds_date;
+ 357   1              dsas=1;
+ 358   1              dsds=1;
+ 359   1              dsrw=1;
+ 360   1              dscs=0;
+ 361   1              P0=add;//先写地址
+ 362   1              dsas=0;
+ 363   1              dsds=0;
+ 364   1              P0=0xff;
+ 365   1              ds_date=P0;//再读数据
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 7   
+
+ 366   1              dsds=1;
+ 367   1              dsas=1;
+ 368   1              dscs=1;
+ 369   1              return ds_date; 
+ 370   1      }
+ 371          //*---首次操作12C887时给予寄存器初始化---
+ 372          void set_time()
+ 373          {//首次上电初始化时间函数
+ 374   1              write_ds(0,0);
+ 375   1              write_ds(1,0);
+ 376   1              write_ds(2,0);
+ 377   1              write_ds(3,0);
+ 378   1              write_ds(4,0);
+ 379   1              write_ds(5,0);
+ 380   1              write_ds(6,0);
+ 381   1              write_ds(7,0);
+ 382   1              write_ds(8,0);
+ 383   1              write_ds(9,0);  
+ 384   1      }
+ 385          //----------------------------------------*/
+ 386          void read_alarm()
+ 387          {//读取12C887闹钟值
+ 388   1              amiao=read_ds(1);
+ 389   1              afen=read_ds(3);
+ 390   1              ashi=read_ds(5);
+ 391   1      }
+ 392          void main()//主函数
+ 393          {wr=0;
+ 394   1              init();//调用初始化函数
+ 395   1              while(1)
+ 396   1              {
+ 397   2                      keyscan();//按键扫描
+ 398   2                      if(flag_ri==1)//当闹钟中断时进入这里
+ 399   2                      {
+ 400   3                              di();
+ 401   3                              delay(100);
+ 402   3                              di();
+ 403   3                              delay(500);
+ 404   3                      }       
+ 405   2                      if(flag==0&&flag1==0)//正常工作时进入这里
+ 406   2                      {
+ 407   3                              keyscan();//按键扫描
+ 408   3                              year=read_ds(9);//读取12C887数据
+ 409   3                              month=read_ds(8);       
+ 410   3                              day=read_ds(7);
+ 411   3                              week=read_ds(6);
+ 412   3                              shi=read_ds(4);
+ 413   3                              fen=read_ds(2);
+ 414   3                              miao=read_ds(0);        
+ 415   3                              write_sfm(10,miao);//送液晶显示
+ 416   3                              write_sfm(7,fen);
+ 417   3                              write_sfm(4,shi);
+ 418   3                              write_week(week);
+ 419   3                              write_nyr(3,year);
+ 420   3                              write_nyr(6,month);
+ 421   3                              write_nyr(9,day);
+ 422   3                      }
+ 423   2              }
+ 424   1      }
+ 425          
+ 426          void exter() interrupt 2//外部中断1服务程序
+ 427          {       uchar c; //进入中断表示闹钟时间到，
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:29:24 PAGE 8   
+
+ 428   1              flag_ri=1; //设置标志位，用以大程序中报警提示
+ 429   1              c=read_ds(0x0c);//读取12C887的C寄存器表示响应了中断
+ 430   1      }
+ 431          
+ 432          
+ 433          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1454    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

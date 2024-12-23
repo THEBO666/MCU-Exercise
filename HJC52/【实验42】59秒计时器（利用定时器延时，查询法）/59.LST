@@ -1,0 +1,116 @@
+C51 COMPILER V8.06   59                                                                    02/15/2007 16:26:02 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 59
+OBJECT MODULE PLACED IN 59.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 59.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：与上个软件延时的计时相比，此采用定时器的方法，不但节省了单片机的
+   4                                  资源，而且定时精度高。故做精确定时或者单片机资源有限时，提倡用定时器
+   5                                  的方法。
+   6                                  这里采用的是定时器0工作于模式1。
+   7                                  用的是查询法。
+   8          *  公司：慧净电子科技有限公司
+   9          *  淘宝：http://shop37031453.taobao.com       
+  10          *  网站：www.hlmcu.com
+  11          *  编写：
+  12          *  日期：2008-8-08
+  13          *   QQ : 121350852  398115088
+  14          *  晶振:11.0592MHZ
+  15          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  16          *  论坛：http://hjdz.5d6d.com
+  17          ******************************************************************/
+  18          
+  19          //注意晶振需为11.0592M。
+  20          //若为其他数值晶振，请改变TH0与TL0参数值，否则计时会有很大误差 。
+  21          
+  22          #include<reg51.h>
+  23          
+  24          #define uchar unsigned char
+  25          
+  26          sbit dula=P2^6;
+  27          sbit wela=P2^7;
+  28          unsigned char j,k,c1,c0,m,n=255;
+  29          unsigned char pp;
+  30          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  31                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  32          
+  33          void delay(unsigned char i)
+  34          {
+  35   1        for(j=i;j>0;j--)
+  36   1          for(k=125;k>0;k--);
+  37   1      }
+  38          
+  39          void display(uchar a,uchar b)
+  40          {
+  41   1         P0=table[a];
+  42   1         dula=1;
+  43   1         dula=0;
+  44   1         
+  45   1         P0=0xef;
+  46   1         wela=1;
+  47   1         wela=0;
+  48   1         delay(5);
+  49   1         
+  50   1         P0=table[b];
+  51   1         dula=1;
+  52   1         dula=0;
+  53   1         
+  54   1         P0=0xdf;
+  55   1         wela=1;
+C51 COMPILER V8.06   59                                                                    02/15/2007 16:26:02 PAGE 2   
+
+  56   1         wela=0;
+  57   1         delay(5);
+  58   1      }
+  59          
+  60          void main()
+  61          {
+  62   1              TMOD=0x01;               //模式设置，00000001，可见采用的是定时器0，工作与模式1（M1=0，M0=1）。
+  63   1              TR0=1;                   //打开定时器
+  64   1              TH0=(65536-46080)/256;// 由于晶振为11.0592,故所记次数应为46080，计时器每隔50000微秒发起一次中断。
+  65   1              TL0=(65536-46080)%256;//46080的来历，为50000*11.0592/12
+  66   1              //ET0=1;                         //开定时器0中断
+  67   1      //      EA=1;                    //开总中断
+  68   1              while(1)
+  69   1              {
+  70   2                      if(TF0==1)                      //单片机一直在查询定时器0的溢出标志位TF0状态
+  71   2                      {
+  72   3                              TF0=0;
+  73   3                              pp++;
+  74   3                              TH0=(65536-46080)/256;
+  75   3                              TL0=(65536-46080)%256;
+  76   3                      }
+  77   2                      if(pp==20)
+  78   2                      {       pp=0;
+  79   3                              m++;
+  80   3                              n--;
+  81   3                              P1=n;//闪烁灯
+  82   3                              if(m==60)
+  83   3                              {
+  84   4                                      m=0;       //若到了60s，则归零
+  85   4                              }
+  86   3                      }
+  87   2                      c0=m%10;                  //取出当前描述的个位与十位
+  88   2                      c1=m/10;
+  89   2                      display(c1,c0);    //显示
+  90   2              }
+  91   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    135    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

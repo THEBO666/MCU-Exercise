@@ -1,0 +1,71 @@
+C51 COMPILER V8.06   D                                                                     02/15/2012 21:25:51 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE D
+OBJECT MODULE PLACED IN d.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE d.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：       通过程序说明while与do...while间区别：
+  15                                   前者是先比较判断后执行，后者是先执行再比较判断。
+  16                                   故后者的循环体至少会执行一次，而前者有可能一次也不执行。
+  17          ****************************************************************************/
+  18          #include <reg52.h>
+  19          
+  20          sbit s2=P3^4;
+  21          
+  22          void main()
+  23          {
+  24   1              char m=3;
+  25   1              P1=0xff;
+  26   1              while(1)
+  27   1              {
+  28   2                      if(s2)   //s2未被按下时，将执行下面大括弧中的程序，但是，由于在刚开始进行的是判别
+  29   2                                       //操作，而3>4肯定为假，故不会执行P1=0xaa;操作。
+  30   2                                       //所以，此时，P1口相连的led不亮，P1各管脚的值还是刚开始赋的0xff。
+  31   2                      {
+  32   3                              while(m>4)
+  33   3                                      P1=0xaa;
+  34   3                      }
+  35   2                      else   //当s2被按下后，执行该段程序，此时，虽然3>4仍然是假的，但是do...while
+  36   2                                //是先执行一次，然后再判断，故在比较判断之前，已经执行了P1=0xaa；故此时
+  37   2                                //P1口各led会被交替点亮。
+  38   2                      {
+  39   3                              do
+  40   3                              {
+  41   4                                      P1=0x55;
+  42   4                              }
+  43   3                              while(m>4);
+  44   3                      }
+  45   2          }
+  46   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     34    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V8.06   D                                                                     02/15/2012 21:25:51 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

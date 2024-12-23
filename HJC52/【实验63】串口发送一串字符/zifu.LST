@@ -1,0 +1,117 @@
+C51 COMPILER V8.06   ZIFU                                                                  02/15/2012 20:45:33 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE ZIFU
+OBJECT MODULE PLACED IN zifu.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE zifu.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：往串口发送一字节数据（可通过超级终端或者串口调试助手显示出来，
+   4                            超级终端波特率选为9600）。
+   5                            超级终端设置好后，每按下一次S2键，松开后均会在超级终端
+   6                            上显示一串字母"abcdefg哈哈"。
+   7                            入口参数：d: 要发送的字节数据。
+   8          *  公司：慧净电子科技有限公司
+   9          *  淘宝：http://shop37031453.taobao.com       
+  10          *  网站：www.hlmcu.com
+  11          *  编写：
+  12          *  日期：2008-8-08
+  13          *   QQ : 121350852  398115088
+  14          *  晶振:11.0592MHZ
+  15          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  16          *  论坛：http://hjdz.5d6d.com
+  17          ******************************************************************/
+  18          
+  19          #include <reg52.h>
+  20          #define jingzhen     11059200UL                  /*使用22.1184M晶体*/    
+  21          #define botelv   9600UL              /*波特率定义为9600*/
+  22          unsigned char zifuchuan[]="abcdefg哈哈";                        //待显示字符。
+  23          volatile unsigned char sending;
+  24          sbit s2=P3^4;
+  25          
+  26          void delay(unsigned char i)
+  27          {
+  28   1              unsigned char j,k;
+  29   1              for(j=i;j>0;j--)
+  30   1                      for(k=90;k>0;k--);
+  31   1      }
+  32          void init(void)                         //串口初始化
+  33          {
+  34   1       EA=0; //暂时关闭中断
+  35   1       TMOD&=0x0F;  //定时器1模式控制在高4位
+  36   1       TMOD|=0x20;    //定时器1工作在模式2，自动重装模式
+  37   1       SCON=0x50;     //串口工作在模式1
+  38   1       TH1=256-jingzhen/(botelv*12*16);  //计算定时器重装值
+  39   1       TL1=256-jingzhen/(botelv*12*16);
+  40   1       PCON|=0x80;    //串口波特率加倍
+  41   1       ES=1;         //串行中断允许
+  42   1       TR1=1;        //启动定时器1
+  43   1       REN=1;        //允许接收 
+  44   1       EA=1;         //允许中断
+  45   1      }
+  46          
+  47          void send(unsigned char d)                //发送一个字节的数据，形参d即为待发送数据。
+  48          {
+  49   1       
+  50   1       SBUF=d; //将数据写入到串口缓冲
+  51   1       sending=1;      //设置发送标志
+  52   1       while(sending); //等待发送完毕
+  53   1      }
+  54          
+  55          void sendc(unsigned char * pd)
+C51 COMPILER V8.06   ZIFU                                                                  02/15/2012 20:45:33 PAGE 2   
+
+  56          {
+  57   1       while((*pd)!='\0') //发送字符串，直到遇到0才结束
+  58   1       {
+  59   2        send(*pd); //发送一个字符
+  60   2        pd++;  //移动到下一个字符
+  61   2       }
+  62   1      }
+  63          
+  64          void main()
+  65          {
+  66   1              init();
+  67   1              while(1)
+  68   1              {
+  69   2                      if(s2==0)
+  70   2                      {
+  71   3                              delay(20);
+  72   3                              if(!s2)
+  73   3                              {
+  74   4                                      while(!s2);                
+  75   4                                      sendc(zifuchuan);
+  76   4                              }
+  77   3                      }
+  78   2              }
+  79   1      }
+  80          
+  81          void uart(void) interrupt 4              //串口发送中断
+  82          {
+  83   1       if(RI)    //收到数据
+  84   1       {
+  85   2        RI=0;   //清中断请求
+  86   2       }
+  87   1       else      //发送完一字节数据
+  88   1       {
+  89   2        TI=0;
+  90   2        sending=0;  //清正在发送标志
+  91   2       }
+  92   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    112    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

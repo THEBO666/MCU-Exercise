@@ -1,0 +1,220 @@
+C51 COMPILER V8.06   BAOJING                                                               02/15/2012 20:42:53 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE BAOJING
+OBJECT MODULE PLACED IN baojing.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE baojing.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：实时采集当前环境温度值，并显示于数码管上。
+   4                            同时，当温度高于某一值时（此处设为31摄氏度），蜂鸣器便会发出报警。
+   5                            而当低于该值时，蜂鸣器自动停止报警。
+   6                            试验时，可用手触摸DS18B20，使其温度升高到31度，观察现象。
+   7          *  公司：慧净电子科技有限公司
+   8          *  淘宝：http://shop37031453.taobao.com       
+   9          *  网站：www.hlmcu.com
+  10          *  编写：
+  11          *  日期：2008-8-08
+  12          *   QQ : 121350852  398115088
+  13          *  晶振:11.0592MHZ
+  14          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  15          *  论坛：http://hjdz.5d6d.com
+  16          ******************************************************************/
+  17          
+  18          #include <reg52.h>
+  19          #define uchar unsigned char
+  20          #define uint unsigned int
+  21          sbit DS=P2^2;           //define interface
+  22          uint temp;             // variable of temperature
+  23          uchar flag1;            // sign of the result positive or negative
+  24          sbit dula=P2^6;
+  25          sbit wela=P2^7;
+  26          sbit beep=P2^3;
+  27          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  28                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  29          unsigned char code table1[]={0xbf,0x86,0xdb,0xcf,0xe6,0xed,0xfd,
+  30                                  0x87,0xff,0xef};
+  31          
+  32          void delay(uint count)      //delay
+  33          {
+  34   1        uint i;
+  35   1        while(count)
+  36   1        {
+  37   2          i=200;
+  38   2          while(i>0)
+  39   2          i--;
+  40   2          count--;
+  41   2        }
+  42   1      }
+  43          void dsreset(void)       //send reset and initialization command
+  44          {
+  45   1        uint i;
+  46   1        DS=0;
+  47   1        i=103;
+  48   1        while(i>0)i--;
+  49   1        DS=1;
+  50   1        i=4;
+  51   1        while(i>0)i--;
+  52   1      }
+  53          
+  54          bit tmpreadbit(void)       //read a bit
+  55          {
+C51 COMPILER V8.06   BAOJING                                                               02/15/2012 20:42:53 PAGE 2   
+
+  56   1         uint i;
+  57   1         bit dat;
+  58   1         DS=0;i++;          //i++ for delay
+  59   1         DS=1;i++;i++;
+  60   1         dat=DS;
+  61   1         i=8;while(i>0)i--;
+  62   1         return (dat);
+  63   1      }
+  64          
+  65          uchar tmpread(void)   //read a byte date
+  66          {
+  67   1        uchar i,j,dat;
+  68   1        dat=0;
+  69   1        for(i=1;i<=8;i++)
+  70   1        {
+  71   2          j=tmpreadbit();
+  72   2          dat=(j<<7)|(dat>>1);   //读出的数据最低位在最前面，这样刚好一个字节在DAT里
+  73   2        }
+  74   1        return(dat);
+  75   1      }
+  76          
+  77          void tmpwritebyte(uchar dat)   //write a byte to ds18b20
+  78          {
+  79   1        uint i;
+  80   1        uchar j;
+  81   1        bit testb;
+  82   1        for(j=1;j<=8;j++)
+  83   1        {
+  84   2          testb=dat&0x01;
+  85   2          dat=dat>>1;
+  86   2          if(testb)     //write 1
+  87   2          {
+  88   3            DS=0;
+  89   3            i++;i++;
+  90   3            DS=1;
+  91   3            i=8;while(i>0)i--;
+  92   3          }
+  93   2          else
+  94   2          {
+  95   3            DS=0;       //write 0
+  96   3            i=8;while(i>0)i--;
+  97   3            DS=1;
+  98   3            i++;i++;
+  99   3          }
+ 100   2      
+ 101   2        }
+ 102   1      }
+ 103          
+ 104          void tmpchange(void)  //DS18B20 begin change
+ 105          {
+ 106   1        dsreset();
+ 107   1        delay(1);
+ 108   1        tmpwritebyte(0xcc);  // address all drivers on bus
+ 109   1        tmpwritebyte(0x44);  //  initiates a single temperature conversion
+ 110   1      }
+ 111          
+ 112          uint tmp()               //get the temperature
+ 113          {
+ 114   1        float tt;
+ 115   1        uchar a,b;
+ 116   1        dsreset();
+ 117   1        delay(1);
+C51 COMPILER V8.06   BAOJING                                                               02/15/2012 20:42:53 PAGE 3   
+
+ 118   1        tmpwritebyte(0xcc);
+ 119   1        tmpwritebyte(0xbe);
+ 120   1        a=tmpread();
+ 121   1        b=tmpread();
+ 122   1        temp=b;
+ 123   1        temp<<=8;             //two byte  compose a int variable
+ 124   1        temp=temp|a;
+ 125   1        tt=temp*0.0625;
+ 126   1        temp=tt*10+0.5;
+ 127   1        return temp;
+ 128   1      }
+ 129          
+ 130          void display(uint temp)                 //显示程序
+ 131          {
+ 132   1         uchar A1,A2,A2t,A3;
+ 133   1         A1=temp/100;
+ 134   1         A2t=temp%100;
+ 135   1         A2=A2t/10;
+ 136   1         A3=A2t%10;
+ 137   1         dula=0;
+ 138   1         P0=table[A1];                //显示百位
+ 139   1         dula=1;
+ 140   1         dula=0;
+ 141   1      
+ 142   1         wela=0;
+ 143   1         P0=0x7e;
+ 144   1         wela=1;
+ 145   1         wela=0;
+ 146   1         delay(1);
+ 147   1      
+ 148   1         dula=0;
+ 149   1         P0=table1[A2];               //显示十位
+ 150   1         dula=1;
+ 151   1         dula=0;
+ 152   1      
+ 153   1         wela=0;
+ 154   1         P0=0x7d;
+ 155   1         wela=1;
+ 156   1         wela=0;
+ 157   1         delay(1);
+ 158   1      
+ 159   1         P0=table[A3];                //显示个位
+ 160   1         dula=1;
+ 161   1         dula=0;
+ 162   1      
+ 163   1         P0=0x7b;
+ 164   1         wela=1;
+ 165   1         wela=0;
+ 166   1         delay(1);
+ 167   1      }
+ 168          
+ 169          
+ 170          void main()
+ 171          {
+ 172   1       uchar a;
+ 173   1        do
+ 174   1        {
+ 175   2          tmpchange();
+ 176   2              for(a=10;a>0;a--)
+ 177   2              {   
+ 178   3                      display(tmp());
+ 179   3              }
+C51 COMPILER V8.06   BAOJING                                                               02/15/2012 20:42:53 PAGE 4   
+
+ 180   2              if(temp>=310)    //当温度超过31度（仅作试验用，实际可设为其他更高的值），蜂鸣器便会报警。
+ 181   2                      {
+ 182   3                              P1=0x00;
+ 183   3                              beep=0;
+ 184   3                      }
+ 185   2                      else
+ 186   2                      {
+ 187   3                              beep=1;
+ 188   3                              P1=0xff;
+ 189   3                      }
+ 190   2        } while(1);
+ 191   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    476    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

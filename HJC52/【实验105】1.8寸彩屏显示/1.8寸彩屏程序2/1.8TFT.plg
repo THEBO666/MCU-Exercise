@@ -1,0 +1,199 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\Administrator\桌面\1.8寸TFT程序和文档\1.8寸程序\8bit1\1.8TFT.uv2
+Project File Date:  12/18/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(333): error C208: '_write_com': too many actual parameters
+S6D0144_8BIT.C(334): error C208: '_write_data': too many actual parameters
+S6D0144_8BIT.C(335): error C208: '_write_com': too many actual parameters
+S6D0144_8BIT.C(336): error C208: '_write_data': too many actual parameters
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(339): warning C206: 'write_com_data': missing function-prototype
+S6D0144_8BIT.C(339): error C267: 'write_com_data': requires ANSI-style prototype
+S6D0144_8BIT.C(340): error C208: '_write_com': too many actual parameters
+S6D0144_8BIT.C(353): error C208: '_write_data': too many actual parameters
+S6D0144_8BIT.C(369): error C208: '_write_data': too many actual parameters
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(355): error C208: '_write_data': too many actual parameters
+S6D0144_8BIT.C(371): error C208: '_write_data': too many actual parameters
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(372): error C208: '_write_data': too many actual parameters
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CLEARSCREEN?S6D0144_8BIT
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SHOW_RGB?S6D0144_8BIT
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+    ADDRESS: 0331H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+    ADDRESS: 0333H
+Program Size: data=25.0 xdata=0 code=1028
+creating hex file from "1.8TFT"...
+"1.8TFT" - 0 Error(s), 5 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(104): warning C206: 'Write_Cmd': missing function-prototype
+S6D0144_8BIT.C(104): error C267: 'Write_Cmd': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CLEARSCREEN?S6D0144_8BIT
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SHOW_RGB?S6D0144_8BIT
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+    ADDRESS: 0331H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  BMP
+    MODULE:  S6D0144_8bit.obj (S6D0144_8BIT)
+    ADDRESS: 0333H
+Program Size: data=25.0 xdata=0 code=1028
+creating hex file from "1.8TFT"...
+"1.8TFT" - 0 Error(s), 5 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(246): error C141: syntax error near 'griphic', expected ')'
+S6D0144_8BIT.C(248): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(248): error C141: syntax error near 'i'
+S6D0144_8BIT.C(253): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(254): error C202: 'j': undefined identifier
+S6D0144_8BIT.C(255): error C202: 'k': undefined identifier
+S6D0144_8BIT.C(257): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(258): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(262): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(246): error C141: syntax error near 'griphic', expected ')'
+S6D0144_8BIT.C(248): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(248): error C141: syntax error near 'i'
+S6D0144_8BIT.C(253): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(254): error C202: 'j': undefined identifier
+S6D0144_8BIT.C(255): error C202: 'k': undefined identifier
+S6D0144_8BIT.C(257): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(258): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(262): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(246): error C141: syntax error near 'griphic', expected ')'
+S6D0144_8BIT.C(248): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(248): error C141: syntax error near 'i'
+S6D0144_8BIT.C(253): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(254): error C202: 'j': undefined identifier
+S6D0144_8BIT.C(255): error C202: 'k': undefined identifier
+S6D0144_8BIT.C(257): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(258): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(262): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(246): error C141: syntax error near 'griphic', expected ')'
+S6D0144_8BIT.C(248): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(248): error C141: syntax error near 'i'
+S6D0144_8BIT.C(253): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(254): error C202: 'j': undefined identifier
+S6D0144_8BIT.C(255): error C202: 'k': undefined identifier
+S6D0144_8BIT.C(257): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(258): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(262): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(246): error C141: syntax error near 'griphic', expected ')'
+S6D0144_8BIT.C(248): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(248): error C141: syntax error near 'i'
+S6D0144_8BIT.C(253): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(254): error C202: 'j': undefined identifier
+S6D0144_8BIT.C(255): error C202: 'k': undefined identifier
+S6D0144_8BIT.C(257): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(258): error C202: 'griphic': undefined identifier
+S6D0144_8BIT.C(262): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(61): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(61): error C141: syntax error near 'i'
+S6D0144_8BIT.C(63): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(247): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(247): error C141: syntax error near 'cl', expected ')'
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+S6D0144_8BIT.C(249): error C202: 'word': undefined identifier
+S6D0144_8BIT.C(249): error C141: syntax error near 'i'
+S6D0144_8BIT.C(255): error C202: 'i': undefined identifier
+S6D0144_8BIT.C(256): error C202: 'j': undefined identifier
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling S6D0144_8bit.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CLEARSCREEN?S6D0144_8BIT
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SHOW_RGB?S6D0144_8BIT
+Program Size: data=21.0 xdata=0 code=884
+creating hex file from "1.8TFT"...
+"1.8TFT" - 0 Error(s), 2 Warning(s).

@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\小米刷机包\学C语言配套实验20个\【实验81】do...while语句\do while.uv2
+Project File Date:  02/15/2012
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 do while.c ...
+连接 ...
+Program Size: data=10.0 xdata=0 code=69
+创建 HEX 文件 "do while" ...
+"do while" - 0 个错误, 0 个警告。

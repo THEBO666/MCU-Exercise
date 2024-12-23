@@ -1,0 +1,29 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\1、光碟\1、HL-1\0、必看模块学习方法\10、DS18B20模块\实验源代码1\HL-1.uv2
+Project File Date:  11/20/2011
+
+<h2>Output:</h2>
+创建目标 '目标 1'
+编译 main.c ...
+连接 ...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?READROM?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DELAY10MS?MAIN
+Program Size: data=19.1 xdata=0 code=1357
+创建 HEX 文件 "HL-1" ...
+"HL-1" - 0 个错误, 2 个警告。
+创建目标 '目标 1'
+编译 main.c ...
+连接 ...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?READROM?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DELAY10MS?MAIN
+Program Size: data=19.1 xdata=0 code=1357
+创建 HEX 文件 "HL-1" ...
+"HL-1" - 0 个错误, 2 个警告。

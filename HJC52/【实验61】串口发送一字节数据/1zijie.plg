@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\小米刷机包\2012年配套C语言最新实验80个\【实验61】串口发送一字节数据\1zijie.uv2
+Project File Date:  06/28/2010
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 1zijie.c ...
+连接 ...
+Program Size: data=11.0 xdata=0 code=239
+创建 HEX 文件 "1zijie" ...
+"1zijie" - 0 个错误, 0 个警告。

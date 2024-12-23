@@ -1,0 +1,73 @@
+C51 COMPILER V8.06   1                                                                     02/15/2012 16:05:04 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 1
+OBJECT MODULE PLACED IN 1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：学习板的第一个数码管动态地显示数字0到F
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          #include <reg51.h>
+  16          
+  17          sbit dula=P2^6;         //段选信号的锁存器控制
+  18          sbit wela=P2^7;         //位选信号的锁存器控制
+  19          
+  20          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  21                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  22                                                          //0-F的码表
+  23          void delay(unsigned int i)
+  24          {
+  25   1              unsigned int m,n;
+  26   1              for(m=i;m>0;m--)
+  27   1                      for(n=90;n>0;n--);
+  28   1      }
+  29          
+  30          void main()
+  31          {
+  32   1              unsigned char num;
+  33   1              while(1)
+  34   1              {
+  35   2                      for(num=0;num<16;num++)
+  36   2                      {
+  37   3                              P0=table[num];     
+  38   3                              dula=1;
+  39   3                              dula=0;
+  40   3      
+  41   3                              P0=0xfe;           //选中第一个数码管
+  42   3                              wela=1;
+  43   3                              wela=0;
+  44   3                              delay(1000);
+  45   3                      }
+  46   2              }
+  47   1      }
+  48          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     63    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V8.06   1                                                                     02/15/2012 16:05:04 PAGE 2   
+
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,61 @@
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:26:49 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V6.2 + Keil U3 + STC89C52RD
+   3          *  公司：慧净电子科技有限公司
+   4          *  淘宝：http://shop37031453.taobao.com       
+   5          *  网站：www.hlmcu.com
+   6          *  编写：慧净
+   7          *  日期：2008-8-08
+   8          *   QQ : 121350852 398115088
+   9          *  晶振:11.0592MHZ
+  10          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  11          *  论坛：http://hjdz.5d6d.com
+  12          ******************************************************************/
+  13          //用16条排线接到8X8点阵上，分别接到P0 P3口，下载程序后出现一个心。
+  14          #include <reg52.h>
+  15          
+  16          unsigned char const dofly[]={0x00,0x6C,0x92,0x82,0x44,0x28,0x10,0x00};// 心的形状
+  17          unsigned char code seg[]={0x7f,0xbf,0xdf,0xef,0xf7,0xfb,0xfd,0xfe};//分别对应相应的段亮
+  18          ////////////////////////////////////////////////////////
+  19          void delay(unsigned int cnt)
+  20          {
+  21   1       while(--cnt);
+  22   1      }
+  23          ///////////////////////////////////////////////////////
+  24          main()
+  25          {
+  26   1       unsigned char i;
+  27   1      
+  28   1       while(1)
+  29   1            {
+  30   2       
+  31   2             P0=dofly[i];//取显示数据
+  32   2                 P3=seg[i];  //取段码
+  33   2                 delay(200); //扫描间隙延时
+  34   2                 i++;
+  35   2                 if(8==i)
+  36   2                   i=0;
+  37   2            }
+  38   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     45    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

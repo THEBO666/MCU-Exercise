@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\小米刷机包\学C语言配套实验20个\【实验100】指针作为函数参数\0.uv2
+Project File Date:  07/03/2010
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 0.c ...
+连接 ...
+Program Size: data=12.0 xdata=0 code=131
+创建 HEX 文件 "0" ...
+"0" - 0 个错误, 0 个警告。

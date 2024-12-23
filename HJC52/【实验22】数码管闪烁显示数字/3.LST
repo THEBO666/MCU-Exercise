@@ -1,0 +1,71 @@
+C51 COMPILER V8.06   3                                                                     02/15/2007 16:08:54 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 3
+OBJECT MODULE PLACED IN 3.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 3.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：让HJ-3G 实验板的第一位闪烁地显示数字3
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          #include <reg51.h>
+  16          
+  17          sbit dula=P2^6;         //段选信号的锁存器控制
+  18          sbit wela=P2^7;         //位选信号的锁存器控制
+  19          
+  20          void delay(unsigned int i)
+  21          {
+  22   1              unsigned int m,n;
+  23   1              for(m=i;m>0;m--)
+  24   1                      for(n=90;n>0;n--);
+  25   1      }
+  26          
+  27          void main()
+  28          {
+  29   1              while(1)
+  30   1              {
+  31   2                              P0=0xfe;           
+  32   2                              wela=1;
+  33   2                              wela=0;
+  34   2      
+  35   2                              P0=0x4f;          //数字“3”的代码
+  36   2                              dula=1;
+  37   2                              dula=0;
+  38   2                              delay(1000);
+  39   2      
+  40   2                              P0=0x00;          //什么都不显示的代码
+  41   2                              dula=1;
+  42   2                              dula=0;
+  43   2                              delay(1000);
+  44   2              }
+  45   1      }
+  46          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     59    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V8.06   3                                                                     02/15/2007 16:08:54 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

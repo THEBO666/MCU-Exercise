@@ -1,0 +1,23 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\HL-1\【实验58】DS18B20温度计（1602显示）\1602-wendu.uv2
+Project File Date:  02/15/2012
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 1602-wendu.c ...
+1602-WENDU.C(28): 错误 C231: 'WR': redefinition
+目标未产生
+创建目标 'Target 1'
+编译 1602-wendu.c ...
+1602-WENDU.C(28): 错误 C231: 'WR': redefinition
+目标未产生
+创建目标 'Target 1'
+编译 1602-wendu.c ...
+连接 ...
+Program Size: data=38.1 xdata=0 code=1872
+创建 HEX 文件 "1602-wendu" ...
+"1602-wendu" - 0 个错误, 0 个警告。

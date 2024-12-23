@@ -1,0 +1,45 @@
+C51 COMPILER V8.06   SYS                                                                   09/22/2012 19:17:48 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE SYS
+OBJECT MODULE PLACED IN sys.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE sys\sys.c BROWSE DEBUG OBJECTEXTEND PRINT(.\sys.lst) OBJECT(sys.obj)
+
+line level    source
+
+   1                   /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：TFT彩屏测试程序
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hjmcu.com
+   7          *  编写：慧净
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852 398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.net
+  13          ******************************************************************/
+  14          #include <reg51.h>
+  15          #include <intrins.h>
+  16          #include "sys.h"
+  17          void delayms(int count)  // /* X1ms */
+  18          {
+  19   1              int i,j;
+  20   1              for(i=0;i<count;i++)
+  21   1                      for(j=0;j<1000;j++);
+  22   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     38    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

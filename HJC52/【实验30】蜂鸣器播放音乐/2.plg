@@ -1,0 +1,21 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+F:\20120101\HJ-3G\2012年配套C语言最新实验80个\【实验30】蜂鸣器播放音乐\2.uv2
+Project File Date:  12/08/2008
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 单音音乐.c ...
+连接 ...
+Program Size: data=13.1 xdata=0 code=407
+创建 HEX 文件 "2" ...
+"2" - 0 个错误, 0 个警告。
+创建目标 'Target 1'
+编译 单音音乐.c ...
+连接 ...
+Program Size: data=13.1 xdata=0 code=407
+创建 HEX 文件 "2" ...
+"2" - 0 个错误, 0 个警告。

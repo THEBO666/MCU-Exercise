@@ -1,0 +1,51 @@
+C51 COMPILER V8.06   GUANJIAO                                                              02/15/2012 21:27:20 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE GUANJIAO
+OBJECT MODULE PLACED IN guanjiao.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE guanjiao.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：              将P2口的状态传递给P1口，给同学对管脚间状态传递
+  15                                          提供一直感性的认识。
+  16                                          下载程序后，八个发光二极管会间隔着被点亮。
+  17          ************************************************************************/
+  18          
+  19          #include<reg52.h>
+  20          
+  21          void main()
+  22          {
+  23   1              P2=0Xaa;  //给P2管脚赋值，0xaa即二进制的1010 1010。
+  24   1              P1=P2;    //将P2口状态传给P1，可以发现P1口的灯间隔着被点亮。
+  25   1              while(1);
+  26   1      }
+  27          
+  28          //P1，P2表面为管脚，但实质上对应的是单片机内部的寄存器。
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      8    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

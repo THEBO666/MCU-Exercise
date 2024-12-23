@@ -1,0 +1,58 @@
+C51 COMPILER V8.06   LED                                                                   06/24/2012 18:45:58 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN led.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  流水灯1
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hjmcu.com
+   7          *  编写：慧净
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852 398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.net
+  13          ******************************************************************/
+  14          #include<reg52.h>
+  15          #include<intrins.h>
+  16          
+  17          void delay(unsigned char i)
+  18          {
+  19   1              unsigned char m,n;
+  20   1              for(m=i;m>0;m--)
+  21   1              for(n=125;n>0;n--);
+  22   1      }
+  23          
+  24          void main()
+  25          {       unsigned char k;
+  26   1      while(1)
+  27   1      {
+  28   2              P1=0xfe;
+  29   2              for(k=0;k<8;k++)
+  30   2              {
+  31   3              delay(2000);
+  32   3              P1=_crol_(P1,1);
+  33   3              }
+  34   2      }
+  35   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     43    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

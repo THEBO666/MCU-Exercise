@@ -1,0 +1,47 @@
+C51 COMPILER V8.06   LED                                                                   06/24/2012 18:32:19 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN led.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1ÊµÑé¿ª·¢°åÀý³Ì************************
+   2          *  Æ½Ì¨£ºHL-1 V8.0 + Keil U3 + STC89C52
+   3          *  Ãû³Æ£ºµãÁÁ¿ª·¢°åÉÏµÄµÚ1¸ö·¢¹â¹Ü
+   4          *  ¹«Ë¾£º»Û¾»µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾
+   5          *  ÌÔ±¦£ºhttp://shop37031453.taobao.com       
+   6          *  ÍøÕ¾£ºwww.hjmcu.com
+   7          *  ±àÐ´£º»Û¾»
+   8          *  ÈÕÆÚ£º2008-8-08
+   9          *   QQ : 121350852 398115088
+  10          *  ¾§Õñ:11.0592MHZ
+  11          *  ËµÃ÷£ºÃâ·Ñ¿ªÔ´£¬²»Ìá¹©Ô´´úÂë·ÖÎö£¬ÓÐÎÊÌâÖ±½Óµ½»Û¾»ÂÛÌ³½»Á÷
+  12          *  ÂÛÌ³£ºhttp://hjdz.5d6d.net
+  13          ******************************************************************/
+  14          
+  15          #include <reg51.h> //°üº¬Í·ÎÄ¼þ£¬ÔÚ¡°reg51.h¡±ÉÏÓÒ¼üµ¥»÷£¬²¢´ò¿ª£¬¿ÉÒÔ¿´µ½ËüÀïÃæµÄ¶¨Òå
+  16                             //µ±È»Ò²¿ÉÒÔ¸Ä³É reg52.h  STC.H ¹¦ÄÜÒ»ÑùµÄ£¬Ö»ÊÇ¶¨ÒåµÄIO¿ÚÓÐÒ»µãÇø±ð£¬51µ¥Æ¬»ú¿ÉÒÔÍ¨ÓÃ¡
+             -£
+  17          sbit led=P1^0;  //¶¨ÒåÒ»¸öLED ÎªP1.0 IO¿Ú
+  18          
+  19          void main()     //CÓïÑÔÖ÷º¯Êý
+  20          {  
+  21   1              led=0;   //µ¥Æ¬»úIO P1.0½ÅÊä³öÒ»¸öµÍµçÆ½£¬µãÁÁ·¢¹â¹Ü¡£ ¸ßµçÆ½Îª5V µÍµçÆ½Îª0¡£
+  22   1              while(1);
+  23   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      4    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

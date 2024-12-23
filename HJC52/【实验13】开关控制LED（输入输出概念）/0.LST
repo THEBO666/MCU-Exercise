@@ -1,0 +1,69 @@
+C51 COMPILER V8.06   0                                                                     06/24/2012 18:59:59 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：使用HL-1 实验板键盘最下面一排左侧的S2键，控制一LED的亮灭
+   4                                  按下后松开，led亮；按下后再松开，led灭。
+   5                                  即使led像家里用的电灯一样受开关控制。
+   6                                  本例子中，要掌握“输入输出”的概念，单片机作为一个控制芯片，
+   7                                  必然要通过“输入输出”才可与外界相连。输入是感知外界状态，当
+   8                                  将输入作一定处理后，再通过输出控制外部模块。
+   9          *  公司：慧净电子科技有限公司
+  10          *  淘宝：http://shop37031453.taobao.com       
+  11          *  网站：www.hjmcu.com
+  12          *  编写：慧净
+  13          *  日期：2008-8-08
+  14          *   QQ : 121350852    398115088
+  15          *  晶振:11.0592MHZ
+  16          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  17          *  论坛：http://hjdz.5d6d.net
+  18          ******************************************************************/
+  19          
+  20          #include<reg51.h>
+  21          
+  22          sbit s2=P3^4;    //采集按键状态，此时作为输入引脚
+  23          sbit led=P1^0;   //此时作为输出引脚。
+  24          
+  25          void delay(unsigned char p)
+  26          {
+  27   1              unsigned char m,n;
+  28   1              for(m=p;m>0;m--)
+  29   1                      for(n=125;n>0;n--);
+  30   1      }
+  31          void main()
+  32          {       
+  33   1              while(1)
+  34   1              {  
+  35   2                 if(s2==0)  
+  36   2                      {       
+  37   3                              delay(10);       //消抖
+  38   3                              if(s2==0)
+  39   3                              {       while(!s2);//等待按键松开。
+  40   4                                      led=~led;
+  41   4                              }
+  42   3                      }
+  43   2      }
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     32    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V8.06   0                                                                     06/24/2012 18:59:59 PAGE 2   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

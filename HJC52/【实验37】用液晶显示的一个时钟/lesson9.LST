@@ -1,0 +1,291 @@
+C51 COMPILER V8.06   LESSON9                                                               06/24/2012 19:48:31 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE LESSON9
+OBJECT MODULE PLACED IN lesson9.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE lesson9.c DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          //注意事项：10天教程中的LCD1602第5脚由于当时设计错误，直接接到GND上了，接了低电平。
+  16          //本实验需要把LCD1602第5脚，读/写脚接到GND上，有两种方法，第一种，用杜邦线把P3.6脚接到GND上。
+  17          //另一种方法，定义一个 P3.6 IO口，在主函数中 把P3.6 写一个低电平就可以了。
+  18          //sbit WR = P3^6; 在后面主函数中加入 WR=0;就可以不用接杜邦线， P3.6到GND的杜邦线不要。
+  19          //WR=0;
+  20          
+  21          #include<reg52.h>
+  22          #define uchar unsigned char 
+  23          #define uint unsigned int
+  24          sbit dula=P2^6;
+  25          sbit wela=P2^7;
+  26          sbit rs=P1^0;
+  27          sbit rw=P1^1;
+  28          sbit lcden=P2^5;
+  29          sbit s1=P3^0;
+  30          sbit s2=P3^1;
+  31          sbit s3=P3^2;
+  32          sbit rd=P3^7;
+  33          uchar count,s1num;
+  34          char miao,shi,fen;
+  35          uchar code table[]="  2008-8-18 MON";
+  36          uchar code table1[]="    00:00:00";
+  37          void delay(uint z)
+  38          {
+  39   1              uint x,y;
+  40   1              for(x=z;x>0;x--)
+  41   1                      for(y=110;y>0;y--);
+  42   1      }
+  43          
+  44          void write_com(uchar com)
+  45          {
+  46   1              rs=0;
+  47   1              lcden=0;
+  48   1              P0=com;
+  49   1              delay(5);
+  50   1              lcden=1;
+  51   1              delay(5);
+  52   1              lcden=0;        
+  53   1      }
+  54          
+  55          void write_date(uchar date)
+C51 COMPILER V8.06   LESSON9                                                               06/24/2012 19:48:31 PAGE 2   
+
+  56          {
+  57   1              rs=1;
+  58   1              lcden=0;
+  59   1              P0=date;
+  60   1              delay(5);
+  61   1              lcden=1;
+  62   1              delay(5);
+  63   1              lcden=0;        
+  64   1      }
+  65          
+  66          void init()
+  67          {
+  68   1      
+  69   1              uchar num;
+  70   1              dula=0;
+  71   1              wela=0;
+  72   1              lcden=0;
+  73   1      //      fen=59;
+  74   1      //      miao=53;
+  75   1      //      shi=23;        
+  76   1          rw=0;
+  77   1              write_com(0x38);
+  78   1              write_com(0x0c);
+  79   1              write_com(0x06);
+  80   1              write_com(0x01);
+  81   1              write_com(0x80);
+  82   1              for(num=0;num<15;num++)
+  83   1                      {
+  84   2                              write_date(table[num]);
+  85   2                              delay(5);
+  86   2                      }
+  87   1              write_com(0x80+0x40);
+  88   1              for(num=0;num<12;num++)
+  89   1                      {
+  90   2                              write_date(table1[num]);
+  91   2                              delay(5);
+  92   2                      }
+  93   1              TMOD=0x01;
+  94   1              TH0=(65536-50000)/256;
+  95   1              TL0=(65536-50000)%256;
+  96   1              EA=1;
+  97   1              ET0=1;
+  98   1              TR0=1;
+  99   1      }
+ 100          
+ 101          void write_sfm(uchar add,uchar date)
+ 102          {
+ 103   1              uchar shi,ge;
+ 104   1              shi=date/10;
+ 105   1              ge=date%10;
+ 106   1              write_com(0x80+0x40+add);
+ 107   1              write_date(0x30+shi);
+ 108   1              write_date(0x30+ge);
+ 109   1      }
+ 110          
+ 111          void keyscan()
+ 112          {
+ 113   1              rd=0;
+ 114   1              if(s1==0)       
+ 115   1              {
+ 116   2                      delay(5);
+ 117   2                      if(s1==0)
+C51 COMPILER V8.06   LESSON9                                                               06/24/2012 19:48:31 PAGE 3   
+
+ 118   2                      {       s1num++;
+ 119   3                              while(!s1);
+ 120   3                              if(s1num==1)
+ 121   3                              {
+ 122   4                                      TR0=0;
+ 123   4                                      write_com(0x80+0x40+10);
+ 124   4                                      write_com(0x0f);
+ 125   4                              }
+ 126   3              }
+ 127   2                              if(s1num==2)
+ 128   2                              {
+ 129   3                                      write_com(0x80+0x40+7);
+ 130   3                              }
+ 131   2                              if(s1num==3)
+ 132   2                              {
+ 133   3                                      write_com(0x80+0x40+4);
+ 134   3                              }
+ 135   2                              if(s1num==4)
+ 136   2                              {
+ 137   3                                      s1num=0;
+ 138   3                                      write_com(0x0c);
+ 139   3                                      TR0=1;
+ 140   3                              }
+ 141   2      
+ 142   2                                      
+ 143   2                      }
+ 144   1                      if(s1num!=0)
+ 145   1                      {
+ 146   2                              if(s2==0)
+ 147   2                              {
+ 148   3                                      delay(5);
+ 149   3                                      if(s2==0)
+ 150   3                                      {
+ 151   4                                              while(!s2);
+ 152   4                                              if(s1num==1)
+ 153   4                                              {
+ 154   5                                                      miao++;
+ 155   5                                                      if(miao==60)
+ 156   5                                                              miao=0;
+ 157   5                                                      write_sfm(10,miao);
+ 158   5                                                      write_com(0x80+0x40+10);
+ 159   5                                                      
+ 160   5                                                      
+ 161   5                                              }
+ 162   4                                              if(s1num==2)
+ 163   4                                              {
+ 164   5                                                      fen++;
+ 165   5                                                      if(fen==60)
+ 166   5                                                              fen=0;
+ 167   5                                                      write_sfm(7,fen);
+ 168   5                                                      write_com(0x80+0x40+7);
+ 169   5                                              }
+ 170   4                                              if(s1num==3)
+ 171   4                                              {
+ 172   5                                                      shi++;
+ 173   5                                                      if(shi==24)
+ 174   5                                                              shi=0;
+ 175   5                                                      write_sfm(4,shi);
+ 176   5                                                      write_com(0x80+0x40+4);
+ 177   5                                              }
+ 178   4                                      }
+ 179   3                              }
+C51 COMPILER V8.06   LESSON9                                                               06/24/2012 19:48:31 PAGE 4   
+
+ 180   2                              if(s3==0)
+ 181   2                              {
+ 182   3                                      delay(5);
+ 183   3                                      if(s3==0)
+ 184   3                                      {
+ 185   4                                              while(!s3);
+ 186   4                                              if(s1num==1)
+ 187   4                                              {
+ 188   5                                              /*      if(miao==0)
+ 189   5                                                      {
+ 190   5                                                              miao=59;
+ 191   5                                                              write_sfm(10,miao);
+ 192   5                                                              write_com(0x80+0x40+10);
+ 193   5                                                      }*/
+ 194   5                                                      miao--;
+ 195   5                                                      if(miao==-1)
+ 196   5                                                              miao=59;
+ 197   5                                                      write_sfm(10,miao);
+ 198   5                                                      write_com(0x80+0x40+10);
+ 199   5                                              }
+ 200   4                                              if(s1num==2)
+ 201   4                                              {
+ 202   5                                                      fen--;
+ 203   5                                                      if(fen==-1)
+ 204   5                                                              fen=59;
+ 205   5                                                      write_sfm(7,fen);
+ 206   5                                                      write_com(0x80+0x40+7);
+ 207   5                                              }
+ 208   4                                              if(s1num==3)
+ 209   4                                              {
+ 210   5                                                      shi--;
+ 211   5                                                      if(shi==-1)
+ 212   5                                                              shi=23;
+ 213   5                                                      write_sfm(4,shi);
+ 214   5                                                      write_com(0x80+0x40+4);
+ 215   5                                              }
+ 216   4                                      }
+ 217   3                              }
+ 218   2                      }
+ 219   1      }
+ 220          void main()
+ 221          {
+ 222   1              init();
+ 223   1              while(1)
+ 224   1              {
+ 225   2                      keyscan();
+ 226   2                      
+ 227   2              }
+ 228   1      //      while(1);
+ 229   1      }
+ 230          
+ 231          void timer0() interrupt 1
+ 232          {
+ 233   1              TH0=(65536-50000)/256;
+ 234   1              TL0=(65536-50000)%256;
+ 235   1              count++;
+ 236   1      if(count==18)
+ 237   1                      {
+ 238   2                              count=0;
+ 239   2                              miao++;
+ 240   2                              if(miao==60)
+ 241   2                              {
+C51 COMPILER V8.06   LESSON9                                                               06/24/2012 19:48:31 PAGE 5   
+
+ 242   3                                      miao=0;
+ 243   3                                      fen++;
+ 244   3                                      if(fen==60)
+ 245   3                                      {
+ 246   4                                              fen=0;
+ 247   4                                              shi++;
+ 248   4                                              if(shi==24)
+ 249   4                                              {
+ 250   5                                                      shi=0;
+ 251   5                                              }
+ 252   4                                              write_sfm(4,shi);
+ 253   4                                      }
+ 254   3                                      write_sfm(7,fen);
+ 255   3                              }
+ 256   2                              write_sfm(10,miao);
+ 257   2                              
+ 258   2                      }       
+ 259   1      }
+ 260          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    547    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

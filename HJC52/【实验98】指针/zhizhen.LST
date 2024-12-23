@@ -1,0 +1,52 @@
+C51 COMPILER V8.06   ZHIZHEN                                                               02/15/2012 21:33:27 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE ZHIZHEN
+OBJECT MODULE PLACED IN zhizhen.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE zhizhen.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：本程序用来演示指针的用法。
+  15          ****************************************************************************/
+  16          #include <reg52.h>
+  17          
+  18          void main()
+  19          {
+  20   1              unsigned char m,n;       //定义无符号字符型数据
+  21   1              unsigned char *j,*k;//定义无符号字符型指针变量
+  22   1              m=2;
+  23   1              n=3;
+  24   1              j=&m;   //使指针变量指向m，对指针j初始化，&为对某个变量取地址的运算符。
+  25   1              k=&n;   //使指针变量指向n，对指针k初始化
+  26   1              P1=*j+*k; //这样，对指针的操作其实就是对指针所指向对象的操作。
+  27   1                                //*j+*k即相当与m+n，结果为5，然后送给P1口二进制值00000101
+  28   1              while(1);
+  29   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     39    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

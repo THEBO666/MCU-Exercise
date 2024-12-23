@@ -1,0 +1,290 @@
+C51 COMPILER V8.06   0                                                                     06/24/2012 19:05:34 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：通过键盘采集所按下的数据，并在按下确定键（S17）后，将按下的键
+   4                            组合为一整数。
+   5                            按键功能
+   6                           S6--S15 数字键0--9
+   7                           S17 确定输入
+   8          *  公司：慧净电子科技有限公司
+   9          *  淘宝：http://shop37031453.taobao.com       
+  10          *  网站：www.hjmcu.com
+  11          *  编写：慧净
+  12          *  日期：2008-8-08
+  13          *   QQ : 121350852    398115088
+  14          *  晶振:11.0592MHZ
+  15          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  16          *  论坛：http://hjdz.5d6d.net
+  17          ******************************************************************/
+  18          
+  19          #include<reg51.h>
+  20          
+  21          #define uchar unsigned char
+  22          
+  23          sbit dula=P2^6;
+  24          sbit wela=P2^7;
+  25          sbit beep=P2^3;
+  26          
+  27          uchar a=16,b=16,c=16,d=16,e=16,f=16;
+  28          uchar wei,temp,key,ok;
+  29          uchar s1,s2,s3,s4,s5,s6;
+  30          unsigned long shu;
+  31          
+  32          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  33                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71,0x00};
+  34          
+  35          
+  36          void delay(uchar i)
+  37          {
+  38   1              uchar j,k;
+  39   1              for(j=i;j>0;j--)
+  40   1              for(k=125;k>0;k--);
+  41   1      }
+  42          
+  43          
+  44          void keyscan()
+  45          {
+  46   1          P3=0xfe;
+  47   1          temp=P3;
+  48   1          temp=temp&0xf0;
+  49   1          if(temp!=0xf0)
+  50   1          {
+  51   2            delay(10);
+  52   2            if(temp!=0xf0)
+  53   2            { 
+  54   3              temp=P3;
+  55   3              switch(temp)
+C51 COMPILER V8.06   0                                                                     06/24/2012 19:05:34 PAGE 2   
+
+  56   3              {
+  57   4                case 0xee:
+  58   4                     key=0;
+  59   4                                 wei++;
+  60   4                     break;
+  61   4      
+  62   4                case 0xde:
+  63   4                     key=1;
+  64   4                                 wei++;
+  65   4                     break;
+  66   4      
+  67   4                case 0xbe:
+  68   4                     key=2;
+  69   4                                 wei++;
+  70   4                     break;
+  71   4      
+  72   4                case 0x7e:
+  73   4                     key=3;
+  74   4                                 wei++;
+  75   4                     break;
+  76   4               }
+  77   3               while(temp!=0xf0) 
+  78   3              {
+  79   4                 temp=P3;
+  80   4                 temp=temp&0xf0;
+  81   4                 beep=0;
+  82   4               }
+  83   3               beep=1;
+  84   3            }
+  85   2          }
+  86   1          P3=0xfd;
+  87   1          temp=P3;
+  88   1          temp=temp&0xf0;
+  89   1          if(temp!=0xf0)
+  90   1          {
+  91   2            delay(10);
+  92   2            if(temp!=0xf0)
+  93   2            {
+  94   3              temp=P3;
+  95   3              switch(temp)
+  96   3              {
+  97   4                case 0xed:
+  98   4                     key=4;
+  99   4                                 wei++;
+ 100   4                     break;
+ 101   4      
+ 102   4                case 0xdd:
+ 103   4                     key=5;
+ 104   4                                 wei++;
+ 105   4                     break;
+ 106   4      
+ 107   4                case 0xbd:
+ 108   4                     key=6;
+ 109   4                                 wei++;
+ 110   4                     break;
+ 111   4      
+ 112   4                case 0x7d:
+ 113   4                     key=7;
+ 114   4                                 wei++;
+ 115   4                     break;
+ 116   4               }
+ 117   3               while(temp!=0xf0)
+C51 COMPILER V8.06   0                                                                     06/24/2012 19:05:34 PAGE 3   
+
+ 118   3               {
+ 119   4                 temp=P3;
+ 120   4                 temp=temp&0xf0;
+ 121   4                 beep=0;
+ 122   4               }
+ 123   3               beep=1;
+ 124   3            }
+ 125   2            }
+ 126   1          P3=0xfb;
+ 127   1          temp=P3;
+ 128   1          temp=temp&0xf0;
+ 129   1          if(temp!=0xf0)
+ 130   1          {
+ 131   2            delay(10);
+ 132   2            if(temp!=0xf0)
+ 133   2            {
+ 134   3              temp=P3;
+ 135   3              switch(temp)
+ 136   3              {
+ 137   4                case 0xeb:
+ 138   4                     key=8;
+ 139   4                                 wei++;
+ 140   4                     break;
+ 141   4      
+ 142   4                case 0xdb:
+ 143   4                     key=9;
+ 144   4                                 wei++;
+ 145   4                     break;
+ 146   4                         case 0x7b:
+ 147   4                     ok=1;
+ 148   4                                 //key=11;
+ 149   4                                 //wei++;
+ 150   4                     break;
+ 151   4               }
+ 152   3              while(temp!=0xf0)
+ 153   3               {
+ 154   4                 temp=P3;
+ 155   4                 temp=temp&0xf0;
+ 156   4                 beep=0;
+ 157   4               }
+ 158   3               beep=1;
+ 159   3            }
+ 160   2            }
+ 161   1      }
+ 162          
+ 163          
+ 164          void display(uchar a,uchar b,uchar c,uchar d,uchar e,uchar f)
+ 165          {
+ 166   1         dula=0;
+ 167   1         P0=table[a];
+ 168   1         dula=1;
+ 169   1         dula=0;
+ 170   1         
+ 171   1         wela=0;
+ 172   1         P0=0xfe;
+ 173   1         wela=1;
+ 174   1         wela=0;
+ 175   1         delay(5);
+ 176   1         
+ 177   1         P0=table[b];
+ 178   1         dula=1;
+ 179   1         dula=0;
+C51 COMPILER V8.06   0                                                                     06/24/2012 19:05:34 PAGE 4   
+
+ 180   1         
+ 181   1         P0=0xfd;
+ 182   1         wela=1;
+ 183   1         wela=0;
+ 184   1         delay(5);
+ 185   1      
+ 186   1         P0=table[c];
+ 187   1         dula=1;
+ 188   1         dula=0;
+ 189   1         
+ 190   1         P0=0xfb;
+ 191   1         wela=1;
+ 192   1         wela=0;
+ 193   1         delay(5);
+ 194   1         
+ 195   1         P0=table[d];
+ 196   1         dula=1;
+ 197   1         dula=0;
+ 198   1         
+ 199   1         P0=0xf7;
+ 200   1         wela=1;
+ 201   1         wela=0;
+ 202   1         delay(5);
+ 203   1         
+ 204   1         P0=table[e];
+ 205   1         dula=1;
+ 206   1         dula=0;
+ 207   1         
+ 208   1         P0=0xef;
+ 209   1         wela=1;
+ 210   1         wela=0;
+ 211   1         delay(5);
+ 212   1         
+ 213   1         P0=table[f];
+ 214   1         dula=1;
+ 215   1         dula=0;
+ 216   1         
+ 217   1         P0=0xdf;
+ 218   1         wela=1;
+ 219   1         wela=0;
+ 220   1         delay(5);
+ 221   1      }
+ 222          
+ 223          void main()
+ 224          {
+ 225   1              while(1)
+ 226   1              {
+ 227   2                      keyscan();
+ 228   2                      if(wei!=0)                                       //实时显示
+ 229   2                      {
+ 230   3                              switch(wei)
+ 231   3                              {
+ 232   4                                      case 1: a=key;s1=a; break;
+ 233   4                                      case 2: b=key;s2=b; break;
+ 234   4                                      case 3: c=key;s3=c; break;
+ 235   4                                      case 4: d=key;s4=d; break;
+ 236   4                                      case 5: e=key;s5=e; break;
+ 237   4                                      case 6: f=key;s6=f; break;
+ 238   4                              }
+ 239   3                      }
+ 240   2                      if(ok)                   //将采集到的单个数据转化为一个整数。
+ 241   2                      {       ok=0;
+C51 COMPILER V8.06   0                                                                     06/24/2012 19:05:34 PAGE 5   
+
+ 242   3                              switch(wei)
+ 243   3                              {
+ 244   4                                      case 1: shu=s1; break;
+ 245   4                                      case 2: shu=s2+s1*10; break;
+ 246   4                                      case 3: shu=s3+s2*10+s1*100; break;
+ 247   4                                      case 4: shu=s4+s3*10+s2*100+s1*1000; break;
+ 248   4                                      case 5: shu=s5+s4*10+s3*100+s2*1000+s1*10000; break;
+ 249   4                                      case 6: shu=s6+s5*10+s4*100+s3*1000+s2*10000+s1*100000; break;
+ 250   4                              }
+ 251   3                              wei=0;
+ 252   3                      //      f=16;e=16;d=16;c=16;b=16;a=16;
+ 253   3                              s1=0;s2=0;s3=0;s4=0;s5=0;s6=0;
+ 254   3                      }
+ 255   2                      display(a,b,c,d,e,f);
+ 256   2              }
+ 257   1      }
+ 258          
+ 259          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    832    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

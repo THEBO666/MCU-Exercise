@@ -1,0 +1,21 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+F:\20120101\HJ-3G\2012年配套C语言最新实验80个\【实验23】数码管动态扫描\六个数码管轮流显示数字\4.uv2
+Project File Date:  06/26/2010
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 4.c ...
+连接 ...
+Program Size: data=9.0 xdata=0 code=94
+创建 HEX 文件 "4" ...
+"4" - 0 个错误, 0 个警告。
+创建目标 'Target 1'
+编译 4.c ...
+连接 ...
+Program Size: data=9.0 xdata=0 code=94
+创建 HEX 文件 "4" ...
+"4" - 0 个错误, 0 个警告。

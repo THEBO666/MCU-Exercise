@@ -1,0 +1,30 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\HL-1\【实验37】用液晶显示的一个时钟\lesson9.uv2
+Project File Date:  02/15/2012
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 lesson9.c ...
+LESSON9.C(69): 错误 C141: syntax error near 'unsigned'
+LESSON9.C(69): 错误 C202: 'num': undefined identifier
+LESSON9.C(81): 错误 C202: 'num': undefined identifier
+LESSON9.C(83): 错误 C202: 'num': undefined identifier
+LESSON9.C(87): 错误 C202: 'num': undefined identifier
+LESSON9.C(89): 错误 C202: 'num': undefined identifier
+目标未产生
+创建目标 'Target 1'
+编译 lesson9.c ...
+连接 ...
+Program Size: data=14.0 xdata=0 code=594
+创建 HEX 文件 "lesson9" ...
+"lesson9" - 0 个错误, 0 个警告。
+创建目标 'Target 1'
+编译 lesson9.c ...
+连接 ...
+Program Size: data=14.0 xdata=0 code=594
+创建 HEX 文件 "lesson9" ...
+"lesson9" - 0 个错误, 0 个警告。

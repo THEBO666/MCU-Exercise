@@ -1,0 +1,20 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\1、内部说明书资料\超声波模块资料包配套HL-1 V9.6\2、超声波测距LC1602显示实验2\HJ-C52.uvproj
+Project File Date:  <unknown>
+
+<h2>Output:</h2>
+Build target '目标 1'
+compiling main.c...
+linking...
+Program Size: data=27.1 xdata=0 code=1841
+creating hex file from "HJ-C52"...
+"HJ-C52" - 0 Error(s), 0 Warning(s).
+Build target '目标 1'
+linking...
+Program Size: data=27.1 xdata=0 code=1841
+creating hex file from "HJ-C52"...
+"HJ-C52" - 0 Error(s), 0 Warning(s).

@@ -1,0 +1,54 @@
+C51 COMPILER V8.06   IF                                                                    02/15/2012 21:24:57 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE IF
+OBJECT MODULE PLACED IN if.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE if.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：       通过实例，让同学们了解if…else…语句的作用。
+  15                                   当if后面括弧里面的条件表达式为真，则执行if后面大括弧里的指令
+  16                                   否则将执行else语句后面大括弧里的指令
+  17          ****************************************************************************/
+  18          #include <reg52.h>
+  19          
+  20          sbit s2=P3^4;             //本程序中，P3^4用作输入。 P1口用作输出
+  21          
+  22          void main()
+  23          {
+  24   1              while(1) //永远无条件的执行这个循环。
+  25   1              {
+  26   2                      if(s2==0)         //当s2键被按下时，P3^4管脚为低电平。也即，若s2为0，即代表s2按键被按下
+  27   2                              P1=0x55;  //此时，P1口电平分布为01010101
+  28   2                      else              //否则，s2未被按下
+  29   2                              P1=0xaa;  //此时，P1口电平分布为10101010
+  30   2              }
+  31   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     13    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

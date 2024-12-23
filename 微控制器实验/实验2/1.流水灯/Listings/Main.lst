@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:58:06 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 12/22/2024 14:25:20 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -8,45 +8,43 @@ ASSEMBLER INVOKED BY: D:\Keil5\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.
 
 LOC  OBJ            LINE     SOURCE
 
-0000                   1         ORG 0000H
+0000                   1     ORG 0000H
                        2     
 0000                   3     MAIN:
-0000 7590FE            4             MOV P1, #11111110B
-0003 120033            5             LCALL DELAY500MS ;延时
-0006 7590FD            6             MOV P1, #11111101B
-0009 120033            7             LCALL DELAY500MS
-000C 7590FB            8             MOV P1, #11111011B
-000F 120033            9             LCALL DELAY500MS
-0012 7590F7           10             MOV P1, #11110111B
-0015 120033           11             LCALL DELAY500MS
-0018 7590EF           12             MOV P1, #11101111B
-001B 120033           13             LCALL DELAY500MS
-001E 7590DF           14             MOV P1, #11011111B
-0021 120033           15             LCALL DELAY500MS
-0024 7590BF           16             MOV P1, #10111111B
-0027 120033           17             LCALL DELAY500MS
-002A 75907F           18             MOV P1, #01111111B
-002D 120033           19             LCALL DELAY500MS
-0030 020000           20     LJMP MAIN
-                      21     ;延时函数
-0033                  22     DELAY500MS:                     ;@11.0592MHz
-0033 C030             23             PUSH    30H
-0035 C031             24             PUSH    31H
-0037 C032             25             PUSH    32H
-0039 753004           26             MOV             30H,#4
-003C 753181           27             MOV             31H,#129
-003F 753270           28             MOV             32H,#112
-0042                  29     NEXT:
-0042 D532FD           30             DJNZ    32H,NEXT
-0045 D531FA           31             DJNZ    31H,NEXT
-0048 D530F7           32             DJNZ    30H,NEXT
-004B D032             33             POP             32H
-004D D031             34             POP             31H
-004F D030             35             POP             30H
-0051 22               36             RET
-                      37     
-                      38     END
-A51 MACRO ASSEMBLER  MAIN                                                                 11/10/2024 14:58:06 PAGE     2
+0000 74FE              4         MOV A, #11111110B    ; 初始值：最右边LED亮
+0002 7A08              5         MOV R2, #8           ; 计数器，需要移位8次
+0004                   6     SHIFT_LOOP:
+0004 F590              7         MOV P1, A            ; 输出到P1口
+0006 120013            8         LCALL DELAY500MS     ; 延时
+                       9         
+                      10         ; 循环左移一位，把最高位的1移到最低位
+0009 C0D0             11         PUSH PSW             ; 保存PSW (包含进位标志)
+000B 33               12         RLC A               ; 循环左移，最高位移入进位，进位移入最低位
+000C D0D0             13         POP PSW             ; 恢复PSW
+                      14         
+000E DAF4             15         DJNZ R2, SHIFT_LOOP ; 计数器减1，不为0则继续循环
+                      16         
+0010 020000           17         LJMP MAIN           ; 一轮完成，重新开始
+                      18     
+                      19     ;延时函数
+0013                  20     DELAY500MS:            ;@11.0592MHz
+0013 C030             21         PUSH    30H
+0015 C031             22         PUSH    31H
+0017 C032             23         PUSH    32H
+0019 753004           24         MOV     30H,#4
+001C 753181           25         MOV     31H,#129
+001F 753270           26         MOV     32H,#112
+0022                  27     NEXT:
+0022 D532FD           28         DJNZ    32H,NEXT
+0025 D531FA           29         DJNZ    31H,NEXT
+0028 D530F7           30         DJNZ    30H,NEXT
+002B D032             31         POP     32H
+002D D031             32         POP     31H
+002F D030             33         POP     30H
+0031 22               34         RET
+                      35     
+                      36     END
+A51 MACRO ASSEMBLER  MAIN                                                                 12/22/2024 14:25:20 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -54,10 +52,12 @@ SYMBOL TABLE LISTING
 
 N A M E             T Y P E  V A L U E   ATTRIBUTES
 
-DELAY500MS . . . .  C ADDR   0033H   A   
+DELAY500MS . . . .  C ADDR   0013H   A   
 MAIN . . . . . . .  C ADDR   0000H   A   
-NEXT . . . . . . .  C ADDR   0042H   A   
+NEXT . . . . . . .  C ADDR   0022H   A   
 P1 . . . . . . . .  D ADDR   0090H   A   
+PSW. . . . . . . .  D ADDR   00D0H   A   
+SHIFT_LOOP . . . .  C ADDR   0004H   A   
 
 
 REGISTER BANK(S) USED: 0 

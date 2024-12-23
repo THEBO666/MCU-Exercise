@@ -1,0 +1,348 @@
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE S6D0144_8BIT
+OBJECT MODULE PLACED IN S6D0144_8bit.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE S6D0144_8bit.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************51ÊµÑé¿ª·¢°åÀý³Ì************************
+   2          *  Æ½Ì¨£ºHL-1 HJ-C52 + Keil U4 + STC89C52
+   3          *  Ãû³Æ£ºTFT1.8²ÊÆÁÊµÑé2 ÑÕÉ«ÏÔÊ¾
+   4          *  ¹«Ë¾£º»Û¾»µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾
+   5          *  ÌÔ±¦£ºhttp://shop37031453.taobao.com       
+   6          *  ÍøÕ¾£ºwww.hjmcu.com
+   7          *  ±àÐ´£º»Û¾»
+   8          *  ÈÕÆÚ£º2008-8-08
+   9          *   QQ : 121350852 398115088
+  10          *  ¾§Õñ:11.0592MHZ
+  11          *  ËµÃ÷£ºÃâ·Ñ¿ªÔ´£¬²»Ìá¹©Ô´´úÂë·ÖÎö£¬ÓÐÎÊÌâÖ±½Óµ½»Û¾»ÂÛÌ³½»Á÷
+  12          *  ÂÛÌ³£ºhttp://hjdz.5d6d.net
+  13          *  Ä£¿éÁ´½Ó·½·¨£º½Óµ½HL-1 HJ-C52 LCD12864½Ó¿Ú£¬Ò»¶¨Òª×¢Òâ16½ÅµÄ·½ÏòÎ»ÖÃ£¬²»ÄÜ½Ó´í£¬Èç¹û½Ó´íÉÕµô²ÊÆÁ£¬»Û¾»²
+             -»¸ºÔð
+  14          ******************************************************************/
+  15          #include <reg51.h>
+  16          #include <intrins.h>
+  17          #define X_add 128
+  18          #define Y_add 160
+  19          
+  20          #define WINDOW_XADDR 0x44 // Horizontal Start Address Set,DL SETTING START POSITION,DH SETTING END POSITIO
+             -N
+  21          #define WINDOW_YADDR 0x45 // Vertical Start Address Set,DL SETTING START POSITION,DH SETTING END POSITION
+  22          #define GRAM_ADDR        0x21 // GRAM Address Set,DL SETTING Horizontal Address,DH SETTING Vertical Address
+  23                                    // you can write initial GRAM address into internal Address Counter
+  24          #define GRAMWR           0x22 // memory write
+  25          #define uint unsigned int
+  26          #define uchar unsigned char
+  27          
+  28          
+  29          /**************************LCD color setting**************************/
+  30          //ÑÕÉ«ÓÉ18ÎªÊý¾Ý¹¹³É£¬Ã¿Ò»»ùÉ«ÓÉ6bit×é³É BBBBBBGGGGGGRRRRRR£¬×î´ó¿É´ï64*64*64£¨62K£©É«
+  31          //ÔÚ8Î»Êý¾ÝºÍ16ÎªÊý¾Ý¿ÚÄ£Ê½ÏÂDB0ºÍDB9²»Ê¹ÓÃ£¬¹ÊÑÕÉ«ÉèÖÃÎªBBBBBBGGXGGGRRRRRX£¬X±íÊ¾ÎÞÐ§Î»
+  32          //Í¨³£ÑÕÉ«ÖÐB¡¢G¡¢RµÄÅÅÁÐÎªRRRRRRGGGGGGBBBBBB£¬¿ÉÍ¨¹ý³õÊ¼»¯º¯ÊýµÄÃüÁîÐÞ¸ÄÈçÏÂ
+  33          //write_com(0x03);   //ENTRY MODE
+  34          //write_data(0x00);  //BGR=1,ÑÕÉ«µÄË³ÐòÎªBBBBBBGGGGGGRRRRRR;BGR=0,ÑÕÉ«µÄË³ÐòÎªRRRRRRGGGGGGBBBBBB
+  35          //write_data(0x30);
+  36          #define White          0xFFFF
+  37          #define Black          0x0000
+  38          #define RED            0x001F
+  39          #define YELLOW         0x051F
+  40          #define BLUE           0xF800
+  41          #define Magenta        0xF81F//×ÏÉ«
+  42          #define Green          0x03E0
+  43          #define Green1         0x07E0//Ç³ÂÌ
+  44          #define BLUE2          0x0FE0//Ç³À¶
+  45          /**************************TFT½Ó¿Ú¶¨Òå**************************/
+  46          //8Î»Ö¸Áî/Êý¾Ý¿Ú
+  47          //¿ÉÒÔÖ±½Ó²å½Óµ½±±·½À¶Ð¾ÏµÁÐµ¥Æ¬»úÊµÑéÒÇµÄÖ÷°åÉÏµÄTFT½Ó¿ÚÅÅ×ùÉÏ£¬µÚ1PIN¶ÔÆë£¬TFT½Ó¿ÚÅÅ×ùÉÏµÄ16PIN¿Õ³ö
+  48          #define Data_port P0
+  49          sbit CS=P1^5;  //×¢Òâ£¬±¾IO¿ÚÎªµÍµçÆ½£¬°ÑHL-1Ñ§Ï°°åÉÏµÄW1µçÎ»Æ÷µ÷½Úµ½ÓÒ±ß£¬Ê¹CS½ÅÎ»µÍµçÆ½¾Í¿ÉÒÔÁË
+  50          sbit RST=P1^4;
+  51          sbit RS=P1^0;
+  52          sbit WR_=P1^1;
+  53          sbit RD_=P2^5;
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 2   
+
+  54          
+  55          /**************************º¯ÊýÉùÃ÷**************************/
+  56          void write_data(uchar in_data);
+  57          void write_com(uchar in_com);
+  58          void delay(uint time);
+  59          void initial();
+  60          void test_patten(uchar cl,uchar ch);
+  61          void display_colorbar(void);
+  62          
+  63          void main(void)
+  64               {
+  65   1           initial();     
+  66   1           test_patten(0xf8,0x00);
+  67   1           delay(1000);
+  68   1           test_patten(0x07,0xe0);
+  69   1               delay(1000);
+  70   1           test_patten(0x00,0x1f);
+  71   1               delay(1000);
+  72   1           test_patten(0xff,0xff);
+  73   1               delay(1000);
+  74   1           test_patten(0x00,0x00);
+  75   1               delay(1000);
+  76   1               display_colorbar();
+  77   1               while(1);
+  78   1          }
+  79          
+  80          void delay(uint time)
+  81               {
+  82   1          uint i;
+  83   1          while(time--)
+  84   1               for(i=0;i<1000;i++);
+  85   1          }
+  86          
+  87          
+  88          void write_data(uchar Data)//Ð´8Î»Êý¾Ý
+  89               {
+  90   1           RS=1;
+  91   1           CS=0;
+  92   1           Data_port=Data;
+  93   1           WR_=0;
+  94   1           WR_=1;
+  95   1           CS=1;
+  96   1          }
+  97          
+  98          
+  99          
+ 100          void write_com(uchar Com)//Ð´ÃüÁî
+ 101              {
+ 102   1              RS=0;
+ 103   1              CS=0;
+ 104   1              Data_port=Com;
+ 105   1              WR_=0;
+ 106   1              WR_=1;
+ 107   1              CS=1;
+ 108   1          }
+ 109          
+ 110          
+ 111          void initial()
+ 112               {
+ 113   1       
+ 114   1          RST=0;
+ 115   1          delay(10);
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 3   
+
+ 116   1          RST=1;
+ 117   1          WR_=1;RD_=1;
+ 118   1      
+ 119   1          write_com(0xb4);   
+ 120   1          write_data(0x00);
+ 121   1          write_data(0x10);
+ 122   1      
+ 123   1          write_com(0x07);   
+ 124   1          write_data(0x00);
+ 125   1          write_data(0x00);
+ 126   1      
+ 127   1          write_com(0x13);   
+ 128   1          write_data(0x00);
+ 129   1          write_data(0x00);
+ 130   1          delay(50);
+ 131   1      
+ 132   1          write_com(0x12);   
+ 133   1          write_data(0x00);
+ 134   1          write_data(0x71);
+ 135   1      
+ 136   1          write_com(0x13);   
+ 137   1          write_data(0x08);
+ 138   1          write_data(0x0b);
+ 139   1      
+ 140   1          write_com(0x14);   
+ 141   1          write_data(0x59);
+ 142   1          write_data(0xcf);
+ 143   1      
+ 144   1          write_com(0x10);   
+ 145   1          write_data(0x19);
+ 146   1          write_data(0x10);
+ 147   1      
+ 148   1          write_com(0x01);   
+ 149   1          write_data(0x01);
+ 150   1          write_data(0x14);
+ 151   1      
+ 152   1          write_com(0x02); 
+ 153   1          write_data(0x01);
+ 154   1          write_data(0x00);
+ 155   1      
+ 156   1          write_com(0x03);   //ENTRY MODE
+ 157   1          write_data(0x10);  //BGR=1,ÑÕÉ«µÄË³ÐòÎªBBBBBBGGGGGGRRRRRR;BGR=0,ÑÕÉ«µÄË³ÐòÎªRRRRRRGGGGGGBBBBBB
+ 158   1          write_data(0x30);
+ 159   1      
+ 160   1          write_com(0x08);   //
+ 161   1          write_data(0x03);
+ 162   1          write_data(0x02);
+ 163   1      
+ 164   1          write_com(0x0b);   //FRAME CYCLE CONTROL
+ 165   1          write_data(0x00);
+ 166   1          write_data(0x00);
+ 167   1      
+ 168   1          write_com(0x0c);   //
+ 169   1          write_data(0x00);
+ 170   1          write_data(0x02);
+ 171   1          delay(50);
+ 172   1      
+ 173   1          write_com(0x30);   //
+ 174   1          write_data(0x00);
+ 175   1          write_data(0x00);
+ 176   1      
+ 177   1          write_com(0x31);   //
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 4   
+
+ 178   1          write_data(0x06);
+ 179   1          write_data(0x05);
+ 180   1      
+ 181   1          write_com(0x32);   //
+ 182   1          write_data(0x00);
+ 183   1          write_data(0x07);
+ 184   1      
+ 185   1          write_com(0x33);   //
+ 186   1          write_data(0x06);
+ 187   1          write_data(0x00);
+ 188   1      
+ 189   1          write_com(0x34);   //
+ 190   1          write_data(0x02);
+ 191   1          write_data(0x04);
+ 192   1      
+ 193   1          write_com(0x35);   //
+ 194   1          write_data(0x00);
+ 195   1          write_data(0x02);
+ 196   1      
+ 197   1          write_com(0x36);   //
+ 198   1          write_data(0x07);
+ 199   1          write_data(0x07);
+ 200   1      
+ 201   1          write_com(0x36);   //
+ 202   1          write_data(0x07);
+ 203   1          write_data(0x07);
+ 204   1      
+ 205   1          write_com(0x37);   //
+ 206   1          write_data(0x00);
+ 207   1          write_data(0x00);
+ 208   1      
+ 209   1          write_com(0x38);   //
+ 210   1          write_data(0x0f);
+ 211   1          write_data(0x00);
+ 212   1      
+ 213   1          write_com(0x11);   //
+ 214   1          write_data(0x00);
+ 215   1          write_data(0x0f);
+ 216   1      
+ 217   1          write_com(0x40);   //
+ 218   1          write_data(0x00);
+ 219   1          write_data(0x00);
+ 220   1      
+ 221   1          write_com(0x42);   //
+ 222   1          write_data(0x9f);
+ 223   1          write_data(0x00);
+ 224   1      
+ 225   1          write_com(0x43);   //
+ 226   1          write_data(0x9f);
+ 227   1          write_data(0x00);
+ 228   1      
+ 229   1          write_com(0x44);   //
+ 230   1          write_data(0x7f);
+ 231   1          write_data(0x00);
+ 232   1      
+ 233   1          write_com(0x45);   //
+ 234   1          write_data(0x9f);
+ 235   1          write_data(0x00);
+ 236   1      
+ 237   1          write_com(0x13);   //
+ 238   1          write_data(0x08);
+ 239   1          write_data(0x1b);
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 5   
+
+ 240   1          delay(50);
+ 241   1      
+ 242   1          write_com(0x07);   //
+ 243   1          write_data(0x00);
+ 244   1          write_data(0x05);
+ 245   1          delay(50);
+ 246   1      
+ 247   1          write_com(0x07);   //
+ 248   1          write_data(0x00);
+ 249   1          write_data(0x25);
+ 250   1          delay(50);
+ 251   1      
+ 252   1          write_com(0x07);   //
+ 253   1          write_data(0x00);
+ 254   1          write_data(0x27);
+ 255   1          delay(50);
+ 256   1      
+ 257   1          write_com(0x07);   //
+ 258   1          write_data(0x00);
+ 259   1          write_data(0x37);
+ 260   1          delay(50);
+ 261   1      
+ 262   1         }
+ 263          
+ 264          
+ 265          void test_patten(uchar cl,uchar ch)
+ 266          {
+ 267   1          uint i,j;
+ 268   1      
+ 269   1           write_com(0x21);
+ 270   1           write_data(0x00);
+ 271   1           write_data(0x00);
+ 272   1           write_com(0x22);
+ 273   1          for(i=0;i<X_add;i++)
+ 274   1             for(j=0;j<Y_add;j++)
+ 275   1               {
+ 276   2                write_data(cl);
+ 277   2                write_data(ch);
+ 278   2               }
+ 279   1      }
+ 280          
+ 281          
+ 282          void display_colorbar(void)
+ 283          {
+ 284   1           int i;
+ 285   1           write_com(0x21);
+ 286   1           write_data(0x00);
+ 287   1           write_data(0x00);
+ 288   1           write_com(0x22);
+ 289   1                for(i=0;i<128*160/4;i++)
+ 290   1                   {
+ 291   2                        write_data(0xF8);
+ 292   2                        write_data(0x00);
+ 293   2                                }
+ 294   1               for(i=0;i<128*160/4;i++)
+ 295   1                   {
+ 296   2                         write_data(0x07);
+ 297   2                         write_data(0xe0);
+ 298   2                                }
+ 299   1               for(i=0;i<128*160/4;i++)
+ 300   1                   {
+ 301   2                         write_data(0x00);
+C51 COMPILER V9.01   S6D0144_8BIT                                                          12/16/2012 17:31:37 PAGE 6   
+
+ 302   2                         write_data(0x1F);
+ 303   2                                }
+ 304   1               for(i=0;i<128*160/4;i++)
+ 305   1                   {
+ 306   2                         write_data(0xFF);
+ 307   2                         write_data(0xFF);
+ 308   2                                }
+ 309   1      }
+ 310          
+ 311          
+ 312          
+ 313          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    742    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

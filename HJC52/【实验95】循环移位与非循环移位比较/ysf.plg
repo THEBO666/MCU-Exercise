@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\小米刷机包\学C语言配套实验20个\【实验95】循环移位与非循环移位比较\ysf.uv2
+Project File Date:  07/02/2010
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 ysf.c ...
+连接 ...
+Program Size: data=9.0 xdata=0 code=44
+创建 HEX 文件 "ysf" ...
+"ysf" - 0 个错误, 0 个警告。

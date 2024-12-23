@@ -1,0 +1,558 @@
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1ÊµÑé¿ª·¢°åÀý³Ì************************
+   2          *  Æ½Ì¨£ºHL-1 V6.2 + Keil U3 + STC89C52RD
+   3          *  ¹«Ë¾£º»Û¾»µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾
+   4          *  ÌÔ±¦£ºhttp://shop37031453.taobao.com       
+   5          *  ÍøÕ¾£ºwww.hlmcu.com
+   6          *  ±àÐ´£º»Û¾»
+   7          *  ÈÕÆÚ£º2008-8-08
+   8          *   QQ : 121350852 398115088
+   9          *  ¾§Õñ:11.0592MHZ
+  10          *  ËµÃ÷£ºÃâ·Ñ¿ªÔ´£¬²»Ìá¹©Ô´´úÂë·ÖÎö£¬ÓÐÎÊÌâÖ±½Óµ½»Û¾»ÂÛÌ³½»Á÷
+  11          *  ÂÛÌ³£ºhttp://hjdz.5d6d.com
+  12          ******************************************************************/
+  13          //ÍøÉÏÊÕ¼¯ÕûÀí³ÌÐò£¬Ö»×ö²Î¿¼£¬Çë×Ô¼º½øÐÐÔ´Âë·ÖÎö£¬ÓÐÎÊÌâ¿ÉÒÔ·¢µ½»Û¾»ÂÛÌ³ÉÏ£¬»Û¾»Ö»Ìá¹©Ó²¼þÑ§Ï°°å£¬Èí¼þ·½Ãæ
+             -Çë×Ô¼º//Ñ§Ï°£¬Ð»Ð»¡£
+  14          
+  15          #include"reg52.h"
+  16          sbit P20 = P2^6;//¹Ø±ÕÊýÂë¹Ü
+  17          sbit P21 = P2^7;//¹Ø±ÕÊýÂë¹Ü
+  18          #define WINDOW_XADDR_START      0x0050 // Horizontal Start Address Set
+  19          #define WINDOW_XADDR_END        0x0051 // Horizontal End Address Set
+  20          #define WINDOW_YADDR_START      0x0052 // Vertical Start Address Set
+  21          #define WINDOW_YADDR_END        0x0053 // Vertical End Address Set
+  22          #define GRAM_XADDR                  0x0020 // GRAM Horizontal Address Set
+  23          #define GRAM_YADDR                  0x0021 // GRAM Vertical Address Set
+  24          #define GRAMWR                      0x0022 // memory write
+  25          
+  26          /* LCD color */
+  27          #define White          0xFFFF
+  28          #define Black          0x0000
+  29          #define Blue           0x001F
+  30          #define Blue2          0x051F
+  31          #define Red            0xF800
+  32          #define Magenta        0xF81F
+  33          #define Green          0x07E0
+  34          #define Cyan           0x7FFF
+  35          #define Yellow         0xFFE0
+  36          
+  37          sbit CS=P1^2;           //Æ¬Ñ¡
+  38          sbit RES=P1^4;          //¸´Î»
+  39          sbit RS=P1^0;           //Êý¾Ý/ÃüÁîÑ¡Ôñ
+  40          sbit RW=P1^1;
+  41                              //Êý¾Ý¿ÚÊ¹ÓÃP0
+  42                              //Êý¾Ý¿ÚÊ¹ÓÃP0
+  43          //====================================================//
+  44          
+  45          void main (void);
+  46          void ILI9325_Initial(void);
+  47          void show_colour_bar (void);
+  48          void Write_Cmd_Data(unsigned char x, unsigned int y);
+  49          void Write_Cmd(unsigned char DH,unsigned char DL);
+  50          void Write_Data(unsigned char DH,unsigned char DL);
+  51          void delayms(unsigned int tt);
+  52          void show_photo(void);
+  53          void Show_RGB (unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1,unsigned int Color);
+  54          unsigned char code pic[];
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 2   
+
+  55          void  Write_Data_U16(unsigned int y);
+  56          static void LCD_SetPos(unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1);
+  57          void ClearScreen(unsigned int bColor);
+  58          void LCD_PutChar8x16(unsigned short x, unsigned short y, char c, unsigned int fColor, unsigned int bColor)
+             -;
+  59          void LCD_PutChar(unsigned short x, unsigned short y, char c, unsigned int fColor, unsigned int bColor);
+  60          void LCD_PutString(unsigned short x, unsigned short y, char *s, unsigned int fColor, unsigned int bColor);
+  61          
+  62          void LCD_PutChar8x8(unsigned short x, unsigned short y, char c, unsigned int fColor, unsigned int bColor);
+  63          void PutGB1616(unsigned short x, unsigned short  y, unsigned char c[2], unsigned int fColor,unsigned int b
+             -Color);
+  64          void PutGB3232(unsigned short x, unsigned short  y, unsigned char c[2], unsigned int fColor,unsigned int b
+             -Color);
+  65          //================================================//
+  66          
+  67          void  main(void)
+  68          {   
+  69   1      
+  70   1              P1=0x00;  //¹Ø±ÕÊýÂë¹Ü
+  71   1              P20=0; //¹Ø±ÕÊýÂë¹Ü
+  72   1              P21=0; //¹Ø±ÕÊýÂë¹Ü
+  73   1              CS=1;
+  74   1              delayms(5);
+  75   1              RES=0;
+  76   1              delayms(5);
+  77   1              RES=1;
+  78   1              delayms(5);
+  79   1              ILI9325_Initial();
+  80   1              while(1)
+  81   1              {
+  82   2              
+  83   2      
+  84   2      
+  85   2      ClearScreen(0x00FF);
+  86   2      
+  87   2      //show_colour_bar();    
+  88   2      
+  89   2      
+  90   2      LCD_PutString(40,40,"www.hlmcu.com",Red,Blue);                  ///Ç°¾°ÑÕÉ«ºÍ±³¾°ÑÕÉ«£¬¿ÉÒÔÖ±½ÓÔ¤¶¨Òå£¬Ò²¿
+             -ÉÒÔÖ±½ÓÌîÈë16½øÖÆÊý×Ö
+  91   2      LCD_PutString(40,60,"I LOVE YOU HJMCU ",Blue2,Yellow);
+  92   2      LCD_PutString(10,80,"ÖÐ¹ú»Û¾»µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾",Magenta,Green);
+  93   2      LCD_PutString(40,100,"×¨Òµ¼¼ÊõÖ§³ÖÂÛÌ³",0x07e0,0xf800);
+  94   2      LCD_PutString(40,120,"×¨Òµ¿ª·¢°åÑ§Ï°°å",0x001f,0xf800);
+  95   2      LCD_PutString(40,140,"1234567890",0x001f,0xf800);
+  96   2      LCD_PutString(0,160,"abcdefghijklmnopqistuvwxyz",0x001f,0xf800);
+  97   2      LCD_PutString(0,180,"`,./<>';:[]{}\|?)(-=+*&^%$",0x001f,0xf800);
+  98   2      PutGB3232(0,200,"ÎÒ",Blue,Yellow);      //Ð´Èë32x32ºº×Ö
+  99   2      PutGB3232(40,200,"°®",Blue,Red);
+ 100   2      PutGB3232(80,200,"µ¥",Blue,Magenta);
+ 101   2      PutGB3232(120,200,"Æ¬",Blue,Green);
+ 102   2      PutGB3232(160,200,"»ú",Blue,Cyan);      
+ 103   2      //      show_photo();
+ 104   2      
+ 105   2                      while(1);       
+ 106   2      
+ 107   2      
+ 108   2              }
+ 109   1      }
+ 110          
+ 111          
+ 112          void ClearScreen(unsigned int bColor)
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 3   
+
+ 113          {
+ 114   1       unsigned int i,j;
+ 115   1       LCD_SetPos(0,240,0,320);//320x240
+ 116   1       for (i=0;i<320;i++)
+ 117   1              {
+ 118   2              
+ 119   2                 for (j=0;j<240;j++)
+ 120   2                     Write_Data_U16(bColor);
+ 121   2      
+ 122   2              }
+ 123   1      }
+ 124          
+ 125          /////////////////////////////////////////////////////////////
+ 126          #include "8X16.h"
+ 127          void LCD_PutChar8x16(unsigned short x, unsigned short y, char c, unsigned int fColor, unsigned int bColor)
+ 128          {
+ 129   1       unsigned int i,j;
+ 130   1       LCD_SetPos(x,x+8-1,y,y+16-1);
+ 131   1       for(i=0; i<16;i++) {
+ 132   2                      unsigned char m=Font8x16[c*16+i];
+ 133   2                      for(j=0;j<8;j++) {
+ 134   3                              if((m&0x80)==0x80) {
+ 135   4                                      Write_Data_U16(fColor);
+ 136   4                                      }
+ 137   3                              else {
+ 138   4                                      Write_Data_U16(bColor);
+ 139   4                                      }
+ 140   3                              m<<=1;
+ 141   3                              }
+ 142   2                      }
+ 143   1      }
+ 144          
+ 145          
+ 146          void LCD_PutChar(unsigned short x, unsigned short y, char c, unsigned int fColor, unsigned int bColor) {
+ 147   1      
+ 148   1                      LCD_PutChar8x16( x, y, c, fColor, bColor );
+ 149   1              }
+ 150          
+ 151          
+ 152          #include "GB1616.h"     //16*16ºº×Ö×ÖÄ£
+ 153          
+ 154          void PutGB1616(unsigned short x, unsigned short  y, unsigned char c[2], unsigned int fColor,unsigned int b
+             -Color){
+ 155   1              unsigned int i,j,k;
+ 156   1      
+ 157   1              LCD_SetPos(x,  x+16-1,y, y+16-1);
+ 158   1      
+ 159   1              for (k=0;k<64;k++) { //64±êÊ¾×Ô½¨ºº×Ö¿âÖÐµÄ¸öÊý£¬Ñ­»·²éÑ¯ÄÚÂë
+ 160   2                if ((codeGB_16[k].Index[0]==c[0])&&(codeGB_16[k].Index[1]==c[1])){ 
+ 161   3              for(i=0;i<32;i++) {
+ 162   4                        unsigned short m=codeGB_16[k].Msk[i];
+ 163   4                        for(j=0;j<8;j++) {
+ 164   5                              if((m&0x80)==0x80) {
+ 165   6                                      Write_Data_U16(fColor);
+ 166   6                                      }
+ 167   5                              else {
+ 168   6                                      Write_Data_U16(bColor);
+ 169   6                                      }
+ 170   5                              m<<=1;
+ 171   5                              } 
+ 172   4                        }
+ 173   3                      }  
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 4   
+
+ 174   2                }     
+ 175   1              }
+ 176          
+ 177                  #include "GB3232.h"     //32*32ºº×Ö×ÖÄ£
+ 178          
+ 179          void PutGB3232(unsigned short x, unsigned short  y, unsigned char c[2], unsigned int fColor,unsigned int b
+             -Color){
+ 180   1              unsigned int i,j,k;
+ 181   1      
+ 182   1              LCD_SetPos(x,  x+32-1,y, y+32-1);
+ 183   1      
+ 184   1              for (k=0;k<5;k++) { //5±êÊ¾×Ô½¨ºº×Ö¿âÖÐµÄ¸öÊý£¬Ñ­»·²éÑ¯ÄÚÂë
+ 185   2                if ((codeGB_32[k].Index[0]==c[0])&&(codeGB_32[k].Index[1]==c[1])){ 
+ 186   3              for(i=0;i<128;i++) {
+ 187   4                        unsigned short m=codeGB_32[k].Msk[i];
+ 188   4                        for(j=0;j<8;j++) {
+ 189   5                              if((m&0x80)==0x80) {
+ 190   6                                      Write_Data_U16(fColor);
+ 191   6                                      }
+ 192   5                              else {
+ 193   6                                      Write_Data_U16(bColor);
+ 194   6                                      }
+ 195   5                              m<<=1;
+ 196   5                              } 
+ 197   4                        }
+ 198   3                      }  
+ 199   2                }     
+ 200   1              }
+ 201          
+ 202          void LCD_PutString(unsigned short x, unsigned short y, unsigned char *s, unsigned int fColor, unsigned int
+             - bColor) {
+ 203   1               unsigned char l=0;
+ 204   1              while(*s) {
+ 205   2                      if( *s < 0x80) 
+ 206   2                          {
+ 207   3                              LCD_PutChar(x+l*8,y,*s,fColor,bColor);
+ 208   3                              s++;l++;
+ 209   3                              }
+ 210   2                      else
+ 211   2                          {
+ 212   3                              PutGB1616(x+l*8,y,(unsigned char*)s,fColor,bColor);
+ 213   3                              s+=2;l+=2;
+ 214   3                              }
+ 215   2                      }
+ 216   1              }
+ 217          //==================== ÏÔÊ¾R G B î†É« ====================//
+ 218          
+ 219          
+ 220          
+ 221          void Show_RGB (unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1,unsigned int Color)
+ 222          {
+ 223   1              unsigned int i,j;
+ 224   1              //address_set();
+ 225   1              LCD_SetPos(x0,x1,y0,y1);
+ 226   1              for (i=y0;i<=y1;i++)
+ 227   1              {
+ 228   2                 for (j=x0;j<=x1;j++)
+ 229   2                     Write_Data_U16(Color);
+ 230   2      
+ 231   2              }
+ 232   1      
+ 233   1      
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 5   
+
+ 234   1      }
+ 235          
+ 236          //====================== ÏÔÊ¾²ÊÌõ ======================//
+ 237          void show_colour_bar (void)
+ 238          
+ 239          {
+ 240   1              int V,H;
+ 241   1              LCD_SetPos(0,240,0,320);//320x240
+ 242   1      
+ 243   1              for(H=0;H<240;H++)
+ 244   1              {
+ 245   2                      for(V=0;V<40;V++)
+ 246   2                      Write_Data(0xf8,0x00);
+ 247   2              }
+ 248   1      
+ 249   1              for(H=0;H<240;H++)
+ 250   1              {
+ 251   2                      for(V=40;V<80;V++)
+ 252   2                      Write_Data(0x07,0xe0);
+ 253   2              }
+ 254   1      
+ 255   1              for(H=0;H<240;H++)
+ 256   1              {
+ 257   2                      for(V=80;V<120;V++)
+ 258   2                      Write_Data(0x00,0x1f);
+ 259   2              }
+ 260   1      
+ 261   1              for(H=0;H<240;H++)
+ 262   1              {
+ 263   2                      for(V=120;V<160;V++)
+ 264   2                      Write_Data(0xff,0xe0);
+ 265   2              }
+ 266   1      
+ 267   1              for(H=0;H<240;H++)
+ 268   1              {
+ 269   2                      for(V=160;V<200;V++)
+ 270   2                      Write_Data(0xf8,0x1f);
+ 271   2              }
+ 272   1      
+ 273   1              for(H=0;H<240;H++)
+ 274   1              {
+ 275   2                      for(V=200;V<240;V++)
+ 276   2                      Write_Data(0x07,0xff);
+ 277   2              }
+ 278   1      
+ 279   1              for(H=0;H<240;H++)
+ 280   1              {
+ 281   2                      for(V=240;V<280;V++)
+ 282   2                      Write_Data(0xff,0xff);
+ 283   2              }
+ 284   1      
+ 285   1              for(H=0;H<240;H++)
+ 286   1              {
+ 287   2                      for(V=280;V<320;V++)
+ 288   2                      Write_Data(0x00,0x00);
+ 289   2              }
+ 290   1      
+ 291   1      }
+ 292          
+ 293          void show_photo(void)
+ 294          {
+ 295   1              unsigned char j;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 6   
+
+ 296   1              unsigned int i;
+ 297   1              unsigned long s=0;
+ 298   1      
+ 299   1              LCD_SetPos(0,240,0,320);//320x240
+ 300   1      
+ 301   1              for (i=0;i<75;i++)
+ 302   1              {
+ 303   2              for (j=0;j<240;j++)
+ 304   2              Write_Data(0xff,0xff);
+ 305   2                      
+ 306   2              }
+ 307   1      
+ 308   1              for (i=0;i<170;i++)
+ 309   1              {
+ 310   2              for (j=0;j<55;j++)
+ 311   2                      Write_Data(0xff,0xff);
+ 312   2      
+ 313   2                      for (j=0;j<130;j++)
+ 314   2                      Write_Data(pic[s++],pic[s++]);
+ 315   2                      
+ 316   2                      for (j=0;j<55;j++)
+ 317   2                      Write_Data(0xff,0xff);
+ 318   2              }
+ 319   1      
+ 320   1          for (i=0;i<75;i++)
+ 321   1              {
+ 322   2              for (j=0;j<240;j++)
+ 323   2              Write_Data(0xff,0xff);
+ 324   2                      
+ 325   2              }
+ 326   1      
+ 327   1              }
+ 328          
+ 329          //=======================================================//
+ 330          
+ 331          
+ 332          
+ 333          void  Write_Cmd_Data (unsigned char x,unsigned int y)
+ 334          {
+ 335   1              unsigned char m,n;
+ 336   1              m=y>>8;
+ 337   1              n=y;
+ 338   1              Write_Cmd(0x00,x);
+ 339   1              Write_Data(m,n);
+ 340   1      
+ 341   1      }
+ 342          
+ 343          
+ 344          void  Write_Data_U16(unsigned int y)
+ 345          {
+ 346   1              unsigned char m,n;
+ 347   1              m=y>>8;
+ 348   1              n=y;
+ 349   1              Write_Data(m,n);
+ 350   1      
+ 351   1      }
+ 352          //====================== Ð´ÃüÁî ==========================//
+ 353          
+ 354          void Write_Cmd(unsigned char DH,unsigned char DL)
+ 355          {
+ 356   1        
+ 357   1              
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 7   
+
+ 358   1      
+ 359   1              CS=0;
+ 360   1              RS=0;
+ 361   1      
+ 362   1              P0=DH;
+ 363   1              RW=0;
+ 364   1              RW=1;
+ 365   1      
+ 366   1              P0=DL;
+ 367   1              
+ 368   1              RW=0;
+ 369   1              RW=1;
+ 370   1              CS=1;
+ 371   1      }
+ 372          
+ 373          //===================== Ð´Êý¾Ý ===========================//
+ 374          
+ 375          void Write_Data(unsigned char DH,unsigned char DL)
+ 376          {
+ 377   1       
+ 378   1        
+ 379   1              
+ 380   1              CS=0;
+ 381   1              
+ 382   1              RS=1;
+ 383   1              P0=DH;
+ 384   1              RW=0;
+ 385   1          RW=1;
+ 386   1      
+ 387   1              P0=DL;  
+ 388   1              RW=0;
+ 389   1              RW=1;
+ 390   1              CS=1;
+ 391   1      }
+ 392          
+ 393          
+ 394          
+ 395          
+ 396          
+ 397          //=======================================================
+ 398          void delayms(unsigned int count)
+ 399          {
+ 400   1          int i,j;                                                                                
+ 401   1          for(i=0;i<count;i++)                                                                    
+ 402   1             {
+ 403   2                   for(j=0;j<260;j++);
+ 404   2             }                                                                                     
+ 405   1      }
+ 406          
+ 407          
+ 408          
+ 409          //===================== ³õÊ¼»¯´úÂë =======================//
+ 410          
+ 411          void ILI9325_Initial(void)
+ 412          { 
+ 413   1      
+ 414   1      
+ 415   1       delayms(50);
+ 416   1       Write_Cmd_Data(0x0001,0x0100); 
+ 417   1       Write_Cmd_Data(0x0002,0x0700); 
+ 418   1       Write_Cmd_Data(0x0003,0x1030); 
+ 419   1       Write_Cmd_Data(0x0004,0x0000); 
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 8   
+
+ 420   1       Write_Cmd_Data(0x0008,0x0207);  
+ 421   1       Write_Cmd_Data(0x0009,0x0000);
+ 422   1       Write_Cmd_Data(0x000A,0x0000); 
+ 423   1       Write_Cmd_Data(0x000C,0x0000); 
+ 424   1       Write_Cmd_Data(0x000D,0x0000);
+ 425   1       Write_Cmd_Data(0x000F,0x0000);
+ 426   1      //power on sequence VGHVGL
+ 427   1       Write_Cmd_Data(0x0010,0x0000);   
+ 428   1       Write_Cmd_Data(0x0011,0x0007);  
+ 429   1       Write_Cmd_Data(0x0012,0x0000);  
+ 430   1       Write_Cmd_Data(0x0013,0x0000); 
+ 431   1      //vgh 
+ 432   1       Write_Cmd_Data(0x0010,0x1290);   
+ 433   1       Write_Cmd_Data(0x0011,0x0227);
+ 434   1       //delayms(100);
+ 435   1       //vregiout 
+ 436   1       Write_Cmd_Data(0x0012,0x001d); //0x001b
+ 437   1       //delayms(100); 
+ 438   1       //vom amplitude
+ 439   1       Write_Cmd_Data(0x0013,0x1500);
+ 440   1       //delayms(100); 
+ 441   1       //vom H
+ 442   1       Write_Cmd_Data(0x0029,0x0018); 
+ 443   1       Write_Cmd_Data(0x002B,0x000D); 
+ 444   1      
+ 445   1      //gamma
+ 446   1       Write_Cmd_Data(0x0030,0x0004);
+ 447   1       Write_Cmd_Data(0x0031,0x0307);
+ 448   1       Write_Cmd_Data(0x0032,0x0002);// 0006
+ 449   1       Write_Cmd_Data(0x0035,0x0206);
+ 450   1       Write_Cmd_Data(0x0036,0x0408);
+ 451   1       Write_Cmd_Data(0x0037,0x0507); 
+ 452   1       Write_Cmd_Data(0x0038,0x0204);//0200
+ 453   1       Write_Cmd_Data(0x0039,0x0707); 
+ 454   1       Write_Cmd_Data(0x003C,0x0405);// 0504
+ 455   1       Write_Cmd_Data(0x003D,0x0F02); 
+ 456   1       //ram
+ 457   1       Write_Cmd_Data(0x0050,0x0000); 
+ 458   1       Write_Cmd_Data(0x0051,0x00EF);
+ 459   1       Write_Cmd_Data(0x0052,0x0000); 
+ 460   1       Write_Cmd_Data(0x0053,0x013F);  
+ 461   1       Write_Cmd_Data(0x0060,0xA700); 
+ 462   1       Write_Cmd_Data(0x0061,0x0001); 
+ 463   1       Write_Cmd_Data(0x006A,0x0000); 
+ 464   1       //
+ 465   1       Write_Cmd_Data(0x0080,0x0000); 
+ 466   1       Write_Cmd_Data(0x0081,0x0000); 
+ 467   1       Write_Cmd_Data(0x0082,0x0000); 
+ 468   1       Write_Cmd_Data(0x0083,0x0000); 
+ 469   1       Write_Cmd_Data(0x0084,0x0000); 
+ 470   1       Write_Cmd_Data(0x0085,0x0000); 
+ 471   1       //
+ 472   1       Write_Cmd_Data(0x0090,0x0010); 
+ 473   1       Write_Cmd_Data(0x0092,0x0600); 
+ 474   1       Write_Cmd_Data(0x0093,0x0003); 
+ 475   1       Write_Cmd_Data(0x0095,0x0110); 
+ 476   1       Write_Cmd_Data(0x0097,0x0000); 
+ 477   1       Write_Cmd_Data(0x0098,0x0000);
+ 478   1       Write_Cmd_Data(0x0007,0x0133);
+ 479   1      
+ 480   1              
+ 481   1              
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 20:50:17 PAGE 9   
+
+ 482   1      //      Write_Cmd_Data(0x0022);//               
+ 483   1      }
+ 484          
+ 485           
+ 486          
+ 487          
+ 488          
+ 489          
+ 490          
+ 491          /*===========================================================*/
+ 492          
+ 493          /*************************************************************
+ 494          º¯ÊýÃû³Æ:LCD_DefineDispWindow
+ 495          ¹¦    ÄÜ:¶¨ÒåÏÔÊ¾´°Ìå
+ 496          ²Î    Êý:x0:  ´°ÌåÖÐX×ø±êÖÐ½ÏÐ¡Õß
+ 497                   x1:  ´°ÌåÖÐX×ø±êÖÐ½Ï´óÕß
+ 498                   y0:  ´°ÌåÖÐY×ø±êÖÐ½ÏÐ¡Õß
+ 499                   y1:  ´°ÌåÖÐY×ø±êÖÐ½Ï´óÕß 
+ 500          ·µ »Ø Öµ:ÎÞ
+ 501          *************************************************************/
+ 502          static void LCD_SetPos(unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1)
+ 503          {
+ 504   1        Write_Cmd_Data(WINDOW_XADDR_START,x0);
+ 505   1        Write_Cmd_Data(WINDOW_XADDR_END,x1);
+ 506   1        Write_Cmd_Data(WINDOW_YADDR_START,y0);
+ 507   1        Write_Cmd_Data(WINDOW_YADDR_END,y1);
+ 508   1        Write_Cmd_Data(GRAM_XADDR,x0);
+ 509   1        Write_Cmd_Data(GRAM_YADDR,y0);
+ 510   1        Write_Cmd (0x00,0x22);//LCD_WriteCMD(GRAMWR);
+ 511   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2577    ----
+   CONSTANT SIZE    =   3888    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----     114
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,77 @@
+C51 COMPILER V8.06   DENG                                                                  06/24/2012 19:02:15 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE DENG
+OBJECT MODULE PLACED IN deng.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE deng.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：实现楼道间照明灯的方便控制，一个照明灯，在楼上和楼下各有一个（闭合式）开关控制。
+   4                                  开关的闭合并不直接决定灯的亮灭，而开关状态的改变才是决定灯亮灭的关键。即不管两个开关当前的状态
+   5                                  如何，只要有一个开关状态发声变化，都会使照明灯在打亮或者熄灭两种状态间切换。
+   6                                  比如当有人要上楼，若之前灯是灭的，在按下楼下开关后（此后开关为闭合状态），灯会打亮；当到楼上后，
+   7                                  再按楼上开关，灯会熄灭。而当后来又有人上楼时，再按次楼下开关（此后开关为打开状态），灯同样会打亮；
+   8                                  此试验中，用P1口相连的第一个led来模拟照明灯，而用s2和s3来模拟两个开关。注意，因为实际楼道中的
+   9                                  开关为闭合式的，而HL-1的开关为反弹式的，所以实验时，请用手一直按着按键演示开关的闭合。
+  10          *  公司：慧净电子科技有限公司
+  11          *  淘宝：http://shop37031453.taobao.com       
+  12          *  网站：www.hjmcu.com
+  13          *  编写：慧净
+  14          *  日期：2008-8-08
+  15          *   QQ : 121350852    398115088
+  16          *  晶振:11.0592MHZ
+  17          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  18          *  论坛：http://hjdz.5d6d.net
+  19          ******************************************************************/
+  20          
+  21          #include <reg52.h>
+  22          
+  23          sbit light=P1^0;
+  24          sbit s1=P3^4;
+  25          sbit s2=P3^5;
+  26          
+  27          bit change,s1sta,s2sta;//s1sta,s2sta为开关s1和s2前一时刻的状态，用来和当前的s1与s2状态进行对比，
+  28                                                     //进而判决两个开关的状态有无发生变化。
+  29          bit keyscan()
+  30          {
+  31   1              if((s1^s1sta)||(s2^s2sta)) //^为异或，若两者不同，则结果为1。即若两开关中，任一开关的状态发生变化，则此条
+             -件即为真。
+  32   1                      change=1;
+  33   1              return change;
+  34   1      }
+  35          
+  36          void main()
+  37          {       
+  38   1              s1sta=s1;
+  39   1              s2sta=s2;
+  40   1              while(1)
+  41   1              {
+  42   2                      keyscan();                 //扫描按键状态是否变化，即是否有人更改了按键状态。
+  43   2                      if(change)
+  44   2                      {
+  45   3                              change=0;          //清零
+  46   3                              light=~light;  //一旦发现有开关状态发生了变化，则灯的状态就取反。（若以前亮，则熄灭；反之则打亮）
+  47   3                              s1sta=s1;          //同时，将s1和s2的当前状态送给s1sta和s2sta，为以后的比较做准备。
+  48   3                              s2sta=s2;
+  49   3                      }       
+  50   2              }
+  51   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V8.06   DENG                                                                  06/24/2012 19:02:15 PAGE 2   
+
+   CODE SIZE        =     49    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

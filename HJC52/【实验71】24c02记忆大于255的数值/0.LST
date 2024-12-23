@@ -1,0 +1,273 @@
+C51 COMPILER V8.06   0                                                                     02/15/2012 20:54:55 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3GÊµÑé¿ª·¢°åÀý³Ì************************
+   2          *  Æ½Ì¨£ºHJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  Ãû³Æ£ºÓÉÓÚ24c02ÊÇÃ¿¸ö´æ´¢µØÖ·Ö»¶ÔÓ¦8¸öbitµÄ´æ´¢¿Õ¼ä£¬¼´Ò»¸ö
+   4                                  ´æ´¢µ¥ÔªËù´æ´¢µÄÊý¾Ý×î´óÎª255£¬¸ÃÀý³Ì½éÉÜÁËÒ»ÖÖµ±Ëù¼ÇÒä
+   5                                  Êý¾Ý´óÓÚ255£¨¶øÐ¡ÓÚ65536£©µÄ´æ´¢·½·¨¡£¼´ÓÃÁ½¸ö´æ´¢µ¥ÔªÀ´
+   6                                  ´æ´¢Ò»¸öÊý¾Ý¡£
+   7                                  ÏÂÔØ³ÌÐòºó£¬ÊýÂë¹Ü»áÏÔÊ¾ËùÉè¶¨µÄnumÖµ£¨´Ë´¦ÉèÎª12345£©¡£
+   8          *  ¹«Ë¾£º»Û¾»µç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾
+   9          *  ÌÔ±¦£ºhttp://shop37031453.taobao.com       
+  10          *  ÍøÕ¾£ºwww.hlmcu.com
+  11          *  ±àÐ´£º
+  12          *  ÈÕÆÚ£º2008-8-08
+  13          *   QQ : 121350852  398115088
+  14          *  ¾§Õñ:11.0592MHZ
+  15          *  ËµÃ÷£ºÃâ·Ñ¿ªÔ´£¬²»Ìá¹©Ô´´úÂë·ÖÎö£¬ÓÐÎÊÌâÖ±½Óµ½»Û¾»ÂÛÌ³½»Á÷
+  16          *  ÂÛÌ³£ºhttp://hjdz.5d6d.com
+  17          ******************************************************************/
+  18          #include<reg51.h>
+  19          #include <intrins.h>
+  20          #define uint unsigned int
+  21          #define uchar unsigned char
+  22          uint num,num1,num2;        //¶¨Òå¼ÆÊýÖµ£¬Ã¿¹ý1Ãë£¬sec¼Ó1
+  23          sbit sda=P2^0;                          //IO¿Ú¶¨Òå
+  24          sbit scl=P2^1;
+  25          sbit dula=P2^6;
+  26          sbit wela=P2^7;
+  27          sbit s1=P3^4;//¼ÆÊý°´¼ü
+  28          sbit s2=P3^5;//ÇåÁã°´¼ü
+  29          unsigned char j,k;
+  30          char a,b,c,d,e;
+  31          
+  32          void delay(unsigned char i)             //ÑÓÊ±³ÌÐò
+  33          {
+  34   1        for(j=i;j>0;j--)
+  35   1          for(k=125;k>0;k--);
+  36   1      }
+  37          
+  38          uchar code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,                         //ÊýÂë¹Ü±àÂë
+  39                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  40          
+  41          void nop()
+  42          {
+  43   1              _nop_();
+  44   1              _nop_();
+  45   1      }
+  46          void display(uchar a,b,c,d,e)                   //ÏÔÊ¾³ÌÐò
+  47          {
+  48   1         dula=0;
+  49   1         P0=table[a];         //ÏÔÊ¾ÍòÎ»
+  50   1         dula=1;
+  51   1         dula=0;
+  52   1      
+  53   1         wela=0;
+  54   1         P0=0xfe;
+  55   1         wela=1;
+C51 COMPILER V8.06   0                                                                     02/15/2012 20:54:55 PAGE 2   
+
+  56   1         wela=0;
+  57   1         delay(5);
+  58   1      
+  59   1         dula=0;
+  60   1         P0=table[b];         //ÏÔÊ¾Ç§Î»
+  61   1         dula=1;
+  62   1         dula=0;
+  63   1      
+  64   1         wela=0;
+  65   1         P0=0xfd;
+  66   1         wela=1;
+  67   1         wela=0;
+  68   1         delay(5);
+  69   1      
+  70   1         dula=0;
+  71   1         P0=table[c];         //ÏÔÊ¾°ÙÎ»
+  72   1         dula=1;
+  73   1         dula=0;
+  74   1      
+  75   1         wela=0;
+  76   1         P0=0xfb;
+  77   1         wela=1;
+  78   1         wela=0;
+  79   1         delay(5);
+  80   1      
+  81   1         dula=0;
+  82   1         P0=table[d];         //ÏÔÊ¾Ê®Î»
+  83   1         dula=1;
+  84   1         dula=0;
+  85   1      
+  86   1         wela=0;
+  87   1         P0=0xf7;
+  88   1         wela=1;
+  89   1         wela=0;
+  90   1         delay(5);
+  91   1      
+  92   1         dula=0;
+  93   1         P0=table[e];         //ÏÔÊ¾¸öÎ»
+  94   1         dula=1;
+  95   1         dula=0;
+  96   1      
+  97   1         wela=0;
+  98   1         P0=0xef;
+  99   1         wela=1;
+ 100   1         wela=0;
+ 101   1         delay(5);
+ 102   1               
+ 103   1      }
+ 104          
+ 105          /////////24C02¶ÁÐ´Çý¶¯³ÌÐò////////////////////
+ 106          void delay1(unsigned int m)
+ 107          {       unsigned int n;
+ 108   1              for(n=0;n<m;n++);
+ 109   1      }
+ 110          
+ 111          void init()  //24c02³õÊ¼»¯×Ó³ÌÐò
+ 112          {
+ 113   1              scl=1;
+ 114   1              nop();
+ 115   1              sda=1;
+ 116   1              nop();
+ 117   1      }
+C51 COMPILER V8.06   0                                                                     02/15/2012 20:54:55 PAGE 3   
+
+ 118          
+ 119          void start()        //Æô¶¯I2C×ÜÏß
+ 120          {
+ 121   1              sda=1;
+ 122   1              nop();
+ 123   1              scl=1;
+ 124   1              nop();
+ 125   1              sda=0;
+ 126   1              nop();
+ 127   1              scl=0;
+ 128   1              nop();
+ 129   1      }
+ 130          
+ 131          void stop()         //Í£Ö¹I2C×ÜÏß
+ 132          {
+ 133   1              sda=0;
+ 134   1              nop();
+ 135   1              scl=1;
+ 136   1              nop();
+ 137   1              sda=1;
+ 138   1              nop();
+ 139   1      }
+ 140          
+ 141          void writebyte(unsigned char j)  //Ð´Ò»¸ö×Ö½Ú
+ 142          {
+ 143   1              unsigned char i,temp;
+ 144   1              temp=j;
+ 145   1              for (i=0;i<8;i++)
+ 146   1         {
+ 147   2                 temp=temp<<1;
+ 148   2                 scl=0;
+ 149   2                 nop();
+ 150   2                 sda=CY;              //temp×óÒÆÊ±£¬ÒÆ³öµÄÖµ·ÅÈëÁËCYÖÐ
+ 151   2                 nop();
+ 152   2                 scl=1;               //´ýsdaÏßÉÏµÄÊý¾ÝÎÈ¶¨ºó£¬½«sclÀ­¸ß
+ 153   2                 nop();
+ 154   2         }
+ 155   1         scl=0;
+ 156   1         nop();
+ 157   1         sda=1;
+ 158   1         nop();
+ 159   1      }
+ 160          
+ 161          unsigned char readbyte()   //¶ÁÒ»¸ö×Ö½Ú
+ 162          {
+ 163   1         unsigned char i,j,k=0;
+ 164   1         scl=0; nop(); sda=1;
+ 165   1         for (i=0;i<8;i++)
+ 166   1         {  
+ 167   2                      nop(); scl=1; nop();
+ 168   2              if(sda==1) 
+ 169   2                      j=1;
+ 170   2              else
+ 171   2                      j=0;
+ 172   2              k=(k<<1)|j;
+ 173   2                      scl=0;
+ 174   2              }
+ 175   1              nop();
+ 176   1              return(k);
+ 177   1      }
+ 178          
+ 179          void clock()         //I2C×ÜÏßÊ±ÖÓ
+C51 COMPILER V8.06   0                                                                     02/15/2012 20:54:55 PAGE 4   
+
+ 180          {
+ 181   1         unsigned char i=0;
+ 182   1         scl=1;
+ 183   1         nop();
+ 184   1         while((sda==1)&&(i<255))
+ 185   1                i++;
+ 186   1         scl=0;
+ 187   1         nop();
+ 188   1      }
+ 189          
+ 190          ////////´Ó24c02µÄµØÖ·addressÖÐ¶ÁÈ¡Ò»¸ö×Ö½ÚÊý¾Ý/////
+ 191          unsigned char read24c02(unsigned char address)
+ 192          {
+ 193   1         unsigned char i;
+ 194   1         start();
+ 195   1         writebyte(0xa0);
+ 196   1         clock();
+ 197   1         writebyte(address);
+ 198   1         clock();
+ 199   1         start();
+ 200   1         writebyte(0xa1);
+ 201   1         clock();
+ 202   1         i=readbyte();
+ 203   1         stop();
+ 204   1         delay1(100);
+ 205   1         return(i);
+ 206   1      }
+ 207          
+ 208          //////Ïò24c02µÄaddressµØÖ·ÖÐÐ´ÈëÒ»×Ö½ÚÊý¾Ýinfo/////
+ 209          void write24c02(unsigned char address,unsigned char info)
+ 210          {
+ 211   1         start();
+ 212   1         writebyte(0xa0);
+ 213   1         clock();
+ 214   1         writebyte(address);
+ 215   1         clock();
+ 216   1         writebyte(info);
+ 217   1         clock();
+ 218   1         stop();
+ 219   1         delay1(5000); //Õâ¸öÑÓÊ±Ò»¶¨Òª×ã¹»³¤£¬·ñÔò»á³ö´í¡£ÒòÎª24c02ÔÚ´ÓsdaÉÏÈ¡µÃÊý¾Ýºó£¬»¹ÐèÒªÒ»¶¨Ê±¼äµÄÉÕÂ¼¹ý³
+             -Ì¡£
+ 220   1      }
+ 221          
+ 222          void main()
+ 223          {
+ 224   1              init();        //³õÊ¼»¯24C02
+ 225   1              num=12345;         //numÎªÐ¡ÓÚµÈÓÚ65535µÄÕûÊý¡£
+ 226   1              num2=num/256;
+ 227   1              num1=num%256;
+ 228   1              write24c02(0,num1);
+ 229   1              write24c02(1,num2);
+ 230   1              num1=read24c02(0);      //ÓÃµØÖ·0µ¥Ôª´æ´¢numÊ®Áù½øÖÆ±íÊ¾Ê±µÄµÍÁ½Î»
+ 231   1              num2=read24c02(1);      //ÓÃµØÖ·0µ¥Ôª´æ´¢numÊ®Áù½øÖÆ±íÊ¾Ê±µÄ¸ßÁ½Î»
+ 232   1              num=num2*256+num1;
+ 233   1              a=num/10000;
+ 234   1              b=num%10000/1000;
+ 235   1              c=num%1000/100;
+ 236   1              d=num%100/10;
+ 237   1              e=num%10;
+ 238   1              while(1)
+ 239   1              display(a,b,c,d,e);
+ 240   1      }
+C51 COMPILER V8.06   0                                                                     02/15/2012 20:54:55 PAGE 5   
+
+ 241          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    618    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

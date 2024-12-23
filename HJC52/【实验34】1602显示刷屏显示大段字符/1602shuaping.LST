@@ -1,0 +1,227 @@
+C51 COMPILER V8.06   1602SHUAPING                                                          06/24/2012 19:35:36 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 1602SHUAPING
+OBJECT MODULE PLACED IN 1602shuaping.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1602shuaping.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          
+  15          //注意事项：10天教程中的LCD1602第5脚由于当时设计错误，直接接到GND上了，接了低电平。
+  16          //本实验需要把LCD1602第5脚，读/写脚接到GND上，有两种方法，第一种，用杜邦线把P3.6脚接到GND上。
+  17          //另一种方法，定义一个 P3.6 IO口，在主函数中 把P3.6 写一个低电平就可以了。
+  18          //sbit WR = P3^6; 在后面主函数中加入 WR=0;就可以不用接杜邦线， P3.6到GND的杜邦线不要。
+  19          //WR=0;
+  20          
+  21          程序功能：      敲入式地显示一段语句，由于语句超过了16*2个字节，故采取了
+  22                                  分屏显示的方式，共分为六屏先后显示。
+  23          *************************************************************************/
+  24          
+  25          #include<reg52.h>
+  26          
+  27          #define uchar unsigned char
+  28          #define uint unsigned int
+  29          
+  30          sbit beep=P2^3;
+  31          
+  32          uchar code table []="I want to bring ";
+  33          uchar code table1[]="out the secret  ";
+  34          uchar code table2[]="of nature and   ";
+  35          uchar code table3[]="apply them for  ";
+  36          uchar code table4[]="the happiness of";
+  37          uchar code table5[]="man.I don't know";
+  38          uchar code table6[]="of any better s-";
+  39          uchar code table7[]="-ervice to offer";
+  40          uchar code table8[]="for the short t-";
+  41          uchar code table9[]="-ime we are in  ";
+  42          uchar code table10[]="the world.      ";
+  43          uchar code table11[]="---Thomas Edison";
+  44          
+  45          sbit lcden=P2^5;
+  46          sbit lcdrs=P1^0;
+  47          sbit rw=P1^1;
+  48          sbit dula=P2^6;
+  49          sbit wela=P2^7;
+  50          uchar num;
+  51          
+  52          void delay(uint z)
+  53          {
+  54   1              uint x,y;
+  55   1              for(x=z;x>0;x--)
+C51 COMPILER V8.06   1602SHUAPING                                                          06/24/2012 19:35:36 PAGE 2   
+
+  56   1                      for(y=110;y>0;y--);
+  57   1      }
+  58          
+  59          void write_com(uchar com)
+  60          {
+  61   1              lcdrs=0;
+  62   1              P0=com;
+  63   1              delay(5);
+  64   1              lcden=1;
+  65   1              delay(5);
+  66   1              lcden=0;
+  67   1      }
+  68          
+  69          void write_data(uchar date)
+  70          {
+  71   1              lcdrs=1;
+  72   1              P0=date;
+  73   1              delay(5);
+  74   1              lcden=1;
+  75   1              delay(5);
+  76   1              lcden=0;
+  77   1      }
+  78          
+  79          void init()
+  80          {       
+  81   1              rw=0;
+  82   1              dula=0;
+  83   1              wela=0;
+  84   1              lcden=0;
+  85   1              write_com(0x38);
+  86   1              write_com(0x0e);
+  87   1              write_com(0x06);
+  88   1              write_com(0x01);
+  89   1              write_com(0x80);
+  90   1      }
+  91          void main()
+  92          {
+  93   1              init();
+  94   1              for(num=0;num<16;num++)    //第一屏
+  95   1              {
+  96   2                      beep=0;
+  97   2                      write_data(table[num]);
+  98   2                      delay(100);
+  99   2                      beep=1;
+ 100   2                      delay(50);
+ 101   2              }
+ 102   1              write_com(0x80+0x40);
+ 103   1                      for(num=0;num<16;num++)
+ 104   1              {
+ 105   2                      beep=0;
+ 106   2                      write_data(table1[num]);
+ 107   2                      delay(100);
+ 108   2                      beep=1;
+ 109   2                      delay(50);
+ 110   2              }
+ 111   1              write_com(0x01); //清屏
+ 112   1         write_com(0x80);      //设置字符显示位置指针于第一行
+ 113   1              for(num=0;num<16;num++)    // 第二屏
+ 114   1              {       beep=0;
+ 115   2                      write_data(table2[num]);
+ 116   2                      delay(100);
+ 117   2                      beep=1;
+C51 COMPILER V8.06   1602SHUAPING                                                          06/24/2012 19:35:36 PAGE 3   
+
+ 118   2                      delay(50);
+ 119   2              }
+ 120   1              write_com(0x80+0x40); //设置字符显示位置指针于第二行
+ 121   1                      for(num=0;num<16;num++)
+ 122   1              {       beep=0;
+ 123   2                      write_data(table3[num]);
+ 124   2                      delay(100);
+ 125   2                      beep=1;
+ 126   2                      delay(50);
+ 127   2              }
+ 128   1         write_com(0x80);
+ 129   1              write_com(0x01);
+ 130   1              for(num=0;num<16;num++)    //第三屏
+ 131   1              {       beep=0;
+ 132   2                      write_data(table4[num]);
+ 133   2                      delay(100);
+ 134   2                      beep=1;
+ 135   2                      delay(50);
+ 136   2              }
+ 137   1              write_com(0x80+0x40);
+ 138   1                      for(num=0;num<16;num++)
+ 139   1              {       beep=0;
+ 140   2                      write_data(table5[num]);
+ 141   2                      delay(100);
+ 142   2                      beep=1;
+ 143   2                      delay(50);
+ 144   2              }
+ 145   1              write_com(0x01);
+ 146   1         write_com(0x80);
+ 147   1              for(num=0;num<16;num++)   //第四屏
+ 148   1              {       beep=0;
+ 149   2                      write_data(table6[num]);
+ 150   2                      delay(100);
+ 151   2                      beep=1;
+ 152   2                      delay(50);
+ 153   2              }
+ 154   1              write_com(0x80+0x40);
+ 155   1                      for(num=0;num<16;num++)
+ 156   1              {       beep=0;
+ 157   2                      write_data(table7[num]);
+ 158   2                      delay(100);
+ 159   2                      beep=1;
+ 160   2                      delay(50);
+ 161   2              }
+ 162   1              write_com(0x01);
+ 163   1         write_com(0x80);
+ 164   1              for(num=0;num<16;num++)   //第五屏
+ 165   1              {       beep=0;
+ 166   2                      write_data(table8[num]);
+ 167   2                      delay(100);
+ 168   2                      beep=1;
+ 169   2                      delay(50);
+ 170   2              }
+ 171   1              write_com(0x80+0x40);
+ 172   1                      for(num=0;num<16;num++)
+ 173   1              {       beep=0;
+ 174   2                      write_data(table9[num]);
+ 175   2                      delay(100);
+ 176   2                      beep=1;
+ 177   2                      delay(50);
+ 178   2              }
+ 179   1              write_com(0x01);
+C51 COMPILER V8.06   1602SHUAPING                                                          06/24/2012 19:35:36 PAGE 4   
+
+ 180   1         write_com(0x80);
+ 181   1      
+ 182   1         for(num=0;num<16;num++)   //第六屏
+ 183   1              {       beep=0;
+ 184   2                      write_data(table10[num]);
+ 185   2                      delay(100);
+ 186   2                      beep=1;
+ 187   2                      delay(50);
+ 188   2              }
+ 189   1              write_com(0x80+0x40);
+ 190   1                      for(num=0;num<16;num++)
+ 191   1              {       beep=0;
+ 192   2                      write_data(table11[num]);
+ 193   2                      delay(100);
+ 194   2                      beep=1;
+ 195   2                      delay(50);
+ 196   2              }
+ 197   1              while(1);
+ 198   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    453    ----
+   CONSTANT SIZE    =    204    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

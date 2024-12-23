@@ -1,0 +1,78 @@
+C51 COMPILER V8.06   SHIBIE                                                                06/24/2012 18:58:23 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE SHIBIE
+OBJECT MODULE PLACED IN shibie.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE shibie.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：生活中常见一个按键随着按下次数不同对应不同功能，
+   4                             本程序以HL-1 学习板中的k1键为例，模拟其具有2种功能，
+   5                             一是点亮一个发光二极管，二是蜂鸣器发声
+   6          *  公司：慧净电子科技有限公司
+   7          *  淘宝：http://shop37031453.taobao.com       
+   8          *  网站：www.hjmcu.com
+   9          *  编写：慧净
+  10          *  日期：2008-8-08
+  11          *   QQ : 121350852    398115088
+  12          *  晶振:11.0592MHZ
+  13          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  14          *  论坛：http://hjdz.5d6d.net
+  15          ******************************************************************/
+  16          
+  17          #include<reg52.h>
+  18          
+  19          #define uchar unsigned char 
+  20          uchar num;
+  21          
+  22          sbit beep=P2^3;
+  23          sbit led=P1^0;
+  24          sbit k1=P3^4;
+  25          
+  26          void delay(uchar i)
+  27          {
+  28   1              uchar j,k;
+  29   1              for(j=i;j>0;j--)
+  30   1              for(k=125;k>0;k--);
+  31   1      }
+  32          
+  33          
+  34          void main()
+  35          {
+  36   1              while(1)
+  37   1              {
+  38   2                      if(k1==0)
+  39   2                      {
+  40   3                              delay(20);               //消抖
+  41   3                              if(k1==20)
+  42   3                              {
+  43   4                                      while(!k1);      //等待按键松开
+  44   4                                      num++;
+  45   4                              }
+  46   3                              switch(num)
+  47   3                              {
+  48   4                                      case 1: led=0;  beep=1; break;
+  49   4                                      case 2: beep=0; led=1;  num=0; break;
+  50   4                              }
+  51   3                      }
+  52   2              }
+  53   1      }
+
+
+C51 COMPILER V8.06   SHIBIE                                                                06/24/2012 18:58:23 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     54    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

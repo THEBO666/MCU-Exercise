@@ -1,0 +1,268 @@
+C51 COMPILER V8.06   24C02                                                                 02/15/2012 20:57:16 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 24C02
+OBJECT MODULE PLACED IN 24c02.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 24c02.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          /******************************************************************/
+  14          //程序功能：  驱动 AT24C02EEPROM芯片，实现对其的读和写。让其保存计时器的输出sec值。
+  15          //                      并可以保证在系统掉电后，重新加电时，可以读出上次掉电瞬间所保存的值。
+  16          //演示方法：  下载程序后，数码管开始显示自加数值。片刻后，关闭学习板
+  17          //                      电源，然后打开，会发现数码管上显示的数值是断电瞬间所显
+  18          //                      示的数值。（也即由AT24C02EEPROM芯片所记忆的数值。）
+  19          /***************************************************************/
+  20          //试验AT24C02EEPROM芯片程序
+  21          #include<reg51.h>
+  22          #include <intrins.h>
+  23          #define uint unsigned int
+  24          #define uchar unsigned char
+  25          unsigned char sec,num;        //定义计数值，每过1秒，sec加1
+  26          unsigned int times;        //定时中断次数
+  27          bit  write=0;             //写24C02的标志；
+  28          sbit sda=P2^0;                          //IO口定义
+  29          sbit scl=P2^1;
+  30          sbit dula=P2^6;
+  31          sbit wela=P2^7;
+  32          unsigned char j,k;
+  33          
+  34          void delay(unsigned char i)             //延时程序
+  35          {
+  36   1        for(j=i;j>0;j--)
+  37   1          for(k=125;k>0;k--);
+  38   1      }
+  39          
+  40          uchar code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,                         //数码管编码
+  41                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  42          
+  43          void nop()
+  44          {
+  45   1              _nop_();
+  46   1              _nop_();
+  47   1      }
+  48          void display(uchar a,uchar b)                   //显示程序
+  49          {
+  50   1         dula=0;
+  51   1         P0=table[a];         //显示百位
+  52   1         dula=1;
+  53   1         dula=0;
+  54   1      
+  55   1         wela=0;
+C51 COMPILER V8.06   24C02                                                                 02/15/2012 20:57:16 PAGE 2   
+
+  56   1         P0=0x7e;
+  57   1         wela=1;
+  58   1         wela=0;
+  59   1         delay(5);
+  60   1      
+  61   1         dula=0;
+  62   1         P0=table[b];         //显示十位
+  63   1         dula=1;
+  64   1         dula=0;
+  65   1      
+  66   1         wela=0;
+  67   1         P0=0x7d;
+  68   1         wela=1;
+  69   1         wela=0;
+  70   1         delay(5);
+  71   1      
+  72   1      }
+  73          
+  74          /////////24C02读写驱动程序////////////////////
+  75          void delay1(unsigned char m)
+  76          {       unsigned int n;
+  77   1              for(n=0;n<m;n++);
+  78   1      }
+  79          
+  80          
+  81          
+  82          void init()  //24c02初始化子程序
+  83          {
+  84   1              scl=1;
+  85   1              nop();
+  86   1              sda=1;
+  87   1              nop();
+  88   1      }
+  89          
+  90          void start()        //启动I2C总线
+  91          {
+  92   1              sda=1;
+  93   1              nop();
+  94   1              scl=1;
+  95   1              nop();
+  96   1              sda=0;
+  97   1              nop();
+  98   1              scl=0;
+  99   1              nop();
+ 100   1      }
+ 101          
+ 102          void stop()         //停止I2C总线
+ 103          {
+ 104   1              sda=0;
+ 105   1              nop();
+ 106   1              scl=1;
+ 107   1              nop();
+ 108   1              sda=1;
+ 109   1              nop();
+ 110   1      }
+ 111          
+ 112          void writebyte(unsigned char j)  //写一个字节
+ 113          {
+ 114   1              unsigned char i,temp;
+ 115   1              temp=j;
+ 116   1              for (i=0;i<8;i++)
+ 117   1         {
+C51 COMPILER V8.06   24C02                                                                 02/15/2012 20:57:16 PAGE 3   
+
+ 118   2                 temp=temp<<1;
+ 119   2                 scl=0;
+ 120   2                 nop();
+ 121   2                 sda=CY;              //temp左移时，移出的值放入了CY中
+ 122   2                 nop();
+ 123   2                 scl=1;               //待sda线上的数据稳定后，将scl拉高
+ 124   2                 nop();
+ 125   2         }
+ 126   1         scl=0;
+ 127   1         nop();
+ 128   1         sda=1;
+ 129   1         nop();
+ 130   1      }
+ 131          
+ 132          unsigned char readbyte()   //读一个字节
+ 133          {
+ 134   1         unsigned char i,j,k=0;
+ 135   1         scl=0; nop(); sda=1;
+ 136   1         for (i=0;i<8;i++)
+ 137   1         {  
+ 138   2                      nop(); scl=1; nop();
+ 139   2              if(sda==1) 
+ 140   2                      j=1;
+ 141   2              else
+ 142   2                      j=0;
+ 143   2              k=(k<<1)|j;
+ 144   2                      scl=0;
+ 145   2              }
+ 146   1              nop();
+ 147   1              return(k);
+ 148   1      }
+ 149          
+ 150          void clock()         //I2C总线时钟
+ 151          {
+ 152   1         unsigned char i=0;
+ 153   1         scl=1;
+ 154   1         nop();
+ 155   1         while((sda==1)&&(i<255))
+ 156   1                i++;
+ 157   1         scl=0;
+ 158   1         nop();
+ 159   1      }
+ 160          
+ 161          ////////从24c02的地址address中读取一个字节数据/////
+ 162          unsigned char read24c02(unsigned char address)
+ 163          {
+ 164   1         unsigned char i;
+ 165   1         start();
+ 166   1         writebyte(0xa0);
+ 167   1         clock();
+ 168   1         writebyte(address);
+ 169   1         clock();
+ 170   1         start();
+ 171   1         writebyte(0xa1);
+ 172   1         clock();
+ 173   1         i=readbyte();
+ 174   1         stop();
+ 175   1         delay1(10);
+ 176   1         return(i);
+ 177   1      }
+ 178          
+ 179          //////向24c02的address地址中写入一字节数据info/////
+C51 COMPILER V8.06   24C02                                                                 02/15/2012 20:57:16 PAGE 4   
+
+ 180          void write24c02(unsigned char address,unsigned char info)
+ 181          {
+ 182   1         EA=0;
+ 183   1         start();
+ 184   1         writebyte(0xa0);
+ 185   1         clock();
+ 186   1         writebyte(address);
+ 187   1         clock();
+ 188   1         writebyte(info);
+ 189   1         clock();
+ 190   1         stop();
+ 191   1         EA=1;
+ 192   1         delay1(50);
+ 193   1      }
+ 194          
+ 195          void main()
+ 196          {
+ 197   1      unsigned char i;
+ 198   1      TMOD=0x01;  //定时器工作在方式1
+ 199   1      ET0=1;
+ 200   1      EA=1;
+ 201   1      TH0=0x4c; //对TH0 TL0赋值
+ 202   1      TL0=0x00; //使定时器0.05秒中断一次
+ 203   1      TR0=1;           //开始计时
+ 204   1      
+ 205   1      init();        //初始化24C02
+ 206   1      sec=read24c02(1);//每次重新开机时，读出保存的数据赋于sec
+ 207   1      
+ 208   1      while(1)
+ 209   1        {
+ 210   2            i=20;
+ 211   2                //num=read24c02(1);//读出保存的数据赋于num
+ 212   2            while(i--)
+ 213   2            {
+ 214   3                      display(sec/10,sec%10);
+ 215   3            }
+ 216   2                if(write==1) //判断计时器是否计时一秒
+ 217   2             {
+ 218   3                      write=0;              //清零
+ 219   3              write24c02(1,sec);  //在24c02的地址1中写入数据sec
+ 220   3                 }
+ 221   2         } 
+ 222   1      }
+ 223          
+ 224          void timer0(void) interrupt 1 using 0  //定时中断服务函数
+ 225          {
+ 226   1      TH0=0x4c; //对TH0 TL0赋值 ,每隔0.05s发出一次中断。
+ 227   1      TL0=0x00; //重装计数初值
+ 228   1      times++;        //每过250ust tcnt加一
+ 229   1      if(times==20)  //计满20次（1秒）时
+ 230   1        {
+ 231   2          times=0;   //重新再计
+ 232   2          sec++;
+ 233   2          write=1;  //1秒写一次24C08
+ 234   2          if(sec==60) //定时100秒，在从零开始计时
+ 235   2            {sec=0;}
+ 236   2        }
+ 237   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    418    ----
+C51 COMPILER V8.06   24C02                                                                 02/15/2012 20:57:16 PAGE 5   
+
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,366 @@
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE BIAOJUE
+OBJECT MODULE PLACED IN biaojue.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE biaojue.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          
+  15          //注意事项：10天教程中的LCD1602第5脚由于当时设计错误，直接接到GND上了，接了低电平。
+  16          //本实验需要把LCD1602第5脚，读/写脚接到GND上，有两种方法，第一种，用杜邦线把P3.6脚接到GND上。
+  17          //另一种方法，定义一个 P3.6 IO口，在主函数中 把P3.6 写一个低电平就可以了。
+  18          //sbit WR = P3^6; 在后面主函数中加入 WR=0;就可以不用接杜邦线， P3.6到GND的杜邦线不要。
+  19          //WR=0;
+  20          
+  21          程序功能：表决器，模拟三位评委的表决，并做出判断，将结果显示于1602上。
+  22                            共用到HJ-3G学习板上左二列的S6,S7,S10,S11,S14,S15,S18七个按键。
+  23                            其中S18为清零键，对1602进行清屏和对相关变量清零。
+  24                            每位评委操控两个按键，分别代表“通过”和“不通过”。
+  25                            第一位评委控制S6（通过）与S7（不通过）；
+  26                            第二位评委控制S10（通过）与S11（不通过）；
+  27                            第三位评委控制S14（通过）与S15（不通过）；
+  28                            当按“通过”次数多于“不通过”时，1602将显示“yes”，否则显示“no”。
+  29                            在一个回合中，每位评委只有一次按键的权利，一旦按下，其操控的两个
+  30                            按键均将被封锁，再按也不会有任何作用。除非按下清零键S18清零后开始下一回合。
+  31          
+  32          ************************************************************************************/
+  33          
+  34          #include<reg52.h>
+  35          #define uchar unsigned char 
+  36          #define uint unsigned int
+  37          sbit dula=P2^6;
+  38          sbit wela=P2^7;
+  39          sbit rs=P1^0;
+  40          sbit rw=P1^1;
+  41          sbit beep=P2^3;
+  42          sbit lcden=P2^5;
+  43          
+  44          bit ok1,ok2,ok3,clear;
+  45          
+  46          uchar pass,nopass,temp;
+  47          uchar table[]="yes";
+  48          uchar table1[]="no";
+  49          uchar table2[]="agree";
+  50          uchar table3[]="disagree";
+  51          uchar table4[]="   ";
+  52          uchar table5[]="  ";
+  53          
+  54          void delay(uint z)
+  55          {
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 2   
+
+  56   1              uint x,y;
+  57   1              for(x=z;x>0;x--)
+  58   1                      for(y=110;y>0;y--);
+  59   1      }
+  60          
+  61          
+  62          
+  63          void write_com(uchar com)
+  64          {
+  65   1              rs=0;
+  66   1              lcden=0;
+  67   1              P0=com;
+  68   1              delay(5);
+  69   1              lcden=1;
+  70   1              delay(5);
+  71   1              lcden=0;        
+  72   1      }
+  73          
+  74          void write_date(uchar date)
+  75          {
+  76   1              rs=1;
+  77   1              lcden=0;
+  78   1              P0=date;
+  79   1              delay(5);
+  80   1              lcden=1;
+  81   1              delay(5);
+  82   1              lcden=0;        
+  83   1      }
+  84          
+  85          
+  86          
+  87          void init()
+  88          {       
+  89   1              rw=0;
+  90   1      //      uchar a;
+  91   1              dula=0;
+  92   1              wela=0;
+  93   1              write_com(0x38);
+  94   1              delay(20);
+  95   1              write_com(0x0c);
+  96   1              delay(20);
+  97   1              write_com(0x06);
+  98   1              delay(20);
+  99   1              write_com(0x01);
+ 100   1              delay(20);
+ 101   1                      
+ 102   1      }
+ 103          
+ 104          void yes()
+ 105          {
+ 106   1              uchar a;
+ 107   1              write_com(0x80+12);
+ 108   1              delay(20);
+ 109   1              for(a=0;a<3;a++)
+ 110   1              {
+ 111   2                      write_date(table[a]);
+ 112   2                      delay(20);
+ 113   2              }
+ 114   1      }
+ 115          
+ 116          void no()
+ 117          {
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 3   
+
+ 118   1              uchar a;
+ 119   1              write_com(0x80+0x40+12);
+ 120   1              delay(20);
+ 121   1              for(a=0;a<2;a++)
+ 122   1              {
+ 123   2                      write_date(table1[a]);
+ 124   2                      delay(20);
+ 125   2              }
+ 126   1      }
+ 127          
+ 128          void agree()
+ 129          {
+ 130   1              uchar a;
+ 131   1              write_com(0x80);
+ 132   1              delay(20);
+ 133   1              for(a=0;a<5;a++)
+ 134   1              {
+ 135   2                      write_date(table2[a]);
+ 136   2                      delay(20);
+ 137   2              }
+ 138   1      }
+ 139          
+ 140          void disagree()
+ 141          {
+ 142   1              uchar a;
+ 143   1              write_com(0x80+0x40);
+ 144   1              delay(20);
+ 145   1              for(a=0;a<8;a++)
+ 146   1              {
+ 147   2                      write_date(table3[a]);
+ 148   2                      delay(20);
+ 149   2              }
+ 150   1      }
+ 151          
+ 152          void keyscan()
+ 153          {
+ 154   1          if(!ok1)
+ 155   1              { 
+ 156   2              P3=0xfe;
+ 157   2          temp=P3;
+ 158   2          temp=temp&0xf0;
+ 159   2          if(temp!=0xf0)
+ 160   2          {
+ 161   3            delay(10);
+ 162   3            if(temp!=0xf0)
+ 163   3            {
+ 164   4              temp=P3;
+ 165   4                      switch(temp)
+ 166   4              {
+ 167   5                case 0xee:
+ 168   5                     pass++;
+ 169   5                                 ok1=1;               //一号评委已判决。
+ 170   5                     break;
+ 171   5      
+ 172   5                case 0xde:
+ 173   5                     nopass++;
+ 174   5                                 ok1=1;
+ 175   5                     break;
+ 176   5               }
+ 177   4               while(temp!=0xf0)
+ 178   4               {
+ 179   5                 temp=P3;
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 4   
+
+ 180   5                 temp=temp&0xf0;
+ 181   5                 beep=0;
+ 182   5               }
+ 183   4               beep=1;
+ 184   4            }
+ 185   3          }
+ 186   2              }
+ 187   1              if(!ok2)
+ 188   1              {
+ 189   2          P3=0xfd;
+ 190   2          temp=P3;
+ 191   2          temp=temp&0xf0;
+ 192   2          if(temp!=0xf0)
+ 193   2          {
+ 194   3            delay(10);
+ 195   3            if(temp!=0xf0)
+ 196   3            {
+ 197   4              temp=P3;
+ 198   4              switch(temp)
+ 199   4              {
+ 200   5                case 0xed:
+ 201   5                     pass++;
+ 202   5                                 ok2=1;
+ 203   5                     break;
+ 204   5      
+ 205   5                case 0xdd:
+ 206   5                     nopass++;
+ 207   5                                 ok2=1;
+ 208   5                     break;
+ 209   5               }
+ 210   4               while(temp!=0xf0)
+ 211   4               {
+ 212   5                 temp=P3;
+ 213   5                 temp=temp&0xf0;
+ 214   5                 beep=0;
+ 215   5               }
+ 216   4               beep=1;
+ 217   4            }
+ 218   3            }
+ 219   2                }
+ 220   1              if(!ok3)
+ 221   1              {
+ 222   2          P3=0xfb;
+ 223   2          temp=P3;
+ 224   2          temp=temp&0xf0;
+ 225   2          if(temp!=0xf0)
+ 226   2          {
+ 227   3            delay(10);
+ 228   3            if(temp!=0xf0)
+ 229   3            {
+ 230   4              temp=P3;
+ 231   4              switch(temp)
+ 232   4              {
+ 233   5                case 0xeb:
+ 234   5                     pass++;
+ 235   5                                 ok3=1;
+ 236   5                     break;
+ 237   5      
+ 238   5                case 0xdb:
+ 239   5                     nopass++;
+ 240   5                                 ok3=1;
+ 241   5                     break;
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 5   
+
+ 242   5               }
+ 243   4               while(temp!=0xf0)
+ 244   4               {
+ 245   5                 temp=P3;
+ 246   5                 temp=temp&0xf0;
+ 247   5                 beep=0;
+ 248   5               }
+ 249   4               beep=1;
+ 250   4            }
+ 251   3            }
+ 252   2                }
+ 253   1                    P3=0xf7;
+ 254   1          temp=P3;
+ 255   1          temp=temp&0xf0;
+ 256   1          if(temp!=0xf0)
+ 257   1          {
+ 258   2            delay(10);
+ 259   2            if(temp!=0xf0)
+ 260   2            {
+ 261   3              temp=P3;
+ 262   3              switch(temp)
+ 263   3              {
+ 264   4                case 0xe7:
+ 265   4                     clear=1;
+ 266   4                     break;
+ 267   4                
+ 268   4               }
+ 269   3               while(temp!=0xf0)
+ 270   3               {
+ 271   4                 temp=P3;
+ 272   4                 temp=temp&0xf0;
+ 273   4                 beep=0;
+ 274   4               }
+ 275   3               beep=1;
+ 276   3            }
+ 277   2          }
+ 278   1      }
+ 279          
+ 280          void main()
+ 281          {
+ 282   1              uchar a,b;
+ 283   1              init();
+ 284   1              while(1)
+ 285   1              {       
+ 286   2                      agree();
+ 287   2                      disagree();
+ 288   2                      keyscan();
+ 289   2                      if(pass||nopass)
+ 290   2                      {
+ 291   3                              write_com(0x80+10);
+ 292   3                              delay(20);
+ 293   3                              write_date(0x30+pass);
+ 294   3                              write_com(0x80+0x40+10);
+ 295   3                              delay(20);
+ 296   3                              write_date(0x30+nopass);
+ 297   3                      }
+ 298   2                      a=pass+nopass;
+ 299   2                      if(a==3)
+ 300   2                      {
+ 301   3                              if(pass>nopass)
+ 302   3                              yes();
+ 303   3                              if(pass<nopass)
+C51 COMPILER V8.06   BIAOJUE                                                               06/24/2012 19:38:16 PAGE 6   
+
+ 304   3                              no(); 
+ 305   3                      }
+ 306   2                      if(clear)
+ 307   2                      {
+ 308   3                              ok1=0;  ok2=0;  ok3=0;  
+ 309   3                              pass=0; nopass=0;       clear=0;        a=0;
+ 310   3                              agree();
+ 311   3                              disagree();
+ 312   3                              write_com(0x80+10);
+ 313   3                              delay(20);
+ 314   3                              write_date(0x30+pass);
+ 315   3                              write_com(0x80+0x40+10);
+ 316   3                              delay(20);
+ 317   3                              write_date(0x30+nopass);
+ 318   3              
+ 319   3                              write_com(0x80+12);
+ 320   3                              for(b=0;b<3;b++)
+ 321   3                              {
+ 322   4                                      write_date(table4[b]);
+ 323   4                                      delay(20);
+ 324   4                              }
+ 325   3                              write_com(0x80+0x40+12);
+ 326   3                              for(b=0;b<2;b++)
+ 327   3                              {
+ 328   4                                      write_date(table5[b]);
+ 329   4                                      delay(20);
+ 330   4                              } 
+ 331   3                      }          
+ 332   2              }
+ 333   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    644    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     32    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      4    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,97 @@
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 12:43:05 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-C52实验开发板例程************************
+   2          *  名称：PWM调光    
+   3          *  公司：慧净电子科技有限公司
+   4          *  网站：http://shop37031453.taobao.com/          www.hlmcu.com
+   5          *  编写：慧净电子会员
+   6          *  日期：2008-8-08
+   7          *   QQ : 121350852 398115088
+   8          *  晶振:11.0592MHZ
+   9          *  内容：通过PWM（脉宽调制）调节LED的亮度
+  10          *  硬件事项：LED边上的，J1要用短路帽短接
+  11          ******************************************************************/
+  12          #include<reg52.h> //包含头文件，一般情况不需要改动，
+  13                            //头文件包含特殊功能寄存器的定义
+  14          
+  15          /*-------------------------IO口定义----------------------------*/
+  16          sbit P20 = P2^0;//这是为了关闭开发板上的数码管实际应用去掉
+  17          sbit P21 = P2^1;//这是为了关闭开发板上的数码管实际应用去掉
+  18          sbit CS88 = P2^2;//这是为了关闭开发板上的点阵实际应用去掉
+  19          
+  20          
+  21          sbit LED0=P1^0;// 用sbit 关键字 定义 LED到P1.0端口，LED是自己任意定义且容易记忆的符号
+  22          
+  23          
+  24          void Delay(unsigned int t); //函数声明
+  25          /*------------------------------------------------
+  26                              主函数
+  27          ------------------------------------------------*/
+  28          void main (void)
+  29          {
+  30   1                        
+  31   1      unsigned int CYCLE=600,PWM_LOW=0;//定义周期并赋值
+  32   1      
+  33   1              P1=0x00;//这是为了关闭开发板上的数码管实际应用去掉
+  34   1              P20=0; //这是为了关闭开发板上的数码管实际应用去掉
+  35   1              P21=0; //这是为了关闭开发板上的数码管实际应用去掉
+  36   1              CS88=0; //这是为了关闭开发板上的点阵实际应用去掉
+  37   1              P1=0xFF;//P1口置1
+  38   1              
+  39   1      while (1)         //主循环
+  40   1        {
+  41   2       LED0=1;
+  42   2       Delay(60000);        //特意加延时，可以看到熄灭的过程
+  43   2       for(PWM_LOW=1;PWM_LOW<CYCLE;PWM_LOW++){ //PWM_LOW表示低
+  44   3       //电平时间，这个循环中低电平时长从1累加到CYCLE（周期）的值，即600次
+  45   3      
+  46   3                      LED0=0;        //点亮LED  
+  47   3                      Delay(PWM_LOW);//延时长度，600次循环中从1加至599
+  48   3                      LED0=1;        //熄灭LED
+  49   3                  Delay(CYCLE-PWM_LOW);//延时长度，600次循环中从599减至1
+  50   3           
+  51   3         }
+  52   2       LED0=0;
+  53   2       for(PWM_LOW=CYCLE-1;PWM_LOW>0;PWM_LOW--){ //与逐渐变亮相反的过程
+  54   3      
+  55   3                      LED0=0;
+C51 COMPILER V8.06   MAIN                                                                  12/02/2011 12:43:05 PAGE 2   
+
+  56   3                      Delay(PWM_LOW);
+  57   3                      LED0=1;
+  58   3                  Delay(CYCLE-PWM_LOW);
+  59   3           
+  60   3         }
+  61   2                           //主循环中添加其他需要一直工作的程序
+  62   2        }
+  63   1      }
+  64          /*------------------------------------------------
+  65           延时函数，含有输入参数 unsigned int t，无返回值
+  66           unsigned int 是定义无符号整形变量，其值的范围是
+  67           0~65535
+  68          ------------------------------------------------*/
+  69          void Delay(unsigned int t)
+  70          {
+  71   1       while(--t);
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    140    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,137 @@
+C51 COMPILER V8.06   IIC                                                                   06/24/2012 20:18:06 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE IIC
+OBJECT MODULE PLACED IN iic.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE iic.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：为IIC总线的基本驱动程序（此程序没有写主函数，只是一些IIC必备的子函数）
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          #include<reg51.h>
+  16          #include <intrins.h>
+  17          #define uint unsigned int
+  18          #define uchar unsigned char
+  19          sbit sda=P2^0;                          //IO口定义
+  20          sbit scl=P2^1;
+  21          
+  22          void nop()
+  23          {
+  24   1              _nop_();
+  25   1              _nop_();
+  26   1      }
+  27          /////////24C02读写驱动程序////////////////////
+  28          void delay1(unsigned int m)
+  29          {       unsigned int n;
+  30   1              for(n=0;n<m;n++);
+  31   1      }
+  32          
+  33          void init()  //24c02初始化子程序
+  34          {
+  35   1              scl=1;
+  36   1              nop();
+  37   1              sda=1;
+  38   1              nop();
+  39   1      }
+  40          
+  41          void start()        //启动I2C总线
+  42          {
+  43   1              sda=1;
+  44   1              nop();
+  45   1              scl=1;
+  46   1              nop();
+  47   1              sda=0;
+  48   1              nop();
+  49   1              scl=0;
+  50   1              nop();
+  51   1      }
+  52          
+  53          void stop()         //停止I2C总线
+  54          {
+  55   1              sda=0;
+C51 COMPILER V8.06   IIC                                                                   06/24/2012 20:18:06 PAGE 2   
+
+  56   1              nop();
+  57   1              scl=1;
+  58   1              nop();
+  59   1              sda=1;
+  60   1              nop();
+  61   1      }
+  62          
+  63          void writebyte(unsigned char j)  //写一个字节
+  64          {
+  65   1              unsigned char i,temp;
+  66   1              temp=j;
+  67   1              for (i=0;i<8;i++)
+  68   1         {
+  69   2                 temp=temp<<1;
+  70   2                 scl=0;
+  71   2                 nop();
+  72   2                 sda=CY;              //temp左移时，移出的值放入了CY中
+  73   2                 nop();
+  74   2                 scl=1;               //待sda线上的数据稳定后，将scl拉高
+  75   2                 nop();
+  76   2         }
+  77   1         scl=0;
+  78   1         nop();
+  79   1         sda=1;
+  80   1         nop();
+  81   1      }
+  82          
+  83          unsigned char readbyte()   //读一个字节
+  84          {
+  85   1         unsigned char i,j,k=0;
+  86   1         scl=0; nop(); sda=1;
+  87   1         for (i=0;i<8;i++)
+  88   1         {  
+  89   2                      nop(); scl=1; nop();
+  90   2              if(sda==1) 
+  91   2                      j=1;
+  92   2              else
+  93   2                      j=0;
+  94   2              k=(k<<1)|j;
+  95   2                      scl=0;
+  96   2              }
+  97   1              nop();
+  98   1              return(k);
+  99   1      }
+ 100          
+ 101          void clock()         //I2C总线时钟
+ 102          {
+ 103   1         unsigned char i=0;
+ 104   1         scl=1;
+ 105   1         nop();
+ 106   1         while((sda==1)&&(i<255))
+ 107   1                i++;
+ 108   1         scl=0;
+ 109   1         nop();
+ 110   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    154    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V8.06   IIC                                                                   06/24/2012 20:18:06 PAGE 3   
+
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

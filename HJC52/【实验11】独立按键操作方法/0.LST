@@ -1,0 +1,54 @@
+C51 COMPILER V8.06   0                                                                     06/24/2012 18:55:13 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 0
+OBJECT MODULE PLACED IN 0.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 0.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************HL-1开发板实验例程**********************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：以独立按键中K1按键为例，示例独立键盘的使用方法。
+   4                                  用led指示HL-1实验板键盘最下面一排左侧的K1键的状态。
+   5                                  当按键按下时，led亮；松开后，灭。
+   6          *  公司：慧净电子科技有限公司
+   7          *  淘宝：http://shop37031453.taobao.com       
+   8          *  网站：www.hjmcu.com
+   9          *  编写：慧净
+  10          *  日期：2008-8-08
+  11          *   QQ : 121350852    398115088
+  12          *  晶振:11.0592MHZ
+  13          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  14          *  论坛：http://hjdz.5d6d.net
+  15          ******************************************************************/
+  16          
+  17          #include<reg51.h>
+  18          
+  19          sbit k1=P3^4;
+  20          sbit led=P1^0;
+  21          
+  22          void main()
+  23          {
+  24   1              while(1)                   //通过大循环不断扫描按键状态
+  25   1              {
+  26   2                      if(k1==0)
+  27   2                              led=0;
+  28   2                      else
+  29   2                              led=1;
+  30   2              }
+  31   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     11    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

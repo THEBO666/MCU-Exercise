@@ -1,0 +1,66 @@
+C51 COMPILER V8.06   1                                                                     06/24/2012 18:41:41 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 1
+OBJECT MODULE PLACED IN 1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HL-1实验开发板例程************************
+   2          *  平台：HL-1 V8.0 + Keil U3 + STC89C52
+   3          *  名称：使八位LED逐位移动并不断循环
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hjmcu.com
+   7          *  编写：慧净
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852 398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.net
+  13          ******************************************************************/
+  14          
+  15          #include <reg51.h>
+  16          #include <intrins.h>  //这个头文件是这个方法的核心，它包含了逐步移位函数功能
+  17                                                    //即程序中的_crol_(P1,y)
+  18          
+  19          sbit led=P1^0;
+  20          
+  21          void delay(unsigned int i)
+  22          {
+  23   1              unsigned int j;
+  24   1              unsigned char k;
+  25   1              for(j=i;j>0;j--)
+  26   1                      for(k=125;k>0;k--);
+  27   1      }
+  28          
+  29          void main()
+  30          {       P1=0xfe;
+  31   1              delay(1000);
+  32   1              while(1)
+  33   1              {
+  34   2              //      unsigned char m;
+  35   2                      //P1=0xfe;
+  36   2              //      delay(1000);
+  37   2              //      for(m=7;m>0;m--)
+  38   2                      {
+  39   3                              P1=_crol_(P1,1);   //P1逐步左移一位。
+  40   3                              delay(1000);
+  41   3                      }
+  42   2              }
+  43   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     53    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

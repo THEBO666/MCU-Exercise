@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\1、光碟\1、HL-1\0、必看模块学习方法\9、DS1302模块\DS1302 数码管显示\HL-1.uv2
+Project File Date:  12/02/2011
+
+<h2>Output:</h2>
+创建目标 '目标 1'
+编译 main.c ...
+连接 ...
+Program Size: data=45.1 xdata=0 code=946
+创建 HEX 文件 "HL-1" ...
+"HL-1" - 0 个错误, 0 个警告。

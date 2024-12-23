@@ -1,0 +1,288 @@
+C51 COMPILER V8.06   1602_WENDU                                                            06/24/2012 20:05:03 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 1602_WENDU
+OBJECT MODULE PLACED IN 1602-wendu.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1602-wendu.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          //注意事项：10天教程中的LCD1602第5脚由于当时设计错误，直接接到GND上了，接了低电平。
+  16          //本实验需要把LCD1602第5脚，读/写脚接到GND上，有两种方法，第一种，用杜邦线把P3.6脚接到GND上。
+  17          //另一种方法，定义一个 P3.6 IO口，在主函数中 把P3.6 写一个低电平就可以了。
+  18          //sbit WR = P3^6; 在后面主函数中加入 WR=0;就可以不用接杜邦线， P3.6到GND的杜邦线不要。
+  19          //WR=0;
+  20          #include <reg52.H>
+  21          #include <intrins.H>
+  22          #include <math.H>
+  23          
+  24          #define uchar unsigned char
+  25            #define uint unsigned int
+  26           sbit dula = P2^6;
+  27           sbit wela = P2^7;
+  28           sbit rw = P1^1; 
+  29           sbit RS = P1^0;  
+  30            
+  31           sbit LCDEN = P2^5; 
+  32          
+  33          void delayUs()
+  34          {
+  35   1          _nop_();
+  36   1      }
+  37          
+  38           void delayMs(uint a)
+  39          {
+  40   1          uint i, j;
+  41   1          for(i = a; i > 0; i--)
+  42   1              for(j = 100; j > 0; j--);
+  43   1       }
+  44          
+  45          
+  46          void writeComm(uchar comm)
+  47          {
+  48   1           RS = 0;    
+  49   1          P0 = comm;
+  50   1          LCDEN = 1;
+  51   1           delayUs();
+  52   1          LCDEN = 0;
+  53   1          delayMs(1);
+  54   1      }
+  55          
+C51 COMPILER V8.06   1602_WENDU                                                            06/24/2012 20:05:03 PAGE 2   
+
+  56          //写数据:RS=1, RW=0;
+  57          void writeData(uchar dat)
+  58          {
+  59   1           RS = 1;
+  60   1           P0 = dat;
+  61   1           LCDEN = 1;
+  62   1          delayUs();
+  63   1          LCDEN = 0;
+  64   1          delayMs(1);
+  65   1       }
+  66          
+  67          
+  68           void init()
+  69           {
+  70   1           rw = 0; 
+  71   1           dula = wela = 0;
+  72   1          writeComm(0x38);
+  73   1         writeComm(0x0c); 
+  74   1          writeComm(0x06);
+  75   1          writeComm(0x01); 
+  76   1      }
+  77          
+  78          void writeString(uchar * str, uchar length)
+  79          {
+  80   1           uchar i;
+  81   1          for(i = 0; i < length; i++)
+  82   1          {
+  83   2               writeData(str[i]);
+  84   2           }
+  85   1       }
+  86           
+  87          /**//*****************************DS18B20*******************************/
+  88           sbit ds = P2^2;
+  89          void dsInit()
+  90           {
+  91   1          
+  92   1          unsigned int i;  
+  93   1          ds = 0;
+  94   1          i = 100;  
+  95   1           while(i>0) i--;
+  96   1          ds = 1;   
+  97   1          i = 4;
+  98   1           while(i>0) i--;
+  99   1       }
+ 100           
+ 101          void dsWait()
+ 102           {
+ 103   1            unsigned int i;
+ 104   1            while(ds);  
+ 105   1            while(~ds);
+ 106   1            i = 4;
+ 107   1            while(i > 0) i--;
+ 108   1      }
+ 109          
+ 110          
+ 111          bit readBit()
+ 112          {
+ 113   1          unsigned int i;
+ 114   1          bit b;
+ 115   1          ds = 0;
+ 116   1          i++;   
+ 117   1          ds = 1; 
+C51 COMPILER V8.06   1602_WENDU                                                            06/24/2012 20:05:03 PAGE 3   
+
+ 118   1         i++; i++;  
+ 119   1          b = ds;
+ 120   1          i = 8; 
+ 121   1          while(i>0) i--;
+ 122   1          return b;
+ 123   1      }
+ 124          
+ 125          unsigned char readByte()
+ 126          {
+ 127   1          unsigned int i;
+ 128   1          unsigned char j, dat;
+ 129   1         dat = 0;
+ 130   1          for(i=0; i<8; i++)
+ 131   1          {
+ 132   2              j = readBit();
+ 133   2            
+ 134   2              dat = (j << 7) | (dat >> 1);
+ 135   2          }
+ 136   1          return dat;
+ 137   1      }
+ 138          
+ 139          
+ 140          void writeByte(unsigned char dat)
+ 141          {
+ 142   1          unsigned int i;
+ 143   1          unsigned char j;
+ 144   1          bit b;
+ 145   1          for(j = 0; j < 8; j++)
+ 146   1          {
+ 147   2              b = dat & 0x01;
+ 148   2              dat >>= 1;
+ 149   2          
+ 150   2              if(b)   
+ 151   2              {
+ 152   3                 ds = 0;          i++; i++;  
+ 153   3                  ds = 1;    
+ 154   3                  i = 8; while(i>0) i--;  
+ 155   3              }
+ 156   2              else  
+ 157   2              {
+ 158   3                  ds = 0;
+ 159   3                i = 8; while(i>0) i--;  
+ 160   3                  ds = 1;
+ 161   3                 i++; i++;
+ 162   3              }
+ 163   2         }
+ 164   1      }
+ 165          
+ 166          
+ 167          void sendChangeCmd()
+ 168          {
+ 169   1          dsInit();    
+ 170   1          dsWait();   
+ 171   1          delayMs(1);    
+ 172   1          writeByte(0xcc);
+ 173   1          writeByte(0x44);
+ 174   1      }
+ 175          
+ 176          void sendReadCmd()
+ 177          {
+ 178   1          dsInit();
+ 179   1          dsWait();
+C51 COMPILER V8.06   1602_WENDU                                                            06/24/2012 20:05:03 PAGE 4   
+
+ 180   1          delayMs(1);
+ 181   1          writeByte(0xcc); 
+ 182   1          writeByte(0xbe); 
+ 183   1      }
+ 184          
+ 185          
+ 186          int getTmpValue()
+ 187          {
+ 188   1          unsigned int tmpvalue;
+ 189   1          int value; 
+ 190   1          float t;
+ 191   1          unsigned char low, high;
+ 192   1          sendReadCmd();
+ 193   1          
+ 194   1          low = readByte(); 
+ 195   1          high = readByte();
+ 196   1         
+ 197   1          tmpvalue = high;
+ 198   1          tmpvalue <<= 8;
+ 199   1          tmpvalue |= low;
+ 200   1          value = tmpvalue;
+ 201   1          
+ 202   1        \
+ 203   1          t = value * 0.0625;
+ 204   1          \
+ 205   1          value = t * 100 + (value > 0 ? 0.5 : -0.5); //大于0加0.5, 小于0减0.5
+ 206   1          return value;
+ 207   1      }
+ 208          
+ 209          void display(int v) 
+ 210          {
+ 211   1          unsigned char count;
+ 212   1          unsigned char datas[] = {0, 0, 0, 0, 0};
+ 213   1          unsigned int tmp = abs(v);
+ 214   1          datas[0] = tmp / 10000;
+ 215   1          datas[1] = tmp % 10000 / 1000;
+ 216   1          datas[2] = tmp % 1000 / 100;
+ 217   1          datas[3] = tmp % 100 / 10;
+ 218   1          datas[4] = tmp % 10;
+ 219   1          writeComm(0xc0+3);
+ 220   1          if(v < 0)
+ 221   1          {
+ 222   2              writeString("- ", 2);
+ 223   2         }
+ 224   1          else
+ 225   1          {
+ 226   2             writeString("+ ", 2);
+ 227   2          }
+ 228   1          if(datas[0] != 0)
+ 229   1          {
+ 230   2              writeData('0'+datas[0]);
+ 231   2          }
+ 232   1          for(count = 1; count != 5; count++)
+ 233   1          {
+ 234   2              writeData('0'+datas[count]);
+ 235   2              if(count == 2)
+ 236   2              {
+ 237   3                  writeData('.');
+ 238   3              }
+ 239   2          }
+ 240   1      }
+ 241          /**//*****************************DS18B20*******************************/
+C51 COMPILER V8.06   1602_WENDU                                                            06/24/2012 20:05:03 PAGE 5   
+
+ 242          
+ 243          void main()
+ 244          {
+ 245   1          uchar table[] = "  xianzaiwendu: ";
+ 246   1          sendChangeCmd();
+ 247   1          init();
+ 248   1          writeComm(0x80);
+ 249   1          writeString(table, 16);
+ 250   1          while(1)
+ 251   1          {
+ 252   2              delayMs(1000); //温度转换时间需要750ms以上
+ 253   2              writeComm(0xc0);
+ 254   2              display(getTmpValue());
+ 255   2              sendChangeCmd();
+ 256   2          }
+ 257   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    726    ----
+   CONSTANT SIZE    =     28    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      35
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

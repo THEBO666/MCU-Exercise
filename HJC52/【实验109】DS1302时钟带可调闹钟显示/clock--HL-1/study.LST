@@ -1,0 +1,403 @@
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 1   
+
+
+C51 COMPILER V7.00, COMPILATION OF MODULE STUDY
+OBJECT MODULE PLACED IN study.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE study.c BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          #include<reg52.h> //包含单片机寄存器的头文件
+   2          sbit led1=P1^0;
+   3          sbit led2=P1^2;
+   4          sbit led5=P1^5;
+   5          sbit du=P2^6;//段选
+   6          sbit we=P2^7;//位选
+   7          sbit s1=P3^4;
+   8          sbit s2=P3^5;
+   9          sbit s3=P3^6;
+  10          sbit s4=P3^7;
+  11          sbit beep=P2^3;
+  12          sbit dot=P0^7;
+  13          unsigned char shi,fen,miao,unit,keyv,key,av,ashi,afen,amiao;
+  14          
+  15          void delay()   //1ms
+  16            {
+  17   1            unsigned char a,b;
+  18   1           
+  19   1              for(b=102;b>0;b--)
+  20   1                for(a=3;a>0;a--);
+  21   1        }  
+  22          
+  23          void delay5(void)   //误差 5ms
+  24          {
+  25   1          unsigned char a,b;
+  26   1          for(b=15;b>0;b--)
+  27   1              for(a=152;a>0;a--);
+  28   1      }
+  29          
+  30          void delayhalf (void)   //误差 0.5s
+  31          {
+  32   1          unsigned char a,b,c;
+  33   1          for(c=23;c>0;c--)
+  34   1              for(b=152;b>0;b--)
+  35   1                  for(a=70;a>0;a--);
+  36   1      }
+  37          
+  38          
+  39          void display( unsigned char h,f,s)
+  40           {
+  41   1      unsigned char code duma[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77,0x38};
+  42   1      unsigned char code mawei[]={0xfe,0xfd,0xfb,0xf7,0xef,0xdf,0xbf,0x7f};
+  43   1      unsigned char shiwan,wan,qian,bai,shi,ge;
+  44   1      
+  45   1      shiwan=h/10;
+  46   1      wan=h%10;
+  47   1      qian=f/10;
+  48   1      bai=f%10;
+  49   1      shi=s/10;
+  50   1       ge=s%10;
+  51   1      
+  52   1       P0=duma[shiwan];
+  53   1        du=1;
+  54   1        du=0;
+  55   1        P0=mawei[0];
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 2   
+
+  56   1        we=1;
+  57   1        we=0;
+  58   1       delay();
+  59   1        
+  60   1        P0=duma[wan];
+  61   1        dot=1;
+  62   1        du=1;
+  63   1        du=0;
+  64   1        dot=0;
+  65   1      P0=mawei[1];
+  66   1        we=1;
+  67   1        we=0;
+  68   1       delay();  
+  69   1        
+  70   1        P0=duma[qian];
+  71   1        du=1;
+  72   1        du=0;
+  73   1        P0=mawei[2];
+  74   1        we=1;
+  75   1        we=0;
+  76   1       delay();
+  77   1      
+  78   1      P0=duma[bai];
+  79   1        dot=1;
+  80   1        du=1;
+  81   1        du=0;
+  82   1        dot=0;
+  83   1      P0=mawei[3];
+  84   1        we=1;
+  85   1        we=0;
+  86   1       delay();
+  87   1      
+  88   1      if(key!=1&&key!=2)
+  89   1       {
+  90   2      P0=duma[shi];
+  91   2        du=1;
+  92   2        du=0;
+  93   2        P0=mawei[4];
+  94   2        we=1;
+  95   2        we=0;
+  96   2       delay();
+  97   2      
+  98   2       P0=duma[ge];
+  99   2        du=1;
+ 100   2        du=0;
+ 101   2        P0=mawei[5];
+ 102   2        we=1;
+ 103   2        we=0;
+ 104   2        delay();
+ 105   2       }
+ 106   1      if(key==1||key==2)//
+ 107   1       {
+ 108   2      P0=duma[10];
+ 109   2        du=1;
+ 110   2        du=0;
+ 111   2        P0=mawei[4];
+ 112   2        we=1;
+ 113   2        we=0;
+ 114   2       delay();
+ 115   2      
+ 116   2       P0=duma[11];
+ 117   2        du=1;
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 3   
+
+ 118   2        du=0;
+ 119   2        P0=mawei[5];
+ 120   2        we=1;
+ 121   2        we=0;
+ 122   2       delay(); 
+ 123   2       }
+ 124   1       
+ 125   1        P0=0xff;
+ 126   1        we=1;
+ 127   1        we=0;
+ 128   1      }
+ 129          ////////////////////////
+ 130          passtime()
+ 131          {
+ 132   1      if(unit==100)
+ 133   1      {
+ 134   2      miao++;
+ 135   2      unit=0;
+ 136   2      led1=!led1;
+ 137   2      led2=!led2;
+ 138   2      }
+ 139   1      if(miao==60)
+ 140   1      {
+ 141   2      fen++;
+ 142   2      miao=0;
+ 143   2      }
+ 144   1      if(fen==60)
+ 145   1      {
+ 146   2      shi++;
+ 147   2      fen=0;
+ 148   2      }
+ 149   1      if(shi==24)
+ 150   1      {
+ 151   2      shi=0;
+ 152   2      }
+ 153   1      }
+ 154          
+ 155          //////////////////////////////////////
+ 156          void InitTimer0(void)//10ms
+ 157          {
+ 158   1          TMOD = 0x01;
+ 159   1          TH0 = 0x0DC;
+ 160   1          TL0 = 0x00;
+ 161   1          EA = 1;
+ 162   1          ET0 = 1;
+ 163   1          TR0 = 1;
+ 164   1          unit=0;
+ 165   1      }
+ 166          void Timer0Interrupt(void) interrupt 1
+ 167          {
+ 168   1          TH0 = 0x0DC;
+ 169   1          TL0 = 0x00;
+ 170   1         unit++ ;//add your code here!
+ 171   1      passtime();
+ 172   1      }
+ 173          
+ 174          void adjustment(void)
+ 175          { 
+ 176   1      if(s1==0)
+ 177   1        {
+ 178   2        delay5();
+ 179   2        if(s1==0)
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 4   
+
+ 180   2          {
+ 181   3         while(!s1);
+ 182   3          
+ 183   3          amiao=0;
+ 184   3          key++;
+ 185   3          led5=0;
+ 186   3          if(key==5)
+ 187   3            {
+ 188   4             key=0;
+ 189   4             TR0=1;
+ 190   4             led5=1;
+ 191   4            }
+ 192   3          } 
+ 193   2         }//////s1 count 
+ 194   1       if(s2==0)
+ 195   1           {
+ 196   2            delay5();
+ 197   2            if(s2==0)
+ 198   2              {
+ 199   3               while(!s2);
+ 200   3               if(key==1)//alram
+ 201   3                {
+ 202   4                 ashi++;
+ 203   4                 if(ashi==24)
+ 204   4                   {
+ 205   5                    ashi=0; 
+ 206   5                   }
+ 207   4                 }
+ 208   3                 if(key==2)
+ 209   3                {
+ 210   4                 afen++;
+ 211   4                 if(afen==60)
+ 212   4                   {
+ 213   5                    afen=0; 
+ 214   5                   }
+ 215   4                 }//alram
+ 216   3      
+ 217   3               if(key==4)/////
+ 218   3                {
+ 219   4                 miao=0;
+ 220   4                 TR0=0;
+ 221   4                 fen++;
+ 222   4                 if(fen==60)
+ 223   4                   {
+ 224   5                    fen=0; 
+ 225   5                   }
+ 226   4                } 
+ 227   3             if(key==3)///
+ 228   3                {
+ 229   4                 miao=0;
+ 230   4                 TR0=0;
+ 231   4                 shi++;
+ 232   4                 if(shi==24)
+ 233   4                   {
+ 234   5                    shi=0; 
+ 235   5                   }
+ 236   4                }      
+ 237   3         
+ 238   3              }
+ 239   2           }//adj +
+ 240   1       
+ 241   1      ///////////////////adj-
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 5   
+
+ 242   1      if(s3==0)
+ 243   1           {
+ 244   2            delay5();
+ 245   2            if(s3==0)
+ 246   2              {
+ 247   3               while(!s3);
+ 248   3               if(key==1)//alram
+ 249   3                {
+ 250   4                 ashi--;
+ 251   4                 if(ashi==-1)
+ 252   4                   {
+ 253   5                    ashi=23; 
+ 254   5                   }
+ 255   4                 }
+ 256   3                 if(key==2)
+ 257   3                {
+ 258   4                 afen--;
+ 259   4                 if(afen==-1)
+ 260   4                   {
+ 261   5                    afen=59; 
+ 262   5                   }
+ 263   4                 }//alram
+ 264   3      
+ 265   3               if(key==4)//
+ 266   3                {
+ 267   4                 miao=0;
+ 268   4                 TR0=0;
+ 269   4                 fen--;
+ 270   4                 if(fen==-1)
+ 271   4                   {
+ 272   5                    fen=59; 
+ 273   5                   }
+ 274   4                } 
+ 275   3             if(key==3)///
+ 276   3                {
+ 277   4                 miao=0;
+ 278   4                 TR0=0;
+ 279   4                 shi--;
+ 280   4                 if(shi==-1)
+ 281   4                   {
+ 282   5                    shi=23; 
+ 283   5                   }
+ 284   4                }      
+ 285   3         
+ 286   3              }
+ 287   2           }//adj -
+ 288   1       }
+ 289          /////////////////
+ 290          void alarm(void)
+ 291          {
+ 292   1      if(fen!=afen)
+ 293   1           {
+ 294   2            av=0;
+ 295   2           }
+ 296   1      if(av==0)
+ 297   1       {
+ 298   2        if(shi==ashi&&fen==afen)
+ 299   2        {
+ 300   3         beep=0;
+ 301   3         delayhalf(); 
+ 302   3         beep=1;
+ 303   3         delayhalf();
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 6   
+
+ 304   3         beep=0;
+ 305   3         delayhalf();
+ 306   3         beep=1;
+ 307   3        delayhalf();
+ 308   3       
+ 309   3        }
+ 310   2       }//av==0
+ 311   1      }
+ 312          
+ 313            /*******************************************************
+ 314          函数功能：主函数
+ 315          ********************************************************/
+ 316          
+ 317          void main(void)
+ 318          {ashi=7;afen=0;
+ 319   1      InitTimer0();
+ 320   1      led2=0;
+ 321   1      while(1)
+ 322   1      {
+ 323   2      if(keyv==0)//close display
+ 324   2       {
+ 325   3       if(s4==0)
+ 326   3       {
+ 327   4        delay5();
+ 328   4        if(s4==0)
+ 329   4         {
+ 330   5         
+ 331   5         while(!s4);
+ 332   5         keyv=1;
+ 333   5         av=1;
+ 334   5          }
+ 335   4       }
+ 336   3      }
+ 337   2      if(keyv==1)
+ 338   2      {
+ 339   3      if(s4==0)
+ 340   3       {
+ 341   4         delay5(); 
+ 342   4         if(s4==0)
+ 343   4          { 
+ 344   5         while(!s4);
+ 345   5         keyv=0;
+ 346   5          }
+ 347   4          }
+ 348   3       }//close display
+ 349   2      if(keyv==0)
+ 350   2        {
+ 351   3      adjustment();
+ 352   3      
+ 353   3         if(key!=1&&key!=2)
+ 354   3           {
+ 355   4          display(shi,fen,miao);
+ 356   4           } 
+ 357   3           if(key==1||key==2)
+ 358   3              {
+ 359   4              display(ashi,afen,amiao);
+ 360   4         
+ 361   4              } 
+ 362   3         }
+ 363   2      if(key==0||key==3||key==4)
+ 364   2       {
+ 365   3      alarm();
+C51 COMPILER V7.00  STUDY                                                                  09/01/2012 00:30:57 PAGE 7   
+
+ 366   3       }
+ 367   2      }//while
+ 368   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    727    ----
+   CONSTANT SIZE    =     20    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,193 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        02/15/2012  20:45:33  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE zifu.obj TO zifu
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  zifu.obj (ZIFU)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  zifu (ZIFU)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000DH     UNIT         ?DT?ZIFU
+            IDATA   0015H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     001DH     UNIT         ?PR?INIT?ZIFU
+                    0020H     0003H                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     008CH     UNIT         ?C_C51STARTUP
+            CODE    00B2H     001CH     UNIT         ?PR?MAIN?ZIFU
+            CODE    00CEH     0019H     UNIT         ?C?LIB_CODE
+            CODE    00E7H     0013H     UNIT         ?PR?_SENDC?ZIFU
+            CODE    00FAH     000FH     UNIT         ?C_INITSEG
+            CODE    0109H     000EH     UNIT         ?PR?_DELAY?ZIFU
+            CODE    0117H     000CH     UNIT         ?PR?UART?ZIFU
+            CODE    0123H     000AH     UNIT         ?PR?_SEND?ZIFU
+
+
+
+OVERLAY MAP OF MODULE:   zifu (ZIFU)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?ZIFU
+  +--> ?C_INITSEG
+
+?PR?MAIN?ZIFU
+  +--> ?PR?INIT?ZIFU
+  +--> ?PR?_DELAY?ZIFU
+  +--> ?PR?_SENDC?ZIFU
+
+?PR?_SENDC?ZIFU
+  +--> ?PR?_SEND?ZIFU
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/15/2012  20:45:33  PAGE 2
+
+
+
+
+
+SYMBOL TABLE OF MODULE:  zifu (ZIFU)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ZIFU
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  C:00E7H         PUBLIC        _sendc
+  C:0109H         PUBLIC        _delay
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  B:0098H.0       PUBLIC        RI
+  B:0098H.1       PUBLIC        TI
+  B:00B0H.4       PUBLIC        s2
+  C:00B2H         PUBLIC        main
+  C:0123H         PUBLIC        _send
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:0003H         PUBLIC        init
+  C:0117H         PUBLIC        uart
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  D:0008H         PUBLIC        zifuchuan
+  B:0088H.6       PUBLIC        TR1
+  B:0098H.4       PUBLIC        REN
+  D:00C8H         PUBLIC        T2CON
+  D:0014H         PUBLIC        sending
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _DELAY
+  D:0007H         SYMBOL        i
+  -------         DO            
+  D:0007H         SYMBOL        j
+  D:0006H         SYMBOL        k
+  -------         ENDDO         
+  C:0109H         LINE#         26
+  C:0109H         LINE#         27
+  C:0109H         LINE#         29
+  C:010FH         LINE#         30
+  C:0116H         LINE#         31
+  -------         ENDPROC       _DELAY
+  -------         PROC          INIT
+  C:0003H         LINE#         32
+  C:0003H         LINE#         33
+  C:0003H         LINE#         34
+  C:0005H         LINE#         35
+  C:0008H         LINE#         36
+  C:000BH         LINE#         37
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/15/2012  20:45:33  PAGE 3
+
+
+  C:000EH         LINE#         38
+  C:0011H         LINE#         39
+  C:0014H         LINE#         40
+  C:0017H         LINE#         41
+  C:0019H         LINE#         42
+  C:001BH         LINE#         43
+  C:001DH         LINE#         44
+  C:001FH         LINE#         45
+  -------         ENDPROC       INIT
+  -------         PROC          _SEND
+  D:0007H         SYMBOL        d
+  C:0123H         LINE#         47
+  C:0123H         LINE#         48
+  C:0123H         LINE#         50
+  C:0125H         LINE#         51
+  C:0128H         LINE#         52
+  C:012CH         LINE#         53
+  -------         ENDPROC       _SEND
+  -------         PROC          _SENDC
+  D:0001H         SYMBOL        pd
+  C:00E7H         LINE#         55
+  C:00E7H         LINE#         56
+  C:00E7H         LINE#         57
+  C:00EDH         LINE#         58
+  C:00EDH         LINE#         59
+  C:00F0H         LINE#         60
+  C:00F7H         LINE#         61
+  C:00F9H         LINE#         62
+  -------         ENDPROC       _SENDC
+  -------         PROC          MAIN
+  C:00B2H         LINE#         64
+  C:00B2H         LINE#         65
+  C:00B2H         LINE#         66
+  C:00B5H         LINE#         67
+  C:00B5H         LINE#         68
+  C:00B5H         LINE#         69
+  C:00B8H         LINE#         70
+  C:00B8H         LINE#         71
+  C:00BDH         LINE#         72
+  C:00C0H         LINE#         73
+  C:00C0H         LINE#         74
+  C:00C3H         LINE#         75
+  C:00CCH         LINE#         76
+  C:00CCH         LINE#         77
+  C:00CCH         LINE#         78
+  -------         ENDPROC       MAIN
+  -------         PROC          UART
+  C:0117H         LINE#         81
+  C:0117H         LINE#         83
+  C:011AH         LINE#         84
+  C:011AH         LINE#         85
+  C:011CH         LINE#         86
+  C:011DH         LINE#         88
+  C:011DH         LINE#         89
+  C:011FH         LINE#         90
+  C:0122H         LINE#         91
+  C:0122H         LINE#         92
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/15/2012  20:45:33  PAGE 4
+
+
+  -------         ENDPROC       UART
+  -------         ENDMOD        ZIFU
+
+  -------         MODULE        ?C?CLDPTR
+  C:00CEH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+Program Size: data=22.0 xdata=0 code=298
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

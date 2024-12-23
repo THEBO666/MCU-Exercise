@@ -1,0 +1,5 @@
+"main.obj",
+"LCD.obj",
+"sys.obj" 
+TO "HJMCU" 
+RAMSIZE(256) 

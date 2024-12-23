@@ -1,0 +1,163 @@
+C51 COMPILER V8.06   ANJIAN                                                                02/15/2012 16:07:24 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE ANJIAN
+OBJECT MODULE PLACED IN anjian.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE anjian.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：记录HJ-3G 实验板上S2键按下的次数，并用数码管显示出来。
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************/
+  14          
+  15          #include<reg52.h>
+  16          
+  17          #define uchar unsigned char 
+  18          unsigned long num;
+  19          uchar j,k;
+  20          uchar a0,b0,c0,d0,e0,f0;
+  21          sbit dula=P2^6;
+  22          sbit wela=P2^7;
+  23          sbit s2=P3^4;
+  24          unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,
+  25                                  0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71,0x00};
+  26          
+  27          void delay(uchar i)
+  28          {
+  29   1              for(j=i;j>0;j--)
+  30   1              for(k=125;k>0;k--);
+  31   1      }
+  32          
+  33          void display(uchar a,uchar b,uchar c,uchar d,uchar e,uchar f)
+  34          {
+  35   1         dula=0;
+  36   1         P0=table[a];
+  37   1         dula=1;
+  38   1         dula=0;
+  39   1         
+  40   1         wela=0;
+  41   1         P0=0xfe;
+  42   1         wela=1;
+  43   1         wela=0;
+  44   1         delay(5);
+  45   1         
+  46   1         P0=table[b];
+  47   1         dula=1;
+  48   1         dula=0;
+  49   1         
+  50   1         P0=0xfd;
+  51   1         wela=1;
+  52   1         wela=0;
+  53   1         delay(5);
+  54   1      
+  55   1         P0=table[c];
+C51 COMPILER V8.06   ANJIAN                                                                02/15/2012 16:07:24 PAGE 2   
+
+  56   1         dula=1;
+  57   1         dula=0;
+  58   1         
+  59   1         P0=0xfb;
+  60   1         wela=1;
+  61   1         wela=0;
+  62   1         delay(5);
+  63   1         
+  64   1         P0=table[d];
+  65   1         dula=1;
+  66   1         dula=0;
+  67   1         
+  68   1         P0=0xf7;
+  69   1         wela=1;
+  70   1         wela=0;
+  71   1         delay(5);
+  72   1         
+  73   1         P0=table[e];
+  74   1         dula=1;
+  75   1         dula=0;
+  76   1         
+  77   1         P0=0xef;
+  78   1         wela=1;
+  79   1         wela=0;
+  80   1         delay(5);
+  81   1         
+  82   1         P0=table[f];
+  83   1         dula=1;
+  84   1         dula=0;
+  85   1         
+  86   1         P0=0xdf;
+  87   1         wela=1;
+  88   1         wela=0;
+  89   1         delay(5);
+  90   1      }
+  91          
+  92          void keyscan()
+  93          {
+  94   1              if(s2==0)
+  95   1              {
+  96   2                      while(s2==0);
+  97   2                      num++;
+  98   2              }
+  99   1      }
+ 100          
+ 101          void main()
+ 102          {       while(1)
+ 103   1              {
+ 104   2              keyscan();
+ 105   2              if(num<10)
+ 106   2              {
+ 107   3                      a0=num;b0=16;c0=16;d0=16;e0=16;f0=16;
+ 108   3              }
+ 109   2              else
+ 110   2              {
+ 111   3                      if(num<100)
+ 112   3                      {a0=num/10;b0=num%10;c0=16;d0=16;e0=16;f0=16;}
+ 113   3                      else
+ 114   3                      {
+ 115   4                              if(num<1000)
+ 116   4                              {a0=num/100;b0=num%100/10;c0=num%10;d0=16;e0=16;f0=16;}
+ 117   4                              else
+C51 COMPILER V8.06   ANJIAN                                                                02/15/2012 16:07:24 PAGE 3   
+
+ 118   4                              {
+ 119   5                                      if(num<10000)
+ 120   5                                      {a0=num/1000;b0=num%1000/100;c0=num%100/10;d0=num%10;e0=16;f0=16;}
+ 121   5                                      else
+ 122   5                                      {
+ 123   6                                              if(num<100000)
+ 124   6                                              {a0=num/10000;b0=num%10000/1000;c0=num%1000/100;d0=num%100/10;e0=num%10;f0=16;}
+ 125   6                                              else
+ 126   6                                              {
+ 127   7                                                      if(num<1000000)
+ 128   7                                                      {a0=num/100000;b0=num%100000/10000;c0=num%10000/1000;d0=num%1000/100;e0=num%100/10;f0=num%10;}
+ 129   7                                              }
+ 130   6                                      }
+ 131   5                              }
+ 132   4                      }
+ 133   3              }
+ 134   2              display(a0,b0,c0,d0,e0,f0);
+ 135   2              }
+ 136   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    915    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

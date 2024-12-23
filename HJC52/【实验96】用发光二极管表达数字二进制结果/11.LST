@@ -1,0 +1,48 @@
+C51 COMPILER V8.06   11                                                                    02/15/2012 21:32:41 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE 11
+OBJECT MODULE PLACED IN 11.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 11.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************HJ-3G实验开发板例程************************
+   2          *  平台：HJ-3G V6.0 + Keil U3 + STC89C52
+   3          *  名称：C语言学习实验
+   4          *  公司：慧净电子科技有限公司
+   5          *  淘宝：http://shop37031453.taobao.com       
+   6          *  网站：www.hlmcu.com
+   7          *  编写：
+   8          *  日期：2008-8-08
+   9          *   QQ : 121350852  398115088
+  10          *  晶振:11.0592MHZ
+  11          *  说明：免费开源，不提供源代码分析，有问题直接到慧净论坛交流
+  12          *  论坛：http://hjdz.5d6d.com
+  13          ******************************************************************
+  14          程序功能：              将运算结果的十进制数送给单片机P1口，观察现象。
+  15          ****************************************************************************/
+  16          #include <reg51.h>
+  17          
+  18          void main()
+  19          {
+  20   1              unsigned char p=10,q=100,plus;
+  21   1              plus=p+q;
+  22   1              P1=plus;//将运算结果110赋给P1寄存器，那么在P1各个管脚上，就会
+  23   1                              //以二进制的形式显示十进制数110，即0110 1110
+  24   1                              //也即第一、第四和第八个LED被点亮（由电路图可知，低电平会使led点亮）。
+  25   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      7    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,25 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\HL-1\【实验77】12864显示字符\12864.uv2
+Project File Date:  02/15/2012
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 12864A-3.c ...
+连接 ...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY0?12864A_3
+Program Size: data=16.1 xdata=0 code=373
+创建 HEX 文件 "12864" ...
+"12864" - 0 个错误, 1 个警告。
+创建目标 'Target 1'
+编译 12864A-3.c ...
+连接 ...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY0?12864A_3
+Program Size: data=16.1 xdata=0 code=372
+创建 HEX 文件 "12864" ...
+"12864" - 0 个错误, 1 个警告。

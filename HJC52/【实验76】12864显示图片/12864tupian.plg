@@ -1,0 +1,21 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\HL-1\【实验76】12864显示图片\12864tupian.uv2
+Project File Date:  02/15/2012
+
+<h2>Output:</h2>
+创建目标 'Target 1'
+编译 12864tupian.c ...
+连接 ...
+Program Size: data=12.1 xdata=0 code=1338
+创建 HEX 文件 "12864tupian" ...
+"12864tupian" - 0 个错误, 0 个警告。
+创建目标 'Target 1'
+编译 12864tupian.c ...
+连接 ...
+Program Size: data=12.1 xdata=0 code=1338
+创建 HEX 文件 "12864tupian" ...
+"12864tupian" - 0 个错误, 0 个警告。

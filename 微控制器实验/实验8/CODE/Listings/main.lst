@@ -1,0 +1,273 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/18/2024 09:49:54 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          #include "MatrixLED.h"
+   4          #include "Timer0Init.h"
+   5          #include "StartGame.h"
+   6          #include "WIN1.h"
+   7          #include "WIN2.h"
+   8          
+   9          sbit k2=P3^0;           //按键K2
+  10          sbit k1=P3^1;    //按键K1
+  11          int ball_column=6,ball_LeftRight=-1,ball_UpDown=-1,Player1Win=0,Player2Win=0,Score=0,start_flag=0;
+  12          unsigned char ball_position=0x80;
+  13          
+  14          sbit LED0=P2^0;
+  15          sbit LED1=P2^1;
+  16          sbit BEEP=P2^5;
+  17          
+  18          int racket1[]={224,112,56,28,14,7},Place1=3;//用于表示球拍1位置
+  19          int racket2[]={224,112,56,28,14,7},Place2=0;//用于表示球拍2位置
+  20          //分别为1110 0000,0111 0000,0011 1000,0001 1100,0000 1110,0000 0111
+  21          
+  22          void Gameinit()//游戏初始化函数
+  23          {
+  24   1              Place1=3;//表示初始球拍1的位置为0001 1100
+  25   1              Place2=0;//表示初始球拍2的位置为1110 0000
+  26   1              ball_column=6;//ball_column=6表示球在第七列(从0算起)
+  27   1              ball_position=0x80;//1000 0000 表示球所在的行数为8
+  28   1              ball_LeftRight=-1;//ball_LeftRight表示球移动的左右方向，-1表示向左
+  29   1              ball_UpDown=-1;//ball_UpDown表示球移动的上下方向，-1表示向下
+  30   1              Player1Win=0;//Player1Win=0表示玩家1未取得胜利
+  31   1              Player2Win=0;//Player2Win=0表示玩家2未取得胜利
+  32   1              start_flag=0;//start_flag是游戏开始的符号，等于0说明游戏尚未开始
+  33   1      
+  34   1      }
+  35          
+  36          void Showpicture()
+  37          {
+  38   1          unsigned char k=1;
+  39   1          MatrixLED_ShowColumn(0,racket1[Place1]);
+  40   1                MatrixLED_ShowColumn(7,racket2[Place2]);
+  41   1                      for(k=1;k<7;k++)        
+  42   1                      {
+  43   2                              if(k!=ball_column)                              
+  44   2                                      MatrixLED_ShowColumn(k,0x00);
+  45   2                              else
+  46   2                                      MatrixLED_ShowColumn(k,ball_position);
+  47   2                      }
+  48   1      }
+  49          
+  50          void Check()//判断游戏胜利或失败
+  51          {
+  52   1      
+  53   1              if(ball_column==1)//当球在第二列时
+  54   1              {
+C51 COMPILER V9.60.7.0   MAIN                                                              12/18/2024 09:49:54 PAGE 2   
+
+  55   2                 if(ball_position==0x01)//0000 0001 如果球在第一行
+  56   2                       {
+  57   3                               if(Place1!=5)//球拍一位置不是0000 0111，说明玩家一没接住球
+  58   3                               Player2Win=1;//玩家二胜利
+  59   3                       }
+  60   2                       if(ball_position==0x04)
+  61   2                       {
+  62   3                               if((Place1!=3)&&(Place1!=4)&&(Place1!=5))
+  63   3                               Player2Win=1;
+  64   3                       }
+  65   2                       if(ball_position==0x10)
+  66   2                       {
+  67   3                               if((Place1!=1)&&(Place1!=2)&&(Place1!=3))
+  68   3                               Player2Win=1;
+  69   3                       }
+  70   2                       if(ball_position==0x40)
+  71   2                       {
+  72   3                               if((Place1!=0)&&(Place1!=1))
+  73   3                               Player2Win=1;
+  74   3                       }
+  75   2              }
+  76   1              
+  77   1              if(ball_column==6)
+  78   1              {
+  79   2                 if(ball_position==0x80)
+  80   2                       {
+  81   3                               if(Place2!=0)
+  82   3                               Player1Win=1;
+  83   3                       }
+  84   2                       if(ball_position==0x20)
+  85   2                       {
+  86   3                               if((Place2!=0)&&(Place2!=1)&&(Place2!=2))
+  87   3                               Player1Win=1;
+  88   3                       }
+  89   2                       if(ball_position==0x08)
+  90   2                       {
+  91   3                               if((Place2!=2)&&(Place2!=3)&&(Place2!=4))
+  92   3                               Player1Win=1;
+  93   3                       }
+  94   2                       if(ball_position==0x02)
+  95   2                       {
+  96   3                               if((Place2!=4)&&(Place2!=5))
+  97   3                               Player2Win=1;
+  98   3                       }
+  99   2              }       
+ 100   1              
+ 101   1              
+ 102   1      }
+ 103          
+ 104          void BallMove()//球移动
+ 105          {
+ 106   1              Check();
+ 107   1              ball_column+=ball_LeftRight;//球左右移动
+ 108   1              if(ball_position==0x80)//如果球在最上面一行
+ 109   1              {
+ 110   2                      ball_UpDown=-1;//球的移动方向为向下
+ 111   2              }
+ 112   1              if(ball_position==0x01)//如果球在最下面一行
+ 113   1              {
+ 114   2                      ball_UpDown=1;//球的移动方向为向上
+ 115   2              }
+ 116   1              if(ball_UpDown==1)
+C51 COMPILER V9.60.7.0   MAIN                                                              12/18/2024 09:49:54 PAGE 3   
+
+ 117   1              {
+ 118   2                      ball_position=ball_position<<1;//球向上移动
+ 119   2              }
+ 120   1              if(ball_UpDown==-1)
+ 121   1              {
+ 122   2                      ball_position=ball_position>>1;//球向下移动
+ 123   2              }
+ 124   1        if(ball_column==1)//如果球到了第二列
+ 125   1        {
+ 126   2                ball_LeftRight=1;//球的移动方向变为向右
+ 127   2              }               
+ 128   1              if(ball_column==6)//如果球到了第七列
+ 129   1              {
+ 130   2                ball_LeftRight=-1;//球的移动方向变为向左
+ 131   2              }
+ 132   1      }
+ 133          
+ 134          void MoveUP(int player)//球拍上移
+ 135          {
+ 136   1              if(player==1)
+ 137   1              {
+ 138   2              Place1-=1;
+ 139   2              if(Place1<0)
+ 140   2                      Place1=0;
+ 141   2        }
+ 142   1              
+ 143   1              if(player==2)
+ 144   1              {
+ 145   2              Place2-=1;
+ 146   2              if(Place2<0)
+ 147   2                      Place2=0;
+ 148   2        }
+ 149   1              
+ 150   1      }
+ 151          
+ 152          void MoveDOWN(int player)//球拍下移
+ 153          {
+ 154   1              if(player==1)
+ 155   1              {
+ 156   2              Place1+=1;
+ 157   2              if(Place1>5)
+ 158   2                      Place1=5;
+ 159   2        }
+ 160   1              
+ 161   1              if(player==2)
+ 162   1              {
+ 163   2              Place2+=1;
+ 164   2              if(Place2>5)
+ 165   2                      Place2=5;
+ 166   2        }     
+ 167   1              
+ 168   1      }
+ 169          
+ 170          void main()
+ 171          {
+ 172   1              MatrixLED_Init();
+ 173   1        while(1)
+ 174   1        {      
+ 175   2           while(start_flag==0)                       //播放K1 TO START,如果K1按键按下，游戏开始
+ 176   2                 {
+ 177   3                          StartGame(start_flag);
+ 178   3                          start_flag=1;
+C51 COMPILER V9.60.7.0   MAIN                                                              12/18/2024 09:49:54 PAGE 4   
+
+ 179   3                 }
+ 180   2                 Timer0Init();
+ 181   2                 while((Player2Win==0)&&(Player1Win==0))
+ 182   2                 {
+ 183   3                          Showpicture();
+ 184   3                          if(k1==0)                   //如果K1按键按下
+ 185   3                          {
+ 186   4                                   Delay(20);
+ 187   4                                   while(k1==0);
+ 188   4                                   Delay(20);
+ 189   4                                              MoveUP(1);//拍子1上移
+ 190   4                    }
+ 191   3                      
+ 192   3                          if(k2==0)                   //如果K2按键按下
+ 193   3                          {
+ 194   4                                   Delay(20);
+ 195   4                                   while(k2==0);
+ 196   4                                   Delay(20);
+ 197   4                 MoveDOWN(1);//拍子1下移
+ 198   4                          }
+ 199   3                                      
+ 200   3                                      P1=0xFF;
+ 201   3                    P1_1=0;
+ 202   3                    if(P1_4==0){Delay(20);while(P1_4==0);Delay(20);MoveUP(2);}//按下S15，玩家2球拍上移
+ 203   3              
+ 204   3                    P1=0xFF;
+ 205   3                    P1_0=0;
+ 206   3                    if(P1_4==0){Delay(20);while(P1_4==0);Delay(20);MoveDOWN(2);}//按下S16，玩家2球拍下移
+ 207   3                 }
+ 208   2                 if (Player2Win==1)//如果玩家2赢了
+ 209   2                 {
+ 210   3              TR0=0;//定时器暂停
+ 211   3                         LED1=0;
+ 212   3                                WIN2();//播放2 WIN！
+ 213   3                         LED1=1;
+ 214   3              Gameinit();//游戏初始化
+ 215   3                 }
+ 216   2                 if (Player1Win==1)//如果玩家1赢了
+ 217   2                 {
+ 218   3              TR0=0;
+ 219   3                         LED0=0;
+ 220   3                         BEEP=1;
+ 221   3                          WIN1();//播放1 WIN！
+ 222   3                         LED0=1;
+ 223   3                         BEEP=0;
+ 224   3              Gameinit();
+ 225   3                 }
+ 226   2         }
+ 227   1      }
+ 228          
+ 229          void Timer0() interrupt 1//定时器中断程序
+ 230          {
+ 231   1              static unsigned int T0Count;
+ 232   1              TL0 = 0x18;             //设置定时初值
+ 233   1              TH0 = 0xFC;             //设置定时初值
+ 234   1              T0Count++;
+ 235   1              if((T0Count>=500)&&(k1==1)&&(k2==1))    //定时器分频，500ms
+ 236   1              {
+ 237   2                      T0Count=0;
+ 238   2          BallMove();//每500ms球移动一次
+ 239   2              }
+ 240   1      }
+C51 COMPILER V9.60.7.0   MAIN                                                              12/18/2024 09:49:54 PAGE 5   
+
+ 241          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1092    ----
+   CONSTANT SIZE    =    149    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     45      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

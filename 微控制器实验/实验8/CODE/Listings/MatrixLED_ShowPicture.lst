@@ -1,0 +1,33 @@
+C51 COMPILER V9.54   MATRIXLED_SHOWPICTURE                                                 06/17/2022 17:59:37 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MATRIXLED_SHOWPICTURE
+OBJECT MODULE PLACED IN .\Objects\MatrixLED_ShowPicture.obj
+COMPILER INVOKED BY: C:\Users\1102903143dn\Desktop\Some_Software\Dan_software\C51\BIN\C51.EXE MatrixLED_ShowPicture.c OP
+                    -TIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\MatrixLED_ShowPicture.lst) TABS(2) OBJECT(.\Objects\MatrixLED
+                    -_ShowPicture.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          sbit RCK=P3^5;    //RCLK
+   5          sbit SCK=P3^6;    //SRCLK
+   6          sbit SER=P3^4;    //SER
+   7          
+   8          #define MATRIX_LED_PORT   P0
+   9          
+  10                   void Showpicture()
+  11                   {
+  12   1                 unsigned char i;           
+  13   1                 for(i=0;i<8;i++) 
+  14   1                   {
+  15   2                     MatrixLED_ShowColumn(i,Animation[i+Offset]);
+*** WARNING C206 IN LINE 15 OF MatrixLED_ShowPicture.c: 'MatrixLED_ShowColumn': missing function-prototype
+*** ERROR C267 IN LINE 15 OF MatrixLED_ShowPicture.c: 'MatrixLED_ShowColumn': requires ANSI-style prototype
+*** ERROR C202 IN LINE 15 OF MatrixLED_ShowPicture.c: 'Offset': undefined identifier
+  16   2                   }
+  17   1                }
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  2 ERROR(S)
