@@ -8,7 +8,8 @@
 
 sbit k2=P3^0;		//按键K2
 sbit k1=P3^1;    //按键K1
-int ball_column=6,ball_LeftRight=-1,ball_UpDown=-1,Player1Win=0,Player2Win=0,Score=0,start_flag=0;
+int ball_column=6,ball_LeftRight=-1,ball_UpDown=-1;
+int Player1Win=0,Player2Win=0,Score=0,start_flag=0;
 unsigned char ball_position=0x80;
 
 sbit LED0=P2^0;
